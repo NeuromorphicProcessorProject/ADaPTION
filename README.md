@@ -1,6 +1,9 @@
+# Caffe-LP
+
+Low Precision Caffe.  Used internally for several projects at INI.
+
 # Caffe
 
-[![Build Status](https://travis-ci.org/BVLC/caffe.svg?branch=master)](https://travis-ci.org/BVLC/caffe)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
 Caffe is a deep learning framework made with expression, speed, and modularity in mind.

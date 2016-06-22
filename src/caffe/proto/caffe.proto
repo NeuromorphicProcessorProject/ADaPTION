@@ -306,7 +306,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 147 (last added: recurrent_param)
+// LayerParameter next available layer-specific ID: 148 (last added: lpfp_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -382,6 +382,7 @@ message LayerParameter {
   optional InnerProductParameter inner_product_param = 117;
   optional InputParameter input_param = 143;
   optional LogParameter log_param = 134;
+  optional LowPrecisionFPParameter lpfp_param = 147;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
   optional MVNParameter mvn_param = 120;
@@ -836,6 +837,11 @@ message LogParameter {
   optional float base = 1 [default = -1.0];
   optional float scale = 2 [default = 1.0];
   optional float shift = 3 [default = 0.0];
+}
+
+message LowPrecisionFPParameter {
+  optional uint32 bd = 1; // The number of bits before the decimal point
+  optional uint32 ad = 2; // The number of bits after the decimal point
 }
 
 // Message that stores parameters used by LRNLayer

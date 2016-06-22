@@ -142,6 +142,9 @@ DEFINE_CAFFE_CPU_UNARY_FUNC(fabs, y[i] = std::fabs(x[i]));
 template <typename Dtype>
 void caffe_cpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
 
+template <typename Dtype>
+void caffe_cpu_round_fp(const int N, const int bd, const int ad, const Dtype *w, Dtype *wr);
+
 #ifndef CPU_ONLY  // GPU
 
 // Decaf gpu gemm provides an interface that is almost the same as the cpu

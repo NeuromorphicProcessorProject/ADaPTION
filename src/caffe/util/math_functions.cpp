@@ -9,6 +9,31 @@
 
 namespace caffe {
 
+template <>
+void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
+                        const float *w, float *wr){
+  // TODO: Also try using v?Mult and v?Div instructions and benchmark
+  // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
+  // for an example.
+  const float MAXVAL = (2 << (bd+ad)) - 1;
+  for (int i = 0; i < N; ++i) {
+    wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*(2<<ad)))/(2<<ad),
+      MAXVAL));
+  }
+}
+
+template <>
+void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad,
+                        const double *w, double *wr){
+  // TODO: Also try using v?Mult and v?Div instructions and benchmark
+  // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
+  // for an example.
+  const double MAXVAL = (2 << (bd+ad)) - 1;
+  for (int i = 0; i < N; ++i) {
+    wr[i] = std::max(-MAXVAL, std::min(round(w[i] * (2<<ad)), MAXVAL)) / (2<<ad);
+  }
+}
+
 template<>
 void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
     const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,
