@@ -10,6 +10,36 @@
 
 namespace caffe {
 
+template <typename Dtype>
+__global__ void round_fp_kernel(const int N, const int bd, const int ad,
+                        const Dtype *w, Dtype *wr){
+  // TODO: Also try using v?Mult and v?Div instructions and benchmark
+  // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
+  // for an example.
+  const int bdshift = bd - 1;
+  const int adshift = ad - 1;
+  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
+  CUDA_KERNEL_LOOP(index, N) {
+    wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(2<<adshift)))/(2<<adshift), MAXVAL));
+  }
+}
+
+template <>
+void caffe_gpu_round_fp(const int N, const int bd, const int ad,
+                        const float *w, float *wr){
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  round_fp_kernel<float><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
+      N, bd, ad, w, wr);
+}
+
+template <>
+void caffe_gpu_round_fp(const int N, const int bd, const int ad,
+                        const double *w, double *wr){
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  round_fp_kernel<double><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
+      N, bd, ad, w, wr);
+}
+
 template <>
 void caffe_gpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
     const CBLAS_TRANSPOSE TransB, const int M, const int N, const int K,

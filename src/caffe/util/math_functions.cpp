@@ -15,10 +15,12 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
-  const float MAXVAL = (2 << (bd+ad)) - 1;
+  const int bdshift = bd - 1;
+  const int adshift = ad - 1;
+  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
   for (int i = 0; i < N; ++i) {
-    wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*(2<<ad)))/(2<<ad),
-      MAXVAL));
+    wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
+      (2<<adshift)))/(2<<adshift), MAXVAL));
   }
 }
 
@@ -28,9 +30,12 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad,
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
-  const double MAXVAL = (2 << (bd+ad)) - 1;
+  const int bdshift = bd - 1;
+  const int adshift = ad - 1;
+  const double MAXVAL = ((double) (2 << bdshift)) - 1.0/(2<<adshift);
   for (int i = 0; i < N; ++i) {
-    wr[i] = std::max(-MAXVAL, std::min(round(w[i] * (2<<ad)), MAXVAL)) / (2<<ad);
+    wr[i] = std::max(-MAXVAL, std::min( ((double)round(w[i]*
+      (2<<adshift)))/(2<<adshift), MAXVAL));
   }
 }
 

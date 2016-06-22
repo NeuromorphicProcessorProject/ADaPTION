@@ -2,6 +2,11 @@
 
 Low Precision Caffe.  Used internally for several projects at INI.
 
+  * Notes for installation:
+    * Adjust your paths!  You probably already have a copy of Caffe.  Make sure to use this one!
+    * Ubuntu 16.04: Needs a few fixes.
+    * Inits
+
 # Caffe
 
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
