@@ -6,7 +6,8 @@
 #include "caffe/blob.hpp"
 #include "caffe/layer.hpp"
 #include "caffe/proto/caffe.pb.h"
-#include "caffe/layers/base_conv_layer.hpp"
+
+#include "caffe/layers/lp_base_conv_layer.hpp"
 
 namespace caffe {
 
@@ -27,7 +28,7 @@ namespace caffe {
  *   the output channel N' columns of the output matrix.
  */
 template <typename Dtype>
-class LPConvolutionLayer : public BaseConvolutionLayer<Dtype> {
+class LPConvolutionLayer : public LPBaseConvolutionLayer<Dtype> {
  public:
   /**
    * @param param provides ConvolutionParameter convolution_param,
@@ -61,9 +62,8 @@ class LPConvolutionLayer : public BaseConvolutionLayer<Dtype> {
    *    kernels + stream parallelism) engines.
    */
   explicit LPConvolutionLayer(const LayerParameter& param)
-      : BaseConvolutionLayer<Dtype>(param) {}
-  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
+      : LPBaseConvolutionLayer<Dtype>(param) {}
+
   virtual inline const char* type() const { return "LPConvolution"; }
 
  protected:
@@ -77,21 +77,6 @@ class LPConvolutionLayer : public BaseConvolutionLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   virtual inline bool reverse_dimensions() { return false; }
   virtual void compute_output_shape();
-
-  int BD_; // Number of bits Before Decimal
-  int AD_; // Number of bits After Decimal
-  bool round_bias_;
-
- private:
-  // int num_kernels_im2col_;
-  // int num_kernels_col2im_;
-  int conv_out_channels_;
-  int conv_in_channels_;
-  // int conv_out_spatial_dim_;
-  int kernel_dim_;
-  // int col_offset_;
-  // int output_offset_;
-
 };
 
 }  // namespace caffe

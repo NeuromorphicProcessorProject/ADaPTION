@@ -7,7 +7,7 @@ namespace caffe {
 template <typename Dtype>
 void LPConvolutionLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
-  caffe_gpu_round_fp(this->blobs_[0+1]->count(), BD_, AD_,
+  caffe_gpu_round_fp(this->blobs_[0+1]->count(), this->BD_, this->AD_,
     this->blobs_[0]->cpu_data(), this->blobs_[0+1]->mutable_cpu_data());
   const Dtype* weight = this->blobs_[0+1]->cpu_data();
   for (int i = 0; i < bottom.size(); ++i) {
@@ -19,7 +19,7 @@ void LPConvolutionLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
       if (this->bias_term_) {
         const Dtype* bias;
         if (this->round_bias_){
-          caffe_gpu_round_fp(this->blobs_[2+1]->count(), BD_, AD_,
+          caffe_gpu_round_fp(this->blobs_[2+1]->count(), this->BD_, this->AD_,
             this->blobs_[2]->cpu_data(), this->blobs_[2+1]->mutable_cpu_data());
           bias = this->blobs_[2+1]->cpu_data();
         } else {

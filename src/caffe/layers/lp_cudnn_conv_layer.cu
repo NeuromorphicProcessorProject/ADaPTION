@@ -8,9 +8,9 @@ namespace caffe {
 __global__ void sync_conv_groups() { }
 
 template <typename Dtype>
-void CuDNNConvolutionLayer<Dtype>::Forward_gpu(
+void LPCuDNNConvolutionLayer<Dtype>::Forward_gpu(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
-  caffe_gpu_round_fp(this->blobs_[0+1]->count(), BD_, AD_,
+  caffe_gpu_round_fp(this->blobs_[0]->count(), this->BD_, this->AD_,
     this->blobs_[0]->cpu_data(), this->blobs_[0+1]->mutable_cpu_data());
   const Dtype* weight = this->blobs_[0+1]->cpu_data();
   for (int i = 0; i < bottom.size(); ++i) {
@@ -31,12 +31,13 @@ void CuDNNConvolutionLayer<Dtype>::Forward_gpu(
 
       // Bias.
       if (this->bias_term_) {
+        const Dtype* bias_data;
         if (this->round_bias_){
-          caffe_gpu_round_fp(this->blobs_[2+1]->count(), BD_, AD_,
+          caffe_gpu_round_fp(this->blobs_[2]->count(), this->BD_, this->AD_,
             this->blobs_[2]->cpu_data(), this->blobs_[2+1]->mutable_cpu_data());
-          const Dtype* bias_data = this->blobs_[2+1]->cpu_data();
+          bias_data = this->blobs_[2+1]->cpu_data();
         } else {
-          const Dtype* bias_data = this->blobs_[2]->cpu_data();
+          bias_data = this->blobs_[2]->cpu_data();
         }
         CUDNN_CHECK(cudnnAddTensor(handle_[g],
               cudnn::dataType<Dtype>::one,
@@ -54,7 +55,7 @@ void CuDNNConvolutionLayer<Dtype>::Forward_gpu(
 }
 
 template <typename Dtype>
-void CuDNNConvolutionLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+void LPCuDNNConvolutionLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   const Dtype* weight = NULL;
   Dtype* weight_diff = NULL;
