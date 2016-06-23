@@ -2,16 +2,26 @@
 ## Low Precision Caffe. Used internally for several projects at INI.
 
 Notes for installation:
-  * Adjust your paths!  You probably already have a copy of Caffe.  Make sure to use this one - check your .bash_profile or .bashrc file to make sure you are using the correct version.
-  * Ubuntu 16.04: Needs a few fixes.  CuDNN and cmake seem to be incompatible right now, so you'll need to do Makefile.config fixes.  Mine is included for that reason.  Basically gcc and nvcc are currently incompatible, but it's fixable.  Also, the location of the hdf5 header files has changed.  Google around if you get issues.  Overall, this branch should install the same as Caffe.
+  * Adjust your paths!  You probably already have a copy of Caffe.  Make sure to use this one: check your .bash_profile or .bashrc file to make sure you are using the correct version.
+  * Ubuntu 16.04: Needs a few fixes.  CuDNN and cmake seem to be incompatible right now, so you'll need to do Makefile.config fixes.  Basically gcc and nvcc are currently incompatible, but it's fixable.  Also, the location of the hdf5 header files has changed.  Google around if you get issues.  Overall, this branch should install the same as Caffe.  Here's a few important lines from my Makefile.config:
+
+  ```
+  INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial /home/dneil/Dropbox/tools/cudnn/7.5/cuda/include/
+  LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial /home/dneil/Dropbox/tools/cudnn/7.5/cuda/lib64
+
+  # .....
+
+  # Somewhere at the end
+  COMMON_FLAGS += -D_FORCE_INLINES
+  ```
 
 ## Quick at-a-glance features:
   * New low-precision layer types.  Currently, we have the following:
-    * LPInnerProduct - low precision inner product layer.  Rounds weights and optionally biases.  Available for CPU and GPU.
-    * LPConvolution - low precision convolution layer.  Rounds weights and optionally biases.  Available for CPU, GPU, and CuDNN.
-    * LPAct - low precision on activations.  Available for CPU and GPU.
-  * Check out [examples/low_precision](examples/low_precision) for an example network with all of these layers.
-  * There is a new parameter type added: lpfp_param (low-precision fixed-point).  It has three elements: *bd* for how many bits before the decimal, *ad* for how many bits after the decimal, and *round_bias* if the bias should also be rounded.  Here's a prototxt example:
+    * **LPInnerProduct** - low precision inner product layer.  Rounds weights and optionally biases.  Available for CPU and GPU.
+    * **LPConvolution** - low precision convolution layer.  Rounds weights and optionally biases.  Available for CPU, GPU, and CuDNN.
+    * **LPAct** - low precision on activations.  Available for CPU and GPU.
+  * Check out [examples/low_precision](examples/low_precision) for an example network with all of these layers.  There's also a [reduced-precision iPython notebook](examples/low_precision/Examine_LP_Net.ipynb) that you can preview on Github directly.
+  * There is a new parameter type added: lpfp_param (low-precision fixed-point).  It has three elements: **bd** for how many bits before the decimal, **ad** for how many bits after the decimal, and **round_bias** if the bias should also be rounded.  Here's a prototxt example:
 
 ```protobuf
 layer {
@@ -40,9 +50,9 @@ This gives a Q2.2 weight representation.  Don't forget, if you're playing with s
 
 ## How does it work?
 
-Basically, we wrote two new functions, which just do the standard fixed-point quantization: data = clip(round(data*2^f)/2^f, minval, maxval), where we have f bits of representation after the decimal point.  Basically, think of it as a shift, truncating the number, and shifting back.  This ensures that it falls
+Basically, we wrote two new functions, which just do the standard fixed-point quantization: data = clip(round(data*2^f)/2^f, minval, maxval), where we have _f_ bits of representation after the decimal point.  Basically, think of it as a shift, truncating the number, and shifting back.
 
-For CPU:
+Here's the implementation of the rounding function, for CPU:
 ```cpp
 template <>
 void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
