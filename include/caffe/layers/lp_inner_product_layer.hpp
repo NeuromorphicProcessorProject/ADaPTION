@@ -39,12 +39,12 @@ class LPInnerProductLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
+  bool round_bias_;
   int BD_; // Number of bits Before Decimal
   int AD_; // Number of bits After Decimal
   int M_;
   int K_;
   int N_;
-  bool round_bias_;
   bool bias_term_;
   Blob<Dtype> bias_multiplier_;
   bool transpose_;  ///< if true, assume transposed weights

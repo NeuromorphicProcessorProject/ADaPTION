@@ -5,14 +5,15 @@
 
 namespace caffe {
 
-__global__ void sync_conv_groups() { }
+// Prevent redeclaration, added here as a header
+__global__ void sync_conv_groups();
 
 template <typename Dtype>
 void LPCuDNNConvolutionLayer<Dtype>::Forward_gpu(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   caffe_gpu_round_fp(this->blobs_[0]->count(), this->BD_, this->AD_,
-    this->blobs_[0]->cpu_data(), this->blobs_[0+1]->mutable_cpu_data());
-  const Dtype* weight = this->blobs_[0+1]->cpu_data();
+    this->blobs_[0]->gpu_data(), this->blobs_[0+1]->mutable_gpu_data());
+  const Dtype* weight = this->blobs_[0+1]->gpu_data();
   for (int i = 0; i < bottom.size(); ++i) {
     const Dtype* bottom_data = bottom[i]->gpu_data();
     Dtype* top_data = top[i]->mutable_gpu_data();
@@ -34,10 +35,10 @@ void LPCuDNNConvolutionLayer<Dtype>::Forward_gpu(
         const Dtype* bias_data;
         if (this->round_bias_){
           caffe_gpu_round_fp(this->blobs_[2]->count(), this->BD_, this->AD_,
-            this->blobs_[2]->cpu_data(), this->blobs_[2+1]->mutable_cpu_data());
-          bias_data = this->blobs_[2+1]->cpu_data();
+            this->blobs_[2]->gpu_data(), this->blobs_[2+1]->mutable_gpu_data());
+          bias_data = this->blobs_[2+1]->gpu_data();
         } else {
-          bias_data = this->blobs_[2]->cpu_data();
+          bias_data = this->blobs_[2]->gpu_data();
         }
         CUDNN_CHECK(cudnnAddTensor(handle_[g],
               cudnn::dataType<Dtype>::one,
@@ -121,7 +122,7 @@ void LPCuDNNConvolutionLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& to
   }
 }
 
-INSTANTIATE_LAYER_GPU_FUNCS(CuDNNConvolutionLayer);
+INSTANTIATE_LAYER_GPU_FUNCS(LPCuDNNConvolutionLayer);
 
 }  // namespace caffe
 #endif

@@ -58,13 +58,16 @@ shared_ptr<Layer<Dtype> > GetConvolutionLayer(
 #endif
   }
   if (engine == ConvolutionParameter_Engine_CAFFE) {
+    LOG(INFO) << "Using Caffe convolutions.";
     return shared_ptr<Layer<Dtype> >(new ConvolutionLayer<Dtype>(param));
 #ifdef USE_CUDNN
+    LOG(INFO) << "CuDNN defined.";
   } else if (engine == ConvolutionParameter_Engine_CUDNN) {
     if (use_dilation) {
       LOG(FATAL) << "CuDNN doesn't support the dilated convolution at Layer "
                  << param.name();
     }
+    LOG(INFO) << "Using CuDNN convolutions.";
     return shared_ptr<Layer<Dtype> >(new CuDNNConvolutionLayer<Dtype>(param));
 #endif
   } else {
@@ -97,6 +100,7 @@ shared_ptr<Layer<Dtype> > GetLPConvolutionLayer(
 #endif
   }
   if (engine == ConvolutionParameter_Engine_CAFFE) {
+    LOG(INFO) << "Using LPCAFFE convolutions.";
     return shared_ptr<Layer<Dtype> >(new LPConvolutionLayer<Dtype>(param));
 #ifdef USE_CUDNN
   } else if (engine == ConvolutionParameter_Engine_CUDNN) {
@@ -104,6 +108,7 @@ shared_ptr<Layer<Dtype> > GetLPConvolutionLayer(
       LOG(FATAL) << "CuDNN doesn't support the dilated convolution at Layer "
                  << param.name();
     }
+    LOG(INFO) << "Using LPCuDNN convolutions.";
     return shared_ptr<Layer<Dtype> >(new LPCuDNNConvolutionLayer<Dtype>(param));
 #endif
   } else {

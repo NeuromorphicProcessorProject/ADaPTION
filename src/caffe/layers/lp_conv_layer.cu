@@ -8,8 +8,8 @@ template <typename Dtype>
 void LPConvolutionLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   caffe_gpu_round_fp(this->blobs_[0+1]->count(), this->BD_, this->AD_,
-    this->blobs_[0]->cpu_data(), this->blobs_[0+1]->mutable_cpu_data());
-  const Dtype* weight = this->blobs_[0+1]->cpu_data();
+    this->blobs_[0]->gpu_data(), this->blobs_[0+1]->mutable_gpu_data());
+  const Dtype* weight = this->blobs_[0+1]->gpu_data();
   for (int i = 0; i < bottom.size(); ++i) {
     const Dtype* bottom_data = bottom[i]->gpu_data();
     Dtype* top_data = top[i]->mutable_gpu_data();
@@ -20,10 +20,10 @@ void LPConvolutionLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
         const Dtype* bias;
         if (this->round_bias_){
           caffe_gpu_round_fp(this->blobs_[2+1]->count(), this->BD_, this->AD_,
-            this->blobs_[2]->cpu_data(), this->blobs_[2+1]->mutable_cpu_data());
-          bias = this->blobs_[2+1]->cpu_data();
+            this->blobs_[2]->gpu_data(), this->blobs_[2+1]->mutable_gpu_data());
+          bias = this->blobs_[2+1]->gpu_data();
         } else {
-          bias = this->blobs_[2]->cpu_data();
+          bias = this->blobs_[2]->gpu_data();
         }
         this->forward_gpu_bias(top_data + n * this->top_dim_, bias);
       }

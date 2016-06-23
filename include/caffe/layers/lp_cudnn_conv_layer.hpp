@@ -30,7 +30,7 @@ template <typename Dtype>
 class LPCuDNNConvolutionLayer : public LPConvolutionLayer<Dtype> {
  public:
   explicit LPCuDNNConvolutionLayer(const LayerParameter& param)
-      : ConvolutionLayer<Dtype>(param), handles_setup_(false) {}
+      : LPConvolutionLayer<Dtype>(param), handles_setup_(false) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
