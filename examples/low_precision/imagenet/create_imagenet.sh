@@ -2,16 +2,16 @@
 # Create the imagenet lmdb inputs
 # N.B. set the path to the imagenet train + val data dirs
 
-EXAMPLE=examples/imagenet
-DATA=data/ilsvrc12
-TOOLS=build/tools
+EXAMPLE=../../../examples/imagenet
+DATA=../../../data/ilsvrc12
+TOOLS=../../../build/tools
 
-TRAIN_DATA_ROOT=../../../Data/ilsvrc12/train/   # /path/to/imagenet/train/
-VAL_DATA_ROOT=../../../Data/ilsvrc12/val/     # /path/to/imagenet/val/
+TRAIN_DATA_ROOT=../../../data/ILSVRC2015/Data/DET/train/ILSVRC2013_train/   # /path/to/imagenet/train/
+VAL_DATA_ROOT=../../../data/ILSVRC2015/Data/DET/val/     # /path/to/imagenet/val/
 
 # Set RESIZE=true to resize the images to 256x256. Leave as false if images have
 # already been resized using another tool.
-RESIZE=false
+RESIZE=true
 if $RESIZE; then
   RESIZE_HEIGHT=256
   RESIZE_WIDTH=256

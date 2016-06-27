@@ -3,6 +3,7 @@
 #include <boost/function.hpp>
 #include <string>
 #include <vector>
+#include <ctime>
 
 #include "caffe/net.hpp"
 #include "caffe/solver_factory.hpp"
@@ -117,6 +118,13 @@ class Solver {
   vector<Callback*> callbacks_;
   vector<Dtype> losses_;
   Dtype smoothed_loss_;
+  long int t_old;
+  long int t_new;
+  float t_iter;
+  float ETA;
+  float mETA;
+  float counter;
+  // float nullptr;
 
   // The root solver that holds root nets (actually containing shared layers)
   // in data parallelism

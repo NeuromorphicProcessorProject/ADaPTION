@@ -98,7 +98,7 @@ message NetParameter {
 // NOTE
 // Update the next available ID when you add a new SolverParameter field.
 //
-// SolverParameter next available ID: 41 (last added: type)
+// SolverParameter next available ID: 42 (last added: type)
 message SolverParameter {
   //////////////////////////////////////////////////////////////////////////////
   // Specifying the train and test networks
@@ -208,6 +208,12 @@ message SolverParameter {
   // random number generator -- useful for reproducible results. Otherwise,
   // (and by default) initialize using a seed derived from the system clock.
   optional int64 random_seed = 20 [default = -1];
+
+  // To controll if the training time should be estimated and printed
+  // 0 = don't print anything
+  // 1 = print Mean ETA
+  // 2 = print Mean ETA + TimePerIteration
+  optional int32 estimate = 41 [default = 0];
 
   // type of the solver
   optional string type = 40 [default = "SGD"];

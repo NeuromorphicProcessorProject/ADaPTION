@@ -2,8 +2,8 @@
 # This script converts the mnist data into lmdb/leveldb format,
 # depending on the value assigned to $BACKEND.
 
-CAFFE_DIR=../..
-EXAMPLE=${CAFFE_DIR}/examples/mnist
+CAFFE_DIR=../../..
+EXAMPLE=${CAFFE_DIR}/examples/low_precision/mnist
 DATA=${CAFFE_DIR}/data/mnist
 BUILD=${CAFFE_DIR}/build/examples/mnist
 

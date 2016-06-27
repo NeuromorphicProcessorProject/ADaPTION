@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 #include "caffe/solver.hpp"
 #include "caffe/util/format.hpp"
@@ -190,6 +191,7 @@ void Solver<Dtype>::InitTestNets() {
   }
 }
 
+
 template <typename Dtype>
 void Solver<Dtype>::Step(int iters) {
   const int start_iter = iter_;
@@ -227,6 +229,44 @@ void Solver<Dtype>::Step(int iters) {
     if (display) {
       LOG_IF(INFO, Caffe::root_solver()) << "Iteration " << iter_
           << ", loss = " << smoothed_loss_;
+      // get current time in seconds
+      if (param_.estimate() != 0){
+        std::time_t t_new = std::time(NULL); 
+        if (counter >= 1){
+          // Calculate time difference between n iterations. n = param_.display() (normally between 20 & 100)
+          t_iter = (float) (t_new - t_old) / param_.display();
+          ETA = (float) t_iter * (param_.max_iter() - iter_);
+          // Calculate/Update mean of ETA over 
+          mETA += ETA;
+          }
+        if (param_.estimate() == 2){  
+          LOG_IF(INFO, Caffe::root_solver()) << "     Time per Iteration " << t_iter << " sec";
+        }
+        if (ETA > 120 && ETA < 3600){
+          if (param_.estimate() == 2){
+          LOG_IF(INFO, Caffe::root_solver()) << "     ETA = " << ETA / 60 << " min";
+          LOG_IF(INFO, Caffe::root_solver()) << "     Iteration : " << iter_ << "/ " << param_.max_iter();
+          }
+            LOG_IF(INFO, Caffe::root_solver()) << "     Mean ETA = " << (mETA / counter) / 60 << " min";
+        }
+        else if (ETA >= 3600){
+          if (param_.estimate() == 2){
+          LOG_IF(INFO, Caffe::root_solver()) << "     ETA = " << ETA / 3600 << " h";
+          LOG_IF(INFO, Caffe::root_solver()) << "     Iteration : " << iter_ << "/ " << param_.max_iter();
+          }
+          LOG_IF(INFO, Caffe::root_solver()) << "     Mean ETA = " << (mETA / counter) / 3600 << " h";
+        }
+        else{
+          if (param_.estimate() == 2){
+          LOG_IF(INFO, Caffe::root_solver()) << "     ETA = " << ETA << " sec";
+          LOG_IF(INFO, Caffe::root_solver()) << "     Iteration : " << iter_ << "/ " << param_.max_iter();
+          }
+          LOG_IF(INFO, Caffe::root_solver()) << "     Mean ETA = " << mETA / counter << " sec";         
+        }
+
+        counter ++;
+        t_old = t_new;
+      }
       const vector<Blob<Dtype>*>& result = net_->output_blobs();
       int score_index = 0;
       for (int j = 0; j < result.size(); ++j) {
@@ -241,7 +281,7 @@ void Solver<Dtype>::Step(int iters) {
             loss_msg_stream << " (* " << loss_weight
                             << " = " << loss_weight * result_vec[k] << " loss)";
           }
-          LOG_IF(INFO, Caffe::root_solver()) << "    Train net output #"
+          LOG_IF(INFO, Caffe::root_solver()) << "     Train net output #"
               << score_index++ << ": " << output_name << " = "
               << result_vec[k] << loss_msg_stream.str();
         }
