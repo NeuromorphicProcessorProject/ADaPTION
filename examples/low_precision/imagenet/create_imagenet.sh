@@ -1,13 +1,15 @@
 #!/usr/bin/env sh
 # Create the imagenet lmdb inputs
 # N.B. set the path to the imagenet train + val data dirs
+DATA_ROOT=/media/moritz/Data/ILSVRC2015/Data/CLS-LOC
+REPO=/home/moritz/Repositories/caffe_lp
 
-EXAMPLE=../../../examples/imagenet
-DATA=../../../data/ilsvrc12
-TOOLS=../../../build/tools
+LMDB=$DATA_ROOT
+DATA=$REPO/data/ilsvrc12
+TOOLS=$REPO/build/tools
 
-TRAIN_DATA_ROOT=../../../data/ILSVRC2015/Data/DET/train/ILSVRC2013_train/   # /path/to/imagenet/train/
-VAL_DATA_ROOT=../../../data/ILSVRC2015/Data/DET/val/     # /path/to/imagenet/val/
+TRAIN_DATA_ROOT=$DATA_ROOT/train/ # /path/to/imagenet/train/
+VAL_DATA_ROOT=$DATA_ROOT/val/    # /path/to/imagenet/val/
 
 # Set RESIZE=true to resize the images to 256x256. Leave as false if images have
 # already been resized using another tool.
@@ -42,7 +44,7 @@ GLOG_logtostderr=1 $TOOLS/convert_imageset \
     --shuffle \
     $TRAIN_DATA_ROOT \
     $DATA/train.txt \
-    $EXAMPLE/ilsvrc12_train_lmdb
+    $LMDB/ilsvrc12_train_lmdb
 
 echo "Creating val lmdb..."
 
@@ -52,6 +54,6 @@ GLOG_logtostderr=1 $TOOLS/convert_imageset \
     --shuffle \
     $VAL_DATA_ROOT \
     $DATA/val.txt \
-    $EXAMPLE/ilsvrc12_val_lmdb
+    $LMDB/ilsvrc12_val_lmdb
 
 echo "Done."

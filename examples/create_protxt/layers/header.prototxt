@@ -1,0 +1,41 @@
+name: "VGG16"
+layer {
+  name: "imagenet"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mirror: true
+    crop_size: 227
+    mean_file: "../../../data/ILSVR2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+
+  data_param {
+    source: "../../../data/ILSVR2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
+    batch_size: 256
+    backend: LMDB
+  }
+}
+layer {
+  name: "imagenet"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 227
+    mean_file: "../../../data/ILSVR2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+
+  data_param {
+    source: "../../../data/ILSVR2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 50
+    backend: LMDB
+  }
+}

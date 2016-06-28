@@ -1,9 +1,4 @@
 name: "VGG_ILSVRC_16_layers"
-# input: "data"
-# input_dim: 10
-# input_dim: 3
-# input_dim: 224
-# input_dim: 224
 layer {
   name: "imagenet"
   type: "Data"
@@ -15,11 +10,11 @@ layer {
   transform_param {
     mirror: true
     crop_size: 227
-    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "../../../data/ILSVR2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
 
   data_param {
-    source: "examples/imagenet/ilsvrc12_train_lmdb"
+    source: "../../../data/ILSVR2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
     batch_size: 256
     backend: LMDB
   }
@@ -35,17 +30,15 @@ layer {
   transform_param {
     mirror: false
     crop_size: 227
-    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "../../../data/ILSVR2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
 
   data_param {
-    source: "data/imagenet/ilsvrc12_val_lmdb"
+    source: "../../../data/ILSVR2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
     batch_size: 50
     backend: LMDB
   }
 }
-
-
 layers {
   name: "conv1_1"
   bottom: "data"
@@ -721,14 +714,6 @@ layers {
     }
   }
 }
-#
-# layers {
-#  bottom: "fc8"
-#  top: "prob"
-#  name: "prob"
-#  type: SOFTMAX
-# }
-#
 layer {
   name: "accuracy"
   type: "Accuracy"

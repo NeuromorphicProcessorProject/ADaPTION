@@ -1,0 +1,31 @@
+# The train/test net protocol buffer definition
+net: "./train_caffenet.prototxt"
+# test_iter specifies how many forward passes the test should carry out.
+# In the case of ImageNet, we have test batch size 50 and 12000 test iterations,
+# covering the full 1,200,000 testing images.
+test_iter: 1000 
+# Carry out testing every 500 training iterations.
+test_interval: 1000
+# All parameters are from the cited paper above
+base_lr: 0.001
+momentum: 0.9
+momentum2: 0.999
+# since Adam dynamically changes the learning rate, we set the base learning
+# rate to a fixed value
+lr_policy: "fixed"
+# Display every 100 iterations
+display: 20
+# The maximum number of iterations NumberOfEpochs * NumberOfImages / Batchsize
+max_iter: 281250
+# snapshot intermediate results
+snapshot: 10000
+snapshot_prefix: "snapshots/lp_VGG_train"
+# solver mode: CPU or GPU
+type: "Adam"
+solver_mode: GPU
+# In order to know before finishing training how long the training will take the estimate parameter can be used
+# 0: No output
+# 1: Mean of Estimated Training Time over iterations
+# 2: Mean + Single estimate + Time per iteration + Iteration/Max_Iteration
+# Default is 0
+# estimate: 2
