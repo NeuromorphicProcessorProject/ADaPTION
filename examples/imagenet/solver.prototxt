@@ -19,7 +19,7 @@ display: 20
 max_iter: 281250
 # snapshot intermediate results
 snapshot: 10000
-snapshot_prefix: "snapshots/lp_VGG_train"
+snapshot_prefix: "../../data/ILSVRC2015/Snapshots/caffe_net/caffenet_train"
 # solver mode: CPU or GPU
 type: "Adam"
 solver_mode: GPU
