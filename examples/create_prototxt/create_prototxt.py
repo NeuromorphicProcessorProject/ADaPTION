@@ -37,7 +37,9 @@ for l in net_descriptor:
             layer.name += '_lp'
             layer.type = 'LPConvolution'
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
+                              '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                              '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                               '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
                               '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    pad: %s\n' % (layer.pad), '    kernel_size: %s\n' % (layer.kernel),
                               '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
@@ -46,7 +48,7 @@ for l in net_descriptor:
                               '}\n']
         else:
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                               '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    pad: %s\n' % (layer.pad), '    kernel_size: %s\n' % (layer.kernel),
                               '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
                               '   bias_filler {\n', '    type: constant\n', '   }\n',
@@ -63,12 +65,12 @@ for l in net_descriptor:
             layer.name += '_lp'
             layer.type = 'LPAct'
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                               '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
                               '}\n']
         else:
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                               '}\n']
         layer_base.writelines(lines_to_write)
 
@@ -77,7 +79,7 @@ for l in net_descriptor:
         layer.name = 'relu'
         layer.type = 'ReLU'
         lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name_old), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s"\n' % (layer.name_old), '    type "%s"\n' % (layer.type),
+                          '    top: "%s"\n' % (layer.name_old), '    type: "%s"\n' % (layer.type),
                           '}\n']
         layer_base.writelines(lines_to_write)
     if 'P' in l:
@@ -88,7 +90,7 @@ for l in net_descriptor:
         layer.pool_size = l.partition("P")[0]
         layer.stride = l.partition("P")[2]
         lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s"\n' % (layer.name), '    type "%s"\n' % (layer.type),
+                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
                           '  pooling_param {\n', '    pool: %s\n' % (layer.pool_type), '    kernel_size: %s\n' % (layer.pool_size), '    stride: %s\n' % (layer.stride),
                           '  }\n',
                           '}\n']
@@ -103,7 +105,7 @@ for l in net_descriptor:
             layer.name += '_lp'
             layer.type = 'LPInnerProduct'
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                               '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
                               '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
                               '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '  }\n',
@@ -112,7 +114,7 @@ for l in net_descriptor:
                               '}\n']
         else:
             lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                               '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
                               '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
                               '   bias_filler {\n', '    type: constant\n', '   }\n',
@@ -126,7 +128,7 @@ for l in net_descriptor:
         layer.type = 'Dropout'
         layer.dropout_rate = l.partition("D")[2]
         lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type "%s"\n' % (layer.type),
+                          '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
                           '  dropout_param {\n', '    dropout_rate: 0.%s\n' % (layer.dropout_rate), '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
@@ -136,7 +138,7 @@ for l in net_descriptor:
         layer.name = 'accuracy'
         layer.type = 'Accuracy'
         lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old), '    bottom: "label"\n',
-                          '    top: "%s"\n' % (layer.name), '    type "%s"\n' % (layer.type),
+                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
                           '  include {\n', '    phase: TEST\n', '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
@@ -146,7 +148,7 @@ for l in net_descriptor:
         layer.name = 'loss'
         layer.type = 'SoftmaxWithLoss'
         lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old), '    bottom: "label"\n',
-                          '    top: "%s"\n' % (layer.name), '    type "%s"\n' % (layer.type),
+                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
                           '}\n']
         layer_base.writelines(lines_to_write)
 

@@ -28,4 +28,4 @@ solver_mode: GPU
 # 1: Mean of Estimated Training Time over iterations
 # 2: Mean + Single estimate + Time per iteration + Iteration/Max_Iteration
 # Default is 0
-# estimate: 2
+estimate: 2
