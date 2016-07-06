@@ -2,7 +2,11 @@ import collections as c
 
 base_dir = './'
 layer_dir = base_dir + 'layers/'
-filename = 'test_cnn.prototxt'
+lp = False  # use lp version of the layers
+# lp = True  # use lp version of the layers
+filename = 'VGG16.prototxt'
+if lp:
+    filename = 'lp_' + filename
 # --BN-48C8-4P2-BN-24C5-2P2-BN-FC10-BN
 net_descriptor = ['64C3E1', 'A', 'ReLU', '64C3E1', 'A', 'ReLU', '2P2',
                   '128C3E1', 'A', 'ReLU', '128C3E1', 'A', 'ReLU', '2P2',
@@ -13,7 +17,13 @@ net_descriptor = ['64C3E1', 'A', 'ReLU', '64C3E1', 'A', 'ReLU', '2P2',
                   '4096F', 'A', 'ReLU', 'D5',
                   '1000F',
                   'Accuracy', 'loss']
-lp = True  # use lp version of the layers
+# Since in the high precision case we do not neet to round the activation function
+# explecitely we have to remove the 'A' entry in the network description
+if not lp:
+    for i, j in enumerate(net_descriptor):
+        if j == 'A':
+            net_descriptor.pop(i)
+
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
 layer.bd = 3  # Set bit precision of Conv and ReLUs
@@ -21,6 +31,10 @@ layer.ad = 4
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
+
+print 'Generating ' + filename
+if lp:
+    print 'With ' + str(layer.bd + layer.ad + 1) + ' bits numerical precision'
 for l in net_descriptor:
     if layer.counter < 2:
         layer_base = open(layer_dir + 'layer_base.prototxt', 'wr')
@@ -32,26 +46,26 @@ for l in net_descriptor:
         layer.type = 'Convolution'
         layer.output = l.partition("C")[0]
         layer.kernel = l.partition("C")[2].partition("E")[0]
-        layer.pad = l.partition("E")[2]
+        layer.stride = l.partition("E")[2]
         if lp:
             layer.name += '_lp'
             layer.type = 'LPConvolution'
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
                               '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                               '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                              '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
-                              '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    pad: %s\n' % (layer.pad), '    kernel_size: %s\n' % (layer.kernel),
-                              '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
-                              '   bias_filler {\n', '    type: constant\n', '   }\n',
+                              '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                              '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                              '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.1\n', '   }\n',
+                              '    bias_filler {\n', '      type: "constant"\n', '      value: 0\n', '   }\n',
                               '  }\n',
                               '}\n']
         else:
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
-                              '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    pad: %s\n' % (layer.pad), '    kernel_size: %s\n' % (layer.kernel),
-                              '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
-                              '   bias_filler {\n', '    type: constant\n', '   }\n',
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                              '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                              '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.1\n', '   }\n',
+                              '    bias_filler {\n', '      type: "constant"\n', '      value: 0\n', '   }\n',
                               '  }\n',
                               '}\n']
 
@@ -64,33 +78,37 @@ for l in net_descriptor:
         if lp:
             layer.name += '_lp'
             layer.type = 'LPAct'
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
                               '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
                               '}\n']
-        else:
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
-                              '}\n']
+
         layer_base.writelines(lines_to_write)
 
     if l == 'ReLU':
         # print 'ReLU'
-        layer.name = 'relu'
-        layer.type = 'ReLU'
-        lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name_old), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s"\n' % (layer.name_old), '    type: "%s"\n' % (layer.type),
-                          '}\n']
+        if lp:
+            layer.name = 'relu'
+            layer.type = 'ReLU'
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s"\n' % (layer.name_old),
+                              '}\n']
+        else:
+            layer.name = 'relu'
+            layer.type = 'ReLU'
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s"\n' % (layer.name_old),
+                              '}\n']
         layer_base.writelines(lines_to_write)
     if 'P' in l:
         # print 'Pooling'
-        layer.name = 'Pool_%i' % (layer.counter)
+        layer.name = 'pool'
         layer.type = 'Pooling'
         layer.pool_type = 'MAX'
         layer.pool_size = l.partition("P")[0]
         layer.stride = l.partition("P")[2]
-        lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
+        lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                          '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
                           '  pooling_param {\n', '    pool: %s\n' % (layer.pool_type), '    kernel_size: %s\n' % (layer.pool_size), '    stride: %s\n' % (layer.stride),
                           '  }\n',
                           '}\n']
@@ -104,20 +122,24 @@ for l in net_descriptor:
         if lp:
             layer.name += '_lp'
             layer.type = 'LPInnerProduct'
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
-                              '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                              '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                              '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                              '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
                               '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                              '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '  }\n',
-                              '   bias_filler {\n', '    type: constant\n', '   }\n',
+                              '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.1\n', '  }\n',
+                              '    bias_filler {\n', '      type: "constant"\n', '      value: 1\n', '   }\n',
                               '  }\n',
                               '}\n']
         else:
-            lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                              '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
+            lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                              '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                              '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                              '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                               '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                              '   weight_filler {\n', '    type: "gaussian"\n', '    std: 0.1\n', '   }\n',
-                              '   bias_filler {\n', '    type: constant\n', '   }\n',
+                              '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.1\n', '   }\n',
+                              '    bias_filler {\n', '      type: "constant"\n', '      value: 1\n', '   }\n',
                               '  }\n',
                               '}\n']
 
@@ -127,9 +149,9 @@ for l in net_descriptor:
         layer.name = 'drop'
         layer.type = 'Dropout'
         layer.dropout_rate = l.partition("D")[2]
-        lines_to_write = ['layer {\n', '    name: "%s_%i"\n' % (layer.name, layer.counter), '    bottom: "%s"\n' % (layer.name_old),
-                          '    top: "%s_%i"\n' % (layer.name, layer.counter), '    type: "%s"\n' % (layer.type),
-                          '  dropout_param {\n', '    dropout_rate: 0.%s\n' % (layer.dropout_rate), '  }\n',
+        lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                          '  bottom: "%s"\n' % (layer.name_old), '  top: "%s"\n' % (layer.name_old),
+                          '  dropout_param {\n', '    dropout_ratio: 0.%s\n' % (layer.dropout_rate), '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
 
@@ -137,8 +159,8 @@ for l in net_descriptor:
         # print 'Accuracy'
         layer.name = 'accuracy'
         layer.type = 'Accuracy'
-        lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old), '    bottom: "label"\n',
-                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
+        lines_to_write = ['layer {\n', '  name: "%s"\n' % (layer.name), '  type: "%s"\n' % (layer.type), '  bottom: "%s"\n' % (layer.name_old),
+                          '  bottom: "label"\n', '  top: "%s"\n' % (layer.name),
                           '  include {\n', '    phase: TEST\n', '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
@@ -147,13 +169,21 @@ for l in net_descriptor:
         # print 'Loss'
         layer.name = 'loss'
         layer.type = 'SoftmaxWithLoss'
-        lines_to_write = ['layer {\n', '    name: "%s"\n' % (layer.name), '    bottom: "%s"\n' % (layer.name_old), '    bottom: "label"\n',
-                          '    top: "%s"\n' % (layer.name), '    type: "%s"\n' % (layer.type),
+        lines_to_write = ['layer {\n', '  name: "%s"\n' % (layer.name), '  type: "%s"\n' % (layer.type), '  bottom: "%s"\n' % (layer.name_old),
+                          '  bottom: "label"\n', '  top: "%s"\n' % (layer.name),
                           '}\n']
         layer_base.writelines(lines_to_write)
-
-    if l != 'ReLU' or l != 'D5' or l != 'Accuracy' or l != 'loss':
-        layer.name_old = layer.name + str(layer.counter)
+    update = True
+    if l == "ReLU":
+        update = False
+    if l == "D5":
+        update = False
+    if l == "Accuracy":
+        update = False
+    if l == "loss":
+        update = False
+    if update:
+        layer.name_old = layer.name + '_' + str(layer.counter)
         layer.counter += 1
 
     layer_base.close()

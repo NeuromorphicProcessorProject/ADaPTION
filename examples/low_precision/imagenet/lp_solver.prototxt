@@ -1,5 +1,7 @@
 # The train/test net protocol buffer definition
-net: "../../../examples/low_precision/imagenet/lp_train_VGG.prototxt"
+# net: "../../../examples/low_precision/imagenet/lp_train_VGG.prototxt"
+# net: "../../../examples/low_precision/imagenet/lp_VGG16.prototxt"
+net: "../../../examples/low_precision/imagenet/VGG16.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of ImageNet, we have test batch size 50 and 12000 test iterations,
 # covering the full 1,200,000 testing images.
@@ -18,11 +20,13 @@ display: 100
 # The maximum number of iterations NumberOfEpochs * NumberOfImages / Batchsize
 # Batchsize of 256
 # max_iter: 281250
+# Batchsize of 64
+# max_iter: 1125000 
 # Batchsize of 12
 max_iter: 6000000
 # snapshot intermediate results
 snapshot: 100000
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/lp_VGG_3_4"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/VGG"
 # solver mode: CPU or GPU
 type: "Adam"
 solver_mode: GPU
