@@ -13,6 +13,8 @@ After setting everything concerning classic caffe up (see below), we can use low
 To create prototxt files describing networks with a given bit-precision see examples/create_prototxt/create_prototxt.py. 
 Training is started basically the same way as normal caffe.
 Change your lp_ or hp_solver to load the correct network model (located in models/), uses the right GPU ID, correct Batchsize (see table below for an overview) and correct snapshot name (example in all solver.protoxt). Please follow naming conventions as shown in all files and examples. Solvers are located in solver/.
+ATTENTION: You have to change the batchsize in your network description (e.g. models/lp_VGG16.prototxt) !!!!!!
+create_protoxt.py will initialise the batchsize to 12 which should run on al SOA GPUs
 Execute ./train_net.sh (CHECK IF SOLVER SPECIFIED IN train_net.sh IS THE DESIRED ONE!)
 In order to save the temporal evolution of loss and test accuracy use the follwing command to start training
 ./train_net.sh 2> log/NetworkName_AD_BD_GPUName.log such as ./train_net.sh 2> log/LP_VGG_3_4_1080.log
