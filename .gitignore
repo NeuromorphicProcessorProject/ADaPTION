@@ -93,3 +93,7 @@ LOCK
 LOG*
 CURRENT
 MANIFEST-*
+
+# Log files from experiments
+*.log
+*.LOG

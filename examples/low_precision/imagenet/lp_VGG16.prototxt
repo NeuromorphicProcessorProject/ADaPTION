@@ -1,4 +1,4 @@
-name: "VGG16"
+name: "LP_VGG16"
 layer {
   name: "data"
   type: "Data"

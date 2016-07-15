@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
+CAFFE_DIR=../../..
 
-./build/tools/caffe train \
-    --solver=models/bvlc_reference_caffenet/solver.prototxt \
-    --snapshot=models/bvlc_reference_caffenet/caffenet_train_10000.solverstate.h5
+$CAFFE_DIR/build/tools/caffe train \
+    --solver=$CAFFE_DIR/examples/low_precision/imagenet/lp_solver_980.prototxt \
+    --snapshot=$CAFFE_DIR/data/ILSVRC2015/Snapshots/VGG_iter_1045308.solverstate
