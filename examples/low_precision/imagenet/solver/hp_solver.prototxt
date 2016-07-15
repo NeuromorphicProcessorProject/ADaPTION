@@ -1,7 +1,5 @@
 # The train/test net protocol buffer definition
-# net: "../../../examples/low_precision/imagenet/lp_train_VGG.prototxt"
-net: "../../../examples/low_precision/imagenet/lp_VGG16.prototxt"
-# net: "../../../examples/low_precision/imagenet/VGG16.prototxt"
+net: "../../../examples/low_precision/imagenet/models/VGG16.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of ImageNet, we have test batch size 50 and 12000 test iterations,
 # covering the full 1,200,000 testing images.
@@ -17,17 +15,21 @@ momentum2: 0.999
 lr_policy: "fixed"
 # Display every 100 iterations
 display: 100
-# The maximum number of iterations NumberOfEpochs * NumberOfImages / Batchsize
-# Batchsize of 30
-max_iter: 2400000 
-# Batchsize of 64
-# max_iter: 1125000 
-# Batchsize of 12
-# max_iter: 6000000
-# snapshot intermediate results
+# The maximum number of iterations:
+# 		NumberOfEpochs * NumberOfImages / Batchsize
+# 	NVIDIA GTX 980 Ti (6 GB ram)
+# 	Batchsize of 12
+max_iter: 6000000
+# 	NVIDIA Titan X (12 GB ram)
+# 	Batchsize of 76
+# max_iter: 947368
+# 	NVIDIA GTX 1080 
+# 	Batchsize of 44
+# max_iter: 1636363
+# Snapshot intermediate results
 snapshot: 100000
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
-# snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_980"
+# Specify name of GPU and if you use special hyperparameters
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/VGG_980"
 # solver mode: CPU or GPU
 type: "Adam"
 solver_mode: GPU

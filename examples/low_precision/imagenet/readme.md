@@ -6,6 +6,62 @@ include_in_docs: true
 priority: 1
 ---
 
+Low precision training
+================
+
+After setting everything concerning classic caffe up (see below), we can use low precision training, where the weights, as well as the activations are rounded to an earlier specified bit-precision. 
+To create prototxt files describing networks with a given bit-precision see examples/create_prototxt/create_prototxt.py. 
+Training is started basically the same way as normal caffe.
+Change your lp_ or hp_solver to load the correct network model (located in models/), uses the right GPU ID, correct Batchsize (see table below for an overview) and correct snapshot name (example in all solver.protoxt). Please follow naming conventions as shown in all files and examples. Solvers are located in solver/.
+Execute ./train_net.sh (CHECK IF SOLVER SPECIFIED IN train_net.sh IS THE DESIRED ONE!)
+In order to save the temporal evolution of loss and test accuracy use the follwing command to start training
+./train_net.sh 2> log/NetworkName_AD_BD_GPUName.log such as ./train_net.sh 2> log/LP_VGG_3_4_1080.log
+
+Location of the training data:
+Training images are located on DeepLearningData/ILSVRC2015/
+In order to run all scripts without error pls add a symbolic to 
+
+If you are in the caffe home directory
+cd data/
+sudo ln -s /media/USERNAME/DeepLearningData/ILSVRC2015/ .
+
+All scripts include relatives path to find the data.
+
+Happy Training/Waiting 
+
+
+
+
+Table of time estimate on different GPUs with different Batchsizes
+LOW-PRECISION ESTIMATE
+GPU         Batchsize   # Iteration     ETA     Time/Iteration
+==============================================================
+GTX 980 Ti      12          6 x e6      550 h       0.3 s
+..............................................................
+GTX 1080        12          6 x e6      325 h       0.2 s
+                28          2.5 x e6    285 h       0.2 s
+..............................................................
+Titan X         12          6 x e6      410 h       0.2 s
+                28          2.5 x e6    378 h       0.5 s
+                44          1.6 x e6    372 h       0.8 s
+                50          1.4 x e6    372 h       0.9 s
+
+HIGH-PRECISION ESTIMATE
+GPU         Batchsize   # Iteration     ETA     Time/Iteration
+==============================================================
+GTX 980 Ti      12          6 x e6      433 h       ???
+..............................................................
+GTX 1080        12          6 x e6      280 h       0.16 s
+                28          2.5 x e6    270 h       0.4 s
+                44          1.6 x e6    267 h       0.6 s
+..............................................................
+Titan X         12          6 x e6      350 h       0.2 s
+                28          2.5 x e6    335 h       0.5 s
+                44          1.6 x e6    335 h       0.8 s
+                64          1.2 x e6    335 h       1.0 s
+                76          900 k       333 h       1.3 s
+
+
 Brewing ImageNet
 ================
 
