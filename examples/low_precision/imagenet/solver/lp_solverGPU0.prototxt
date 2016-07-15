@@ -1,7 +1,8 @@
 # ======== NETWORK ========
 # The train/test net protocol buffer definition
 # net: "../../../examples/low_precision/imagenet/models/lp_train_VGG.prototxt"
-net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
+# net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
+net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
@@ -36,24 +37,23 @@ estimate: 2
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-# max_iter: 6000000
+max_iter: 6000000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 50
 # max_iter: 1440000
 # 	NVIDIA GTX 1080 
 # 	Batchsize of 28
-max_iter: 2571428
+# max_iter: 2571428
 #
 # ======== SNAPSHOT ========
 # snapshot intermediate results
 snapshot: 100000
 # Specify your GPU name & bit precision, as well as hyperparameters
-# snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_980"
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
+# snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
 #
 # ======== GPU SETTINGS ========
 # Solver mode: CPU or GPU
 solver_mode: GPU
 # In multi GPU setup CHECK the GPU ID
 device_id: 0
-
