@@ -1,3 +1,58 @@
+name: "VGG16"
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mirror: true
+    crop_size: 227
+    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+# mean pixel / channel-wise mean instead of mean image
+#  transform_param {
+#    crop_size: 227
+#    mean_value: 104
+#    mean_value: 117
+#    mean_value: 123
+#    mirror: true
+#  }
+  data_param {
+    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
+    batch_size: 12
+    backend: LMDB
+  }
+}
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 227
+    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+# mean pixel / channel-wise mean instead of mean image
+#  transform_param {
+#    crop_size: 227
+#    mean_value: 104
+#    mean_value: 117
+#    mean_value: 123
+#    mirror: false
+#  }
+  data_param {
+    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 12
+    backend: LMDB
+  }
+}
 layer {
   name: "conv_1"
   type: "Convolution"
@@ -8,7 +63,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -32,7 +88,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -67,7 +124,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -91,7 +149,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -126,7 +185,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -150,7 +210,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -174,7 +235,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -209,7 +271,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -233,7 +296,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -257,7 +321,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -292,7 +357,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -316,7 +382,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -340,7 +407,8 @@ layer {
     stride: 1
     kernel_size: 3
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -381,7 +449,8 @@ layer {
   inner_product_param {
     num_output: 4096
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -420,7 +489,8 @@ layer {
   inner_product_param {
     num_output: 4096
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"
@@ -459,7 +529,8 @@ layer {
   inner_product_param {
     num_output: 1000
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.01
    }
     bias_filler {
       type: "constant"

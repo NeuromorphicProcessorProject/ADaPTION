@@ -2,21 +2,24 @@
 # The train/test net protocol buffer definition
 # net: "../../../examples/low_precision/imagenet/models/lp_train_VGG.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
-net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
+# net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
+net: "../../../examples/low_precision/imagenet/models/VGG16_hp_xavier.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
-# In the case of ImageNet, we have test batch size 50 and 12000 test iterations,
+# In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
 # covering the full 1,200,000 testing images.
-test_iter: 1000 
+test_iter: 42857 
+# test_iter: 18750
 # Carry out testing every 500 training iterations.
 test_interval: 1000
 #
 # ======== HYPERPARAMETERS ========
 # All parameters are from the cited paper above
-base_lr: 0.001
+base_lr: 0.01
 momentum: 0.9
 momentum2: 0.999
+delta: 0.00000001
 type: "Adam"
 # since Adam dynamically changes the learning rate, we set the base learning
 # rate to a fixed value
@@ -37,20 +40,22 @@ estimate: 2
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-max_iter: 6000000
+# max_iter: 6000000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 50
 # max_iter: 1440000
-# 	NVIDIA GTX 1080 
+# 	NVIDIA GTX 1080 (8 GB ram) 
 # 	Batchsize of 28
-# max_iter: 2571428
+max_iter: 2571428
+# max_iter: 1125000
 #
 # ======== SNAPSHOT ========
 # snapshot intermediate results
 snapshot: 100000
 # Specify your GPU name & bit precision, as well as hyperparameters
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
+# snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/VGG16_hp_xavier_1080_test"
 #
 # ======== GPU SETTINGS ========
 # Solver mode: CPU or GPU
