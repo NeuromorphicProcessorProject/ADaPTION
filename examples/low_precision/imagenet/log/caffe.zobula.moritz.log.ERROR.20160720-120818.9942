@@ -1,0 +1,4 @@
+Log file created at: 2016/07/20 12:08:18
+Running on machine: zobula
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+F0720 12:08:18.950273  9942 syncedmem.cpp:56] Check failed: error == cudaSuccess (2 vs. 0)  out of memory

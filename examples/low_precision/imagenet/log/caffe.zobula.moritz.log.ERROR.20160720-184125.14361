@@ -1,0 +1,4 @@
+Log file created at: 2016/07/20 18:41:25
+Running on machine: zobula
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+F0720 18:41:25.843235 14361 io.cpp:36] Check failed: fd != -1 (-1 vs. -1) File not found: ../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt

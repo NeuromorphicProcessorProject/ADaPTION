@@ -1,0 +1,5 @@
+Log file created at: 2016/07/21 14:32:44
+Running on machine: zobula
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+F0721 14:32:44.253751 19820 io.cpp:54] Check failed: fd != -1 (-1 vs. -1) File not found: ../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto
+F0721 14:32:44.254379 19827 db_lmdb.hpp:15] Check failed: mdb_status == 0 (2 vs. 0) No such file or directory

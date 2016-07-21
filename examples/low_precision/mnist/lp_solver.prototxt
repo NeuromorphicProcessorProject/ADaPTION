@@ -1,9 +1,9 @@
 # The train/test net protocol buffer definition
-net: "./lp_train_test.prototxt"
+net: "./VGG16_xavier.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of MNIST, we have test batch size 100 and 100 test iterations,
 # covering the full 10,000 testing images.
-test_iter: 100
+test_iter: 1250
 # Carry out testing every 500 training iterations.
 test_interval: 500
 # All parameters are from the cited paper above
@@ -14,15 +14,16 @@ momentum2: 0.999
 # rate to a fixed value
 lr_policy: "fixed"
 # Display every 100 iterations
-display: 500
+display: 100
 # The maximum number of iterations
-max_iter: 10000
+max_iter: 37500
 # snapshot intermediate results
-snapshot: 5000
-snapshot_prefix: "snapshots/lp_lenet"
+snapshot: 1000
+snapshot_prefix: "snapshots/VGG16_xavier"
 # solver mode: CPU or GPU
 type: "Adam"
 solver_mode: GPU
+device_id: 1
 # In order to know before finishing training how long the training will take the estimate parameter can be used
 # 0: No output
 # 1: Mean of Estimated Training Time over iterations

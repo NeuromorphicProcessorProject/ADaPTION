@@ -3,37 +3,37 @@
 # net: "../../../examples/low_precision/imagenet/models/lp_train_VGG.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
-net: "../../../examples/low_precision/imagenet/models/VGG16_hp_xavier.prototxt"
+# net: "../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt"
+net: "../../../examples/low_precision/imagenet/models/train_val_test.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
-# covering the full 1,200,000 testing images.
-test_iter: 42857 
-# test_iter: 18750
+# covering the full 100,000 testing images.
+# test_iter: 42857 
+test_iter: 1000
 # Carry out testing every 500 training iterations.
 test_interval: 1000
 #
 # ======== HYPERPARAMETERS ========
 # All parameters are from the cited paper above
-base_lr: 0.01
+base_lr: 0.0001
 momentum: 0.9
 momentum2: 0.999
-delta: 0.00000001
-type: "Adam"
 # since Adam dynamically changes the learning rate, we set the base learning
 # rate to a fixed value
 lr_policy: "fixed"
+type: "Adam"
 #
 # ======== DISPLAY ========
 # Display every 100 iterations
-display: 100
+display: 20
 # In order to know before finishing training how long the training will take the estimate parameter can be used
 # 0: No output
 # 1: Mean of Estimated Training Time over iterations
 # 2: Mean + Single estimate + Time per iteration + Iteration/Max_Iteration
 # Default is 0
-estimate: 2
+estimate: 0
 #
 # ======== ITERATION ========
 # The maximum number of iterations:
@@ -46,8 +46,9 @@ estimate: 2
 # max_iter: 1440000
 # 	NVIDIA GTX 1080 (8 GB ram) 
 # 	Batchsize of 28
-max_iter: 2571428
+# max_iter: 2571428
 # max_iter: 1125000
+max_iter: 281250
 #
 # ======== SNAPSHOT ========
 # snapshot intermediate results
@@ -55,7 +56,7 @@ snapshot: 100000
 # Specify your GPU name & bit precision, as well as hyperparameters
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/VGG16_hp_xavier_1080_test"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/CaffeNet_1080_test4"
 #
 # ======== GPU SETTINGS ========
 # Solver mode: CPU or GPU

@@ -5,16 +5,26 @@ layer_dir = base_dir + 'layers/'
 lp = False  # use lp version of the layers
 # lp = True  # use lp version of the layers
 
-# --BN-48C8-4P2-BN-24C5-2P2-BN-FC10-BN
-net_descriptor = ['64C3E1', 'A', 'ReLU', '64C3E1', 'A', 'ReLU', '2P2',
-                  '128C3E1', 'A', 'ReLU', '128C3E1', 'A', 'ReLU', '2P2',
-                  '256C3E1', 'A', 'ReLU', '256C3E1', 'A', 'ReLU', '256C3E1', 'A', 'ReLU', '2P2',
-                  '512C3E1', 'A', 'ReLU', '512C3E1', 'A', 'ReLU', '512C3E1', 'A', 'ReLU', '2P2',
-                  '512C3E1', 'A', 'ReLU', '512C3E1', 'A', 'ReLU', '512C3E1', 'A', 'ReLU', '2P2',
+# VGG 16
+net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
+                  '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
+                  '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
                   '4096F', 'A', 'ReLU', 'D5',
                   '4096F', 'A', 'ReLU', 'D5',
                   '1000F',
                   'Accuracy', 'loss']
+# CAFFE_NET
+# net_descriptor = ['96C11S4', 'A', 'ReLU', '3P2', 'norm',
+#                   '256C5E2G2', 'A', 'ReLU', '3P2', 'norm',
+#                   '384C3E1', 'A', 'ReLU',
+#                   '384C3E1G2', 'A', 'ReLU',
+#                   '256C3E1G2', 'A', 'ReLU', '3P2',
+#                   '4096F', 'A', 'ReLU',
+#                   '4096F', 'A', 'ReLU',
+#                   '1000F',
+#                   'Accuracy', 'loss']
 # Since in the high precision case we do not neet to round the activation function
 # explecitely we have to remove the 'A' entry in the network description
 if not lp:
@@ -22,20 +32,21 @@ if not lp:
         if j == 'A':
             net_descriptor.pop(i)
 
-layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel',
+layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
 layer.bd = 3  # Set bit precision of Conv and ReLUs
 layer.ad = 4
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
-init_method = 'xavier'
-# init_method = 'gaussian'
+# init_method = 'xavier'
+init_method = 'gaussian'
+net_name = 'VGG16'
 if lp:
-    filename = 'VGG16_%i_%i_%s.prototxt' % (layer.ad, layer.bd, init_method)
+    filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.ad, layer.bd, init_method)
     filename = 'lp_' + filename
 else:
-    filename = 'VGG16_%s.prototxt' % (init_method)
+    filename = '%s_%s.prototxt' % (net_name, init_method)
 print 'Generating ' + filename
 if lp:
     print 'With ' + str(layer.bd + layer.ad + 1) + ' bits numerical precision'
@@ -49,16 +60,26 @@ for l in net_descriptor:
         layer.name = 'conv'
         layer.type = 'Convolution'
         layer.output = l.partition("C")[0]
-        layer.kernel = l.partition("C")[2].partition("E")[0]
-        layer.stride = l.partition("E")[2]
+        layer.kernel = l.partition("C")[2].partition("S")[0]
+        layer.stride = l.partition("S")[2]
+        if len(layer.kernel) > 2:
+            layer.kernel = l.partition("C")[2].partition("E")[0]
+            layer.pad = l.partition("C")[2].partition("E")[2].partition("G")[0]
+            layer.group = l.partition("C")[2].partition("E")[2].partition("G")[2]
+            if type(layer.group) == str:
+                layer.group = 1
+            layer.stride = 1
+        else:
+            layer.pad = 0
+            layer.group = 1
         if init_method == 'gaussian':
             if lp:
                 layer.name += '_lp'
                 layer.type = 'LPConvolution'
                 lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                                   '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  # '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  # '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
                                   '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                   '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
@@ -68,7 +89,10 @@ for l in net_descriptor:
             else:
                 lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                                   '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride),
+                                  '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad), '    group: %s\n' % (layer.group),
                                   '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
                                   '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
                                   '  }\n',
@@ -79,8 +103,8 @@ for l in net_descriptor:
                 layer.type = 'LPConvolution'
                 lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                                   '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  #'  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  #'  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
                                   '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                   '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
@@ -90,6 +114,8 @@ for l in net_descriptor:
             else:
                 lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                                   '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                   '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
                                   '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
@@ -156,7 +182,7 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
                                   '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '  }\n',
+                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '  }\n',
                                   '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
                                   '  }\n',
                                   '}\n']
@@ -166,7 +192,7 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
+                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '   }\n',
                                   '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
                                   '  }\n',
                                   '}\n']
@@ -223,6 +249,14 @@ for l in net_descriptor:
         layer.type = 'SoftmaxWithLoss'
         lines_to_write = ['layer {\n', '  name: "%s"\n' % (layer.name), '  type: "%s"\n' % (layer.type), '  bottom: "%s"\n' % (layer.name_old),
                           '  bottom: "label"\n', '  top: "%s"\n' % (layer.name),
+                          '}\n']
+        layer_base.writelines(lines_to_write)
+    if l == 'norm':
+        layer.name = 'norm'
+        layer.type = 'LRN'
+        lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                          '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                          '  lrn_param {\n', '    local_size: 5\n', '    alpha: 0.0001\n', '    beta: 0.75\n', '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
     update = True

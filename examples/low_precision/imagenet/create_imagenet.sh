@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
 # Create the imagenet lmdb inputs
 # N.B. set the path to the imagenet train + val data dirs
-DATA_ROOT=/media/moritz/Data/ILSVRC2015/Data/CLS-LOC
+DATA_ROOT=/media/moritz/Data/ILSVRC2015/Data/DET
 REPO=/home/moritz/Repositories/caffe_lp
 
 LMDB=$DATA_ROOT
 DATA=$REPO/data/ilsvrc12
 TOOLS=$REPO/build/tools
 
-TRAIN_DATA_ROOT=$DATA_ROOT/train/ # /path/to/imagenet/train/
+TRAIN_DATA_ROOT=$DATA_ROOT/train/ILSVRC2013_train/ # /path/to/imagenet/train/
 VAL_DATA_ROOT=$DATA_ROOT/val/    # /path/to/imagenet/val/
 
 # Set RESIZE=true to resize the images to 256x256. Leave as false if images have
