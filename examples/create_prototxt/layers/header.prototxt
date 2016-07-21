@@ -12,14 +12,6 @@ layer {
     crop_size: 227
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: true
-#  }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
     batch_size: 12
@@ -39,14 +31,6 @@ layer {
     crop_size: 227
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: false
-#  }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
     batch_size: 12

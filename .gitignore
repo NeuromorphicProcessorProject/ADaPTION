@@ -102,3 +102,4 @@ MANIFEST-*
 *.FATAL
 *.INFO
 *.ERROR
+layer_base.prototxt

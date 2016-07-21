@@ -39,8 +39,8 @@ layer.ad = 4
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
-# init_method = 'xavier'
-init_method = 'gaussian'
+init_method = 'xavier'
+# init_method = 'gaussian'
 net_name = 'VGG16'
 if lp:
     filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.ad, layer.bd, init_method)
