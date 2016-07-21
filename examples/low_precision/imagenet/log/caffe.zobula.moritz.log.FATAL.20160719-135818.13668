@@ -1,4 +1,0 @@
-Log file created at: 2016/07/19 13:58:18
-Running on machine: zobula
-Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
-F0719 13:58:18.589445 13668 upgrade_proto.cpp:79] Check failed: ReadProtoFromTextFile(param_file, param) Failed to parse NetParameter file: ../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt
