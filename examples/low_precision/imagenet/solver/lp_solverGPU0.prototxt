@@ -4,14 +4,14 @@
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt"
-net: "../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt"
+net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_xavier.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
 # covering the full 100,000 testing images.
 # test_iter: 42857 
-test_iter: 3000
+test_iter: 25000
 # Carry out testing every 500 training iterations.
 test_interval: 1000
 #
@@ -56,7 +56,7 @@ snapshot: 100000
 # Specify your GPU name & bit precision, as well as hyperparameters
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/VGG16_xavier_1080_test1"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG16_lr_0001_xavier_1080_test1"
 #
 # ======== GPU SETTINGS ========
 # Solver mode: CPU or GPU

@@ -2,8 +2,8 @@ import collections as c
 
 base_dir = './'
 layer_dir = base_dir + 'layers/'
-lp = False  # use lp version of the layers
-# lp = True  # use lp version of the layers
+# lp = False  # use lp version of the layers
+lp = True  # use lp version of the layers
 
 # VGG 16
 net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
@@ -34,8 +34,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 3  # Set bit precision of Conv and ReLUs
-layer.ad = 4
+layer.bd = 5  # Set bit precision of Conv and ReLUs
+layer.ad = 10
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
@@ -43,8 +43,8 @@ init_method = 'xavier'
 # init_method = 'gaussian'
 net_name = 'VGG16'
 if lp:
-    filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.ad, layer.bd, init_method)
-    filename = 'lp_' + filename
+    filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.bd, layer.ad, init_method)
+    filename = 'LP_' + filename
 else:
     filename = '%s_%s.prototxt' % (net_name, init_method)
 print 'Generating ' + filename
