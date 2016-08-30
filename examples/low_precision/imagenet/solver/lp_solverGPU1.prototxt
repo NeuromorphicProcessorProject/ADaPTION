@@ -2,7 +2,8 @@
 # The train/test net protocol buffer definition
 # net: "../../../examples/low_precision/imagenet/models/lp_train_VGG.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
-net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_xavier.prototxt"
+# net: "../../../examples/low_precision/imagenet/models/LP_VGG16_2_13_xavier.prototxt"
+net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_bn.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
@@ -14,7 +15,7 @@ test_interval: 1000
 #
 # ======== HYPERPARAMETERS ========
 # All parameters are from the cited paper above
-base_lr: 0.0005
+base_lr: 0.00001
 momentum: 0.9
 momentum2: 0.999
 # delta: 0.00000001
@@ -38,7 +39,7 @@ estimate: 0
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-max_iter: 6000000
+max_iter: 9000000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 50
 # max_iter: 1440000
@@ -48,10 +49,10 @@ max_iter: 6000000
 #
 # ======== SNAPSHOT ========
 # snapshot intermediate results
-snapshot: 100000
+snapshot: 10000
 # Specify your GPU name & bit precision, as well as hyperparameters
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_980"
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_xavier_lr_0005_980_test1"
+snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_batchnorm_5_10_lr_00001_980"
 #
 # ======== GPU SETTINGS ========
 # solver mode: CPU or GPU

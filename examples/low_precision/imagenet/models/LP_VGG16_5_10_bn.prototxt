@@ -1,4 +1,4 @@
-name: "VGG16"
+name: "LP_VGG16_5_10_980"
 layer {
   name: "data"
   type: "Data"
@@ -14,7 +14,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
-    batch_size: 28
+    batch_size: 8
     backend: LMDB
   }
 }
@@ -33,7 +33,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 1
+    batch_size: 4
     backend: LMDB
   }
 }
@@ -79,16 +79,31 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_3"
-  type: "ReLU"
+  name: "bn_3"
+  type: "BatchNorm"
   bottom: "act_lp_2"
-  top: "act_lp_2"
+  top: "bn_3"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "conv_lp_3"
+  name: "relu_4"
+  type: "ReLU"
+  bottom: "bn_3"
+  top: "bn_3"
+}
+layer {
+  name: "conv_lp_4"
   type: "LPConvolution"
-  bottom: "act_lp_2"
-  top: "conv_lp_3"
+  bottom: "bn_3"
+  top: "conv_lp_4"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -116,26 +131,41 @@ layer {
   }
 }
 layer {
-  name: "act_lp_4"
+  name: "act_lp_5"
   type: "LPAct"
-  bottom: "conv_lp_3"
-  top: "act_lp_4"
+  bottom: "conv_lp_4"
+  top: "act_lp_5"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_5"
-  type: "ReLU"
-  bottom: "act_lp_4"
-  top: "act_lp_4"
+  name: "bn_6"
+  type: "BatchNorm"
+  bottom: "act_lp_5"
+  top: "bn_6"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "pool_5"
+  name: "relu_7"
+  type: "ReLU"
+  bottom: "bn_6"
+  top: "bn_6"
+}
+layer {
+  name: "pool_7"
   type: "Pooling"
-  bottom: "act_lp_4"
-  top: "pool_5"
+  bottom: "bn_6"
+  top: "pool_7"
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -143,56 +173,9 @@ layer {
   }
 }
 layer {
-  name: "conv_lp_6"
-  type: "LPConvolution"
-  bottom: "pool_5"
-  top: "conv_lp_6"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
-  convolution_param {
-    num_output: 128
-    stride: 1
-    kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
-  }
-}
-layer {
-  name: "act_lp_7"
-  type: "LPAct"
-  bottom: "conv_lp_6"
-  top: "act_lp_7"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
-}
-layer {
-  name: "relu_8"
-  type: "ReLU"
-  bottom: "act_lp_7"
-  top: "act_lp_7"
-}
-layer {
   name: "conv_lp_8"
   type: "LPConvolution"
-  bottom: "act_lp_7"
+  bottom: "pool_7"
   top: "conv_lp_8"
   param {
     lr_mult: 1
@@ -231,26 +214,30 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_10"
-  type: "ReLU"
+  name: "bn_10"
+  type: "BatchNorm"
   bottom: "act_lp_9"
-  top: "act_lp_9"
+  top: "bn_10"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "pool_10"
-  type: "Pooling"
-  bottom: "act_lp_9"
-  top: "pool_10"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
+  name: "relu_11"
+  type: "ReLU"
+  bottom: "bn_10"
+  top: "bn_10"
 }
 layer {
   name: "conv_lp_11"
   type: "LPConvolution"
-  bottom: "pool_10"
+  bottom: "bn_10"
   top: "conv_lp_11"
   param {
     lr_mult: 1
@@ -266,7 +253,7 @@ layer {
     round_bias: false
   }
   convolution_param {
-    num_output: 256
+    num_output: 128
     stride: 1
     kernel_size: 3
     weight_filler {
@@ -289,62 +276,41 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_13"
-  type: "ReLU"
+  name: "bn_13"
+  type: "BatchNorm"
   bottom: "act_lp_12"
-  top: "act_lp_12"
-}
-layer {
-  name: "conv_lp_13"
-  type: "LPConvolution"
-  bottom: "act_lp_12"
-  top: "conv_lp_13"
+  top: "bn_13"
   param {
-    lr_mult: 1
-    decay_mult: 1
-   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
+    lr_mult: 0
   }
-  convolution_param {
-    num_output: 256
-    stride: 1
-    kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
   }
 }
 layer {
-  name: "act_lp_14"
-  type: "LPAct"
-  bottom: "conv_lp_13"
-  top: "act_lp_14"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
+  name: "relu_14"
+  type: "ReLU"
+  bottom: "bn_13"
+  top: "bn_13"
 }
 layer {
-  name: "relu_15"
-  type: "ReLU"
-  bottom: "act_lp_14"
-  top: "act_lp_14"
+  name: "pool_14"
+  type: "Pooling"
+  bottom: "bn_13"
+  top: "pool_14"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
 }
 layer {
   name: "conv_lp_15"
   type: "LPConvolution"
-  bottom: "act_lp_14"
+  bottom: "pool_14"
   top: "conv_lp_15"
   param {
     lr_mult: 1
@@ -383,26 +349,30 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_17"
-  type: "ReLU"
+  name: "bn_17"
+  type: "BatchNorm"
   bottom: "act_lp_16"
-  top: "act_lp_16"
+  top: "bn_17"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "pool_17"
-  type: "Pooling"
-  bottom: "act_lp_16"
-  top: "pool_17"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
+  name: "relu_18"
+  type: "ReLU"
+  bottom: "bn_17"
+  top: "bn_17"
 }
 layer {
   name: "conv_lp_18"
   type: "LPConvolution"
-  bottom: "pool_17"
+  bottom: "bn_17"
   top: "conv_lp_18"
   param {
     lr_mult: 1
@@ -418,7 +388,7 @@ layer {
     round_bias: false
   }
   convolution_param {
-    num_output: 512
+    num_output: 256
     stride: 1
     kernel_size: 3
     weight_filler {
@@ -441,16 +411,31 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_20"
-  type: "ReLU"
+  name: "bn_20"
+  type: "BatchNorm"
   bottom: "act_lp_19"
-  top: "act_lp_19"
+  top: "bn_20"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "conv_lp_20"
+  name: "relu_21"
+  type: "ReLU"
+  bottom: "bn_20"
+  top: "bn_20"
+}
+layer {
+  name: "conv_lp_21"
   type: "LPConvolution"
-  bottom: "act_lp_19"
-  top: "conv_lp_20"
+  bottom: "bn_20"
+  top: "conv_lp_21"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -465,7 +450,7 @@ layer {
     round_bias: false
   }
   convolution_param {
-    num_output: 512
+    num_output: 256
     stride: 1
     kernel_size: 3
     weight_filler {
@@ -478,72 +463,40 @@ layer {
   }
 }
 layer {
-  name: "act_lp_21"
+  name: "act_lp_22"
   type: "LPAct"
-  bottom: "conv_lp_20"
-  top: "act_lp_21"
+  bottom: "conv_lp_21"
+  top: "act_lp_22"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_22"
-  type: "ReLU"
-  bottom: "act_lp_21"
-  top: "act_lp_21"
-}
-layer {
-  name: "conv_lp_22"
-  type: "LPConvolution"
-  bottom: "act_lp_21"
-  top: "conv_lp_22"
+  name: "bn_23"
+  type: "BatchNorm"
+  bottom: "act_lp_22"
+  top: "bn_23"
   param {
-    lr_mult: 1
-    decay_mult: 1
-   }
+    lr_mult: 0
+  }
   param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
+    lr_mult: 0
   }
-  convolution_param {
-    num_output: 512
-    stride: 1
-    kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
+  param {
+    lr_mult: 0
   }
-}
-layer {
-  name: "act_lp_23"
-  type: "LPAct"
-  bottom: "conv_lp_22"
-  top: "act_lp_23"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
 }
 layer {
   name: "relu_24"
   type: "ReLU"
-  bottom: "act_lp_23"
-  top: "act_lp_23"
+  bottom: "bn_23"
+  top: "bn_23"
 }
 layer {
   name: "pool_24"
   type: "Pooling"
-  bottom: "act_lp_23"
+  bottom: "bn_23"
   top: "pool_24"
   pooling_param {
     pool: MAX
@@ -593,16 +546,31 @@ layer {
     round_bias: false  }
 }
 layer {
-  name: "relu_27"
-  type: "ReLU"
+  name: "bn_27"
+  type: "BatchNorm"
   bottom: "act_lp_26"
-  top: "act_lp_26"
+  top: "bn_27"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
 }
 layer {
-  name: "conv_lp_27"
+  name: "relu_28"
+  type: "ReLU"
+  bottom: "bn_27"
+  top: "bn_27"
+}
+layer {
+  name: "conv_lp_28"
   type: "LPConvolution"
-  bottom: "act_lp_26"
-  top: "conv_lp_27"
+  bottom: "bn_27"
+  top: "conv_lp_28"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -630,73 +598,103 @@ layer {
   }
 }
 layer {
-  name: "act_lp_28"
+  name: "act_lp_29"
   type: "LPAct"
-  bottom: "conv_lp_27"
-  top: "act_lp_28"
+  bottom: "conv_lp_28"
+  top: "act_lp_29"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_29"
-  type: "ReLU"
-  bottom: "act_lp_28"
-  top: "act_lp_28"
-}
-layer {
-  name: "conv_lp_29"
-  type: "LPConvolution"
-  bottom: "act_lp_28"
-  top: "conv_lp_29"
+  name: "bn_30"
+  type: "BatchNorm"
+  bottom: "act_lp_29"
+  top: "bn_30"
   param {
-    lr_mult: 1
-    decay_mult: 1
-   }
+    lr_mult: 0
+  }
   param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
+    lr_mult: 0
   }
-  convolution_param {
-    num_output: 512
-    stride: 1
-    kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
+  param {
+    lr_mult: 0
   }
-}
-layer {
-  name: "act_lp_30"
-  type: "LPAct"
-  bottom: "conv_lp_29"
-  top: "act_lp_30"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
 }
 layer {
   name: "relu_31"
   type: "ReLU"
-  bottom: "act_lp_30"
-  top: "act_lp_30"
+  bottom: "bn_30"
+  top: "bn_30"
 }
 layer {
-  name: "pool_31"
+  name: "conv_lp_31"
+  type: "LPConvolution"
+  bottom: "bn_30"
+  top: "conv_lp_31"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_32"
+  type: "LPAct"
+  bottom: "conv_lp_31"
+  top: "act_lp_32"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "bn_33"
+  type: "BatchNorm"
+  bottom: "act_lp_32"
+  top: "bn_33"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu_34"
+  type: "ReLU"
+  bottom: "bn_33"
+  top: "bn_33"
+}
+layer {
+  name: "pool_34"
   type: "Pooling"
-  bottom: "act_lp_30"
-  top: "pool_31"
+  bottom: "bn_33"
+  top: "pool_34"
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -704,10 +702,207 @@ layer {
   }
 }
 layer {
-  name: "fc_lp_32"
+  name: "conv_lp_35"
+  type: "LPConvolution"
+  bottom: "pool_34"
+  top: "conv_lp_35"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_36"
+  type: "LPAct"
+  bottom: "conv_lp_35"
+  top: "act_lp_36"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "bn_37"
+  type: "BatchNorm"
+  bottom: "act_lp_36"
+  top: "bn_37"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu_38"
+  type: "ReLU"
+  bottom: "bn_37"
+  top: "bn_37"
+}
+layer {
+  name: "conv_lp_38"
+  type: "LPConvolution"
+  bottom: "bn_37"
+  top: "conv_lp_38"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_39"
+  type: "LPAct"
+  bottom: "conv_lp_38"
+  top: "act_lp_39"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "bn_40"
+  type: "BatchNorm"
+  bottom: "act_lp_39"
+  top: "bn_40"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu_41"
+  type: "ReLU"
+  bottom: "bn_40"
+  top: "bn_40"
+}
+layer {
+  name: "conv_lp_41"
+  type: "LPConvolution"
+  bottom: "bn_40"
+  top: "conv_lp_41"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_42"
+  type: "LPAct"
+  bottom: "conv_lp_41"
+  top: "act_lp_42"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "bn_43"
+  type: "BatchNorm"
+  bottom: "act_lp_42"
+  top: "bn_43"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu_44"
+  type: "ReLU"
+  bottom: "bn_43"
+  top: "bn_43"
+}
+layer {
+  name: "pool_44"
+  type: "Pooling"
+  bottom: "bn_43"
+  top: "pool_44"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "fc_lp_45"
   type: "LPInnerProduct"
-  bottom: "pool_31"
-  top: "fc_lp_32"
+  bottom: "pool_44"
+  top: "fc_lp_45"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -733,35 +928,35 @@ layer {
   }
 }
 layer {
-  name: "act_lp_33"
+  name: "act_lp_46"
   type: "LPAct"
-  bottom: "fc_lp_32"
-  top: "act_lp_33"
+  bottom: "fc_lp_45"
+  top: "act_lp_46"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_34"
+  name: "relu_47"
   type: "ReLU"
-  bottom: "act_lp_33"
-  top: "act_lp_33"
+  bottom: "act_lp_46"
+  top: "act_lp_46"
 }
 layer {
-  name: "drop_34"
+  name: "drop_47"
   type: "Dropout"
-  bottom: "act_lp_33"
-  top: "act_lp_33"
+  bottom: "act_lp_46"
+  top: "act_lp_46"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
 layer {
-  name: "fc_lp_34"
+  name: "fc_lp_47"
   type: "LPInnerProduct"
-  bottom: "act_lp_33"
-  top: "fc_lp_34"
+  bottom: "act_lp_46"
+  top: "fc_lp_47"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -787,35 +982,35 @@ layer {
   }
 }
 layer {
-  name: "act_lp_35"
+  name: "act_lp_48"
   type: "LPAct"
-  bottom: "fc_lp_34"
-  top: "act_lp_35"
+  bottom: "fc_lp_47"
+  top: "act_lp_48"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_36"
+  name: "relu_49"
   type: "ReLU"
-  bottom: "act_lp_35"
-  top: "act_lp_35"
+  bottom: "act_lp_48"
+  top: "act_lp_48"
 }
 layer {
-  name: "drop_36"
+  name: "drop_49"
   type: "Dropout"
-  bottom: "act_lp_35"
-  top: "act_lp_35"
+  bottom: "act_lp_48"
+  top: "act_lp_48"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
 layer {
-  name: "fc_lp_36"
+  name: "fc_lp_49"
   type: "LPInnerProduct"
-  bottom: "act_lp_35"
-  top: "fc_lp_36"
+  bottom: "act_lp_48"
+  top: "fc_lp_49"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -843,7 +1038,7 @@ layer {
 layer {
   name: "accuracy"
   type: "Accuracy"
-  bottom: "fc_lp_36"
+  bottom: "fc_lp_49"
   bottom: "label"
   top: "accuracy"
   include {
@@ -851,22 +1046,9 @@ layer {
   }
 }
 layer {
-  name: "accuracy_top5"
-  type: "Accuracy"
-  bottom: "fc_lp_36"
-  bottom: "label"
-  top: "accuracy_top5"
-  include {
-    phase: TEST
-  }
- accuracy_param {
-   top_k: 5
-  }
-}
-layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "fc_lp_36"
+  bottom: "fc_lp_49"
   bottom: "label"
   top: "loss"
 }

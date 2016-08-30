@@ -14,7 +14,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
-    batch_size: 28
+    batch_size: 12
     backend: LMDB
   }
 }
@@ -33,7 +33,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 1
+    batch_size: 12
     backend: LMDB
   }
 }
@@ -59,13 +59,6 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -106,13 +99,6 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -164,13 +150,6 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -211,13 +190,6 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -269,13 +241,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -316,13 +281,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -363,13 +321,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -421,13 +372,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -468,13 +412,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -515,13 +452,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -573,13 +503,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -620,13 +543,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -667,13 +583,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    weight_filler {
-      type: "xavier"
-   }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-   }
   }
 }
 layer {
@@ -691,182 +600,4 @@ layer {
   type: "ReLU"
   bottom: "act_lp_30"
   top: "act_lp_30"
-}
-layer {
-  name: "pool_31"
-  type: "Pooling"
-  bottom: "act_lp_30"
-  top: "pool_31"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-layer {
-  name: "fc_lp_32"
-  type: "LPInnerProduct"
-  bottom: "pool_31"
-  top: "fc_lp_32"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
-  inner_product_param {
-    num_output: 4096
-    weight_filler {
-      type: "xavier"
-  }
-    bias_filler {
-      type: "constant"
-      value: 0.1
-   }
-  }
-}
-layer {
-  name: "act_lp_33"
-  type: "LPAct"
-  bottom: "fc_lp_32"
-  top: "act_lp_33"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
-}
-layer {
-  name: "relu_34"
-  type: "ReLU"
-  bottom: "act_lp_33"
-  top: "act_lp_33"
-}
-layer {
-  name: "drop_34"
-  type: "Dropout"
-  bottom: "act_lp_33"
-  top: "act_lp_33"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
-  name: "fc_lp_34"
-  type: "LPInnerProduct"
-  bottom: "act_lp_33"
-  top: "fc_lp_34"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
-  inner_product_param {
-    num_output: 4096
-    weight_filler {
-      type: "xavier"
-  }
-    bias_filler {
-      type: "constant"
-      value: 0.1
-   }
-  }
-}
-layer {
-  name: "act_lp_35"
-  type: "LPAct"
-  bottom: "fc_lp_34"
-  top: "act_lp_35"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
-}
-layer {
-  name: "relu_36"
-  type: "ReLU"
-  bottom: "act_lp_35"
-  top: "act_lp_35"
-}
-layer {
-  name: "drop_36"
-  type: "Dropout"
-  bottom: "act_lp_35"
-  top: "act_lp_35"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
-  name: "fc_lp_36"
-  type: "LPInnerProduct"
-  bottom: "act_lp_35"
-  top: "fc_lp_36"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-   }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-   }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
-  inner_product_param {
-    num_output: 1000
-    weight_filler {
-      type: "xavier"
-  }
-    bias_filler {
-      type: "constant"
-      value: 0.1
-   }
-  }
-}
-layer {
-  name: "accuracy"
-  type: "Accuracy"
-  bottom: "fc_lp_36"
-  bottom: "label"
-  top: "accuracy"
-  include {
-    phase: TEST
-  }
-}
-layer {
-  name: "accuracy_top5"
-  type: "Accuracy"
-  bottom: "fc_lp_36"
-  bottom: "label"
-  top: "accuracy_top5"
-  include {
-    phase: TEST
-  }
- accuracy_param {
-   top_k: 5
-  }
-}
-layer {
-  name: "loss"
-  type: "SoftmaxWithLoss"
-  bottom: "fc_lp_36"
-  bottom: "label"
-  top: "loss"
 }

@@ -6,14 +6,16 @@
 % license was not distributed with this file, you can get one at: 
 % https://raw.githubusercontent.com/pmckay/caffe-extra-shots/master/LICENSE
 
-function caffe_plot(caffe_config, input_log, output_dir, limits) 
+function caffe_plot(caffe_config, input_log, output_dir, limits, experiment) 
     log_path=fullfile(caffe_config.log_dir,input_log);
     csv=parse_log(caffe_config, log_path, output_dir);
+    save('csv')
     ds1=dataset_load(csv{1},'Iteration',1,'Loss',4);
     ds2=dataset_load(csv{2},'Iteration',1,'Accuracy',4);
-    dataset_plotyy(ds1,ds2,limits,[0 1]);
+    dataset_plotyy(ds1,ds2,limits,[0 1], experiment);
     [~, n, e]=fileparts(input_log);
     n=strcat(n,e);
+    n = experiment;
     figure_path=fullfile(output_dir,sprintf('%s.png',n));
     print(figure_path,'-dpng');
 end
@@ -25,6 +27,7 @@ function [ds]=dataset_load(csv, x_label, x_index, y_label, y_index)
     ds.x=data(:,x_index);
     ds.y_label=y_label;
     ds.y=data(:,y_index);   
+    save('test_data', 'ds')
 end
 
 function [csv]=parse_log(caffe_config,inputlog,outputdir)
@@ -37,7 +40,7 @@ function [csv]=parse_log(caffe_config,inputlog,outputdir)
     csv{2}=fullfile(outputdir, sprintf('%s.test',n));
 end
 
-function dataset_plotyy(ds1, ds2, x_limits, y_limits)
+function dataset_plotyy(ds1, ds2, x_limits, y_limits, experiment)
     figure;
     ax = plotyy(ds1.x,ds1.y,ds2.x,ds2.y,'plot','plot');
     xlabel(ax(1),ds1.x_label)
@@ -45,6 +48,7 @@ function dataset_plotyy(ds1, ds2, x_limits, y_limits)
     ylabel(ax(2),ds2.y_label) 
     ylim(ax(2),y_limits);
     xlim(x_limits);    
+    title(experiment);
 end
 
 function [status,cmdout]=python_run(script,args)

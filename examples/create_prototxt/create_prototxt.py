@@ -4,17 +4,37 @@ base_dir = './'
 layer_dir = base_dir + 'layers/'
 # lp = False  # use lp version of the layers
 lp = True  # use lp version of the layers
-
+deploy = True
 # VGG 16
 net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
                   '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
-                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', 'RoI',
                   '4096F', 'A', 'ReLU', 'D5',
                   '4096F', 'A', 'ReLU', 'D5',
-                  '1000F',
-                  'Accuracy', 'loss']
+                  ]
+
+# net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
+#                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
+#                   '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
+#                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+#                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
+
+
+# net_descriptor = ['64C3S1', 'A', 'bnorm', 'ReLU', '64C3S1', 'A', 'bnorm', 'ReLU', '2P2',
+#                   '128C3S1', 'A', 'bnorm', 'ReLU', '128C3S1', 'A', 'bnorm', 'ReLU', '2P2',
+#                   '256C3S1', 'A', 'bnorm', 'ReLU', '256C3S1', 'A', 'bnorm', 'ReLU', '256C3S1', 'A', 'bnorm', 'ReLU', '2P2',
+#                   '512C3S1', 'A', 'bnorm', 'ReLU', '512C3S1', 'A', 'bnorm', 'ReLU', '512C3S1', 'A', 'bnorm', 'ReLU', '2P2',
+#                   '512C3S1', 'A', 'bnorm', 'ReLU', '512C3S1', 'A', 'bnorm', 'ReLU', '512C3S1', 'A', 'bnorm', 'ReLU', '2P2',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
 # CAFFE_NET
 # net_descriptor = ['96C11S4', 'A', 'ReLU', '3P2', 'norm',
 #                   '256C5E2G2', 'A', 'ReLU', '3P2', 'norm',
@@ -43,10 +63,18 @@ init_method = 'xavier'
 # init_method = 'gaussian'
 net_name = 'VGG16'
 if lp:
-    filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.bd, layer.ad, init_method)
-    filename = 'LP_' + filename
+    if deploy:
+        filename = '%s_%i_%i_deploy.prototxt' % (net_name, layer.bd, layer.ad)
+        filename = 'LP_' + filename
+    else:
+        filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.bd, layer.ad, init_method)
+        filename = 'LP_' + filename
 else:
-    filename = '%s_%s.prototxt' % (net_name, init_method)
+    if deploy:
+        filename = '%s_deploy.prototxt' % (net_name)
+    else:
+        filename = '%s_%s.prototxt' % (net_name, init_method)
+
 print 'Generating ' + filename
 if lp:
     print 'With ' + str(layer.bd + layer.ad + 1) + ' bits numerical precision'
@@ -72,7 +100,7 @@ for l in net_descriptor:
         else:
             layer.pad = 0
             layer.group = 1
-        if init_method == 'gaussian':
+        if deploy:
             if lp:
                 layer.name += '_lp'
                 layer.type = 'LPConvolution'
@@ -81,9 +109,8 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
-                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
+                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
+                                      layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                   '  }\n',
                                   '}\n']
             else:
@@ -93,34 +120,61 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride),
                                   '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad), '    group: %s\n' % (layer.group),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
                                   '  }\n',
                                   '}\n']
-        if init_method == 'xavier':
-            if lp:
-                layer.name += '_lp'
-                layer.type = 'LPConvolution'
-                lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
-                                  '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                  '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
-                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
-                                  '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
-                                  '  }\n',
-                                  '}\n']
-            else:
-                lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
-                                  '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                  '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride), '    kernel_size: %s\n' % (layer.kernel),
-                                  '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
-                                  '  }\n',
-                                  '}\n']
+        else:
+            if init_method == 'gaussian':
+                if lp:
+                    layer.name += '_lp'
+                    layer.type = 'LPConvolution'
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                      '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
+                                          layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                                      '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+                else:
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride),
+                                      '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad), '    group: %s\n' % (layer.group),
+                                      '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+            if init_method == 'xavier':
+                if lp:
+                    layer.name += '_lp'
+                    layer.type = 'LPConvolution'
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                      '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
+                                          layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                                      '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+                else:
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
+                                          layer.stride), '    kernel_size: %s\n' % (layer.kernel),
+                                      '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
 
         layer_base.writelines(lines_to_write)
 
@@ -167,12 +221,24 @@ for l in net_descriptor:
                           '}\n']
 
         layer_base.writelines(lines_to_write)
+    if l == 'RoI':
+        layer.name = 'roi'
+        layer.type = 'ROIPooling'
+        roi_width = 7
+        roi_height = 7
+        lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                          '  bottom: "%s"\n' % (layer.name_old), '  bottom: "rois"\n', '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                          '  roi_pooling_param {\n', '    pooled_w: %i\n' % (roi_width), '   pooled_h: %i\n' % (roi_height),
+                          '   spatial scale: 0.625\n',
+                          '  }\n',
+                          '}\n']
+        layer_base.writelines(lines_to_write)
     if 'F' in l:
         # print 'Fully Connected'
         layer.name = 'fc'
         layer.type = 'InnerProduct'
         layer.output = l.partition("F")[0]
-        if init_method == 'gaussian':
+        if deploy:
             if lp:
                 layer.name += '_lp'
                 layer.type = 'LPInnerProduct'
@@ -182,8 +248,6 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
                                   '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '  }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
                                   '  }\n',
                                   '}\n']
             else:
@@ -192,34 +256,57 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                   '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                   '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
                                   '  }\n',
                                   '}\n']
-        if init_method == 'xavier':
-            if lp:
-                layer.name += '_lp'
-                layer.type = 'LPInnerProduct'
-                lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
-                                  '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                  '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
-                                  '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "xavier"\n', '  }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
-                                  '  }\n',
-                                  '}\n']
-            else:
-                lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
-                                  '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                                  '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
-                                  '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                  '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
-                                  '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
-                                  '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
-                                  '  }\n',
-                                  '}\n']
+        else:
+            if init_method == 'gaussian':
+                if lp:
+                    layer.name += '_lp'
+                    layer.type = 'LPInnerProduct'
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                      '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
+                                      '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '  }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+                else:
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
+                                      '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+            if init_method == 'xavier':
+                if lp:
+                    layer.name += '_lp'
+                    layer.type = 'LPInnerProduct'
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                      '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
+                                      '    weight_filler {\n', '      type: "xavier"\n', '  }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
+                else:
+                    lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                                      '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                                      '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
+                                      '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
+                                      '  inner_product_param {\n', '    num_output: %s\n' % (layer.output),
+                                      '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
+                                      '    bias_filler {\n', '      type: "constant"\n', '      value: 0.1\n', '   }\n',
+                                      '  }\n',
+                                      '}\n']
 
         layer_base.writelines(lines_to_write)
     if 'D' in l:
@@ -259,6 +346,17 @@ for l in net_descriptor:
                           '  lrn_param {\n', '    local_size: 5\n', '    alpha: 0.0001\n', '    beta: 0.75\n', '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
+    if l == 'bnorm':
+        layer.name = 'bn'
+        layer.type = 'BatchNorm'
+        lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
+                          '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (layer.name, layer.counter),
+                          '  param {\n', '    lr_mult: 0\n', '  }\n',
+                          '  param {\n', '    lr_mult: 0\n', '  }\n',
+                          '  param {\n', '    lr_mult: 0\n', '  }\n',
+                          '}\n']
+        layer_base.writelines(lines_to_write)
+
     update = True
     if l == "ReLU":
         update = False
