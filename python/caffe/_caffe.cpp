@@ -55,6 +55,9 @@ void set_mode_gpu() { Caffe::set_mode(Caffe::GPU); }
 // exception that boost will send to Python if not (caffe could still crash
 // later if the input files are disturbed before they are actually used, but
 // this saves frustration in most cases).
+
+void set_random_seed(unsigned int seed) { Caffe::set_random_seed(seed); }
+
 static void CheckFile(const string& filename) {
     std::ifstream f(filename.c_str());
     if (!f.good()) {
@@ -258,6 +261,7 @@ BOOST_PYTHON_MODULE(_caffe) {
   bp::scope().attr("__version__") = AS_STRING(CAFFE_VERSION);
 
   // Caffe utility functions
+  bp::def("set_random_seed", &set_random_seed);
   bp::def("set_mode_cpu", &set_mode_cpu);
   bp::def("set_mode_gpu", &set_mode_gpu);
   bp::def("set_device", &Caffe::SetDevice);

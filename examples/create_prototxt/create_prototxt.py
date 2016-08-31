@@ -10,9 +10,9 @@ net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
                   '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
-                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', 'RoI',
-                  '4096F', 'A', 'ReLU', 'D5',
-                  '4096F', 'A', 'ReLU', 'D5',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU',
+                  # '4096F', 'A', 'ReLU', 'D5',
+                  # '4096F', 'A', 'ReLU', 'D5',
                   ]
 
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
@@ -228,8 +228,8 @@ for l in net_descriptor:
         roi_height = 7
         lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                           '  bottom: "%s"\n' % (layer.name_old), '  bottom: "rois"\n', '  top: "%s_%i"\n' % (layer.name, layer.counter),
-                          '  roi_pooling_param {\n', '    pooled_w: %i\n' % (roi_width), '   pooled_h: %i\n' % (roi_height),
-                          '   spatial scale: 0.625\n',
+                          '  roi_pooling_param {\n', '    pooled_w: %i\n' % (roi_width), '    pooled_h: %i\n' % (roi_height),
+                          '    spatial_scale: 0.625\n',
                           '  }\n',
                           '}\n']
         layer_base.writelines(lines_to_write)
