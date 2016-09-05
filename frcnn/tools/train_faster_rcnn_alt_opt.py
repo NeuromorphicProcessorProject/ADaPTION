@@ -263,7 +263,7 @@ if __name__ == '__main__':
     p.start()
     rpn_stage1_out['proposal_path'] = mp_queue.get()['proposal_path']
     p.join()
-
+    
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     print 'Stage 1 Fast R-CNN using RPN proposals, init from ImageNet model'
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'

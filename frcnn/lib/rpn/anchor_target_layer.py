@@ -15,7 +15,8 @@ from generate_anchors import generate_anchors
 from utils.cython_bbox import bbox_overlaps
 from fast_rcnn.bbox_transform import bbox_transform
 
-DEBUG = False
+DEBUG = False 
+
 
 class AnchorTargetLayer(caffe.Layer):
     """
@@ -107,6 +108,10 @@ class AnchorTargetLayer(caffe.Layer):
         total_anchors = int(K * A)
 
         # only keep anchors inside the image
+        if len(np.where(all_anchors[:, 1] >= -self._allowed_border)[0]) == 0:
+            all_anchors[0:10, 1] = np.abs(all_anchors[0:10, 1])
+            all_anchors[0:10, 0] = np.abs(all_anchors[0:10, 1])
+            # Hacky way to cope with only negative anchor location
         inds_inside = np.where(
             (all_anchors[:, 0] >= -self._allowed_border) &
             (all_anchors[:, 1] >= -self._allowed_border) &
@@ -116,7 +121,12 @@ class AnchorTargetLayer(caffe.Layer):
 
         if DEBUG:
             print 'total_anchors', total_anchors
+            print 'all_anchors', all_anchors
+            print 'allowed borders', self._allowed_border
+            print 'Shape of all_anchors', np.shape(all_anchors)
             print 'inds_inside', len(inds_inside)
+            print 'Anchors:', anchors
+            print 'GT Boxes:', gt_boxes
 
         # keep only inside anchors
         anchors = all_anchors[inds_inside, :]
@@ -129,12 +139,27 @@ class AnchorTargetLayer(caffe.Layer):
 
         # overlaps between the anchors and the gt boxes
         # overlaps (ex, gt)
+        
         overlaps = bbox_overlaps(
             np.ascontiguousarray(anchors, dtype=np.float),
             np.ascontiguousarray(gt_boxes, dtype=np.float))
+        # if np.size(overlaps) == 0:
+        #     overlaps = np.ones([5,5])
+        #     overlaps[2, 3] = 5
+        
         argmax_overlaps = overlaps.argmax(axis=1)
         max_overlaps = overlaps[np.arange(len(inds_inside)), argmax_overlaps]
+        # try:
         gt_argmax_overlaps = overlaps.argmax(axis=0)
+        # print type(gt_argmax_overlaps)
+        # print np.shape(gt_argmax_overlaps)
+        # print gt_argmax_overlaps
+        # except ValueError:
+        #     # gt_argmax_overlaps = np.ones([2,2]).argmax(axis=0)
+        #     gt_argmax_overlaps = np.asarray([1])
+        #     # print np.shape(gt_argmax_overlaps)
+        # print '1:'
+        # print gt_argmax_overlaps
         gt_max_overlaps = overlaps[gt_argmax_overlaps,
                                    np.arange(overlaps.shape[1])]
         gt_argmax_overlaps = np.where(overlaps == gt_max_overlaps)[0]
@@ -142,7 +167,8 @@ class AnchorTargetLayer(caffe.Layer):
         if not cfg.TRAIN.RPN_CLOBBER_POSITIVES:
             # assign bg labels first so that positive labels can clobber them
             labels[max_overlaps < cfg.TRAIN.RPN_NEGATIVE_OVERLAP] = 0
-
+        # print '2:'
+        # print gt_argmax_overlaps
         # fg label: for each gt, anchor with highest overlap
         labels[gt_argmax_overlaps] = 1
 
@@ -168,8 +194,8 @@ class AnchorTargetLayer(caffe.Layer):
             disable_inds = npr.choice(
                 bg_inds, size=(len(bg_inds) - num_bg), replace=False)
             labels[disable_inds] = -1
-            #print "was %s inds, disabling %s, now %s inds" % (
-                #len(bg_inds), len(disable_inds), np.sum(labels == 0))
+            # print "was %s inds, disabling %s, now %s inds" % (
+            # len(bg_inds), len(disable_inds), np.sum(labels == 0))
 
         bbox_targets = np.zeros((len(inds_inside), 4), dtype=np.float32)
         bbox_targets = _compute_targets(anchors, gt_boxes[argmax_overlaps, :])

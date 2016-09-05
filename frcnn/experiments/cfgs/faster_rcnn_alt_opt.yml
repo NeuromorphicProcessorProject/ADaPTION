@@ -1,5 +1,7 @@
 EXP_DIR: faster_rcnn_alt_opt
 TRAIN:
   BG_THRESH_LO: 0.0
+  BATCH_SIZE: 128
+  RPN_BATCHSIZE: 256
 TEST:
   HAS_RPN: True

@@ -563,21 +563,20 @@ layer {
   top: "act_lp_30"
 }
 layer {
-  name: "roi_31"
-  type: "ROIPooling"
+  name: "pool_31"
+  type: "Pooling"
   bottom: "act_lp_30"
-  bottom: "rois"
-  top: "roi_31"
-  roi_pooling_param {
-    pooled_w: 7
-   pooled_h: 7
-   spatial scale: 0.625
+  top: "pool_31"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
   }
 }
 layer {
   name: "fc_lp_32"
   type: "LPInnerProduct"
-  bottom: "roi_31"
+  bottom: "pool_31"
   top: "fc_lp_32"
   param {
     lr_mult: 1
@@ -667,4 +666,43 @@ layer {
   dropout_param {
     dropout_ratio: 0.5
   }
+}
+layer {
+  name: "fc_lp_36"
+  type: "LPInnerProduct"
+  bottom: "act_lp_35"
+  top: "fc_lp_36"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  inner_product_param {
+    num_output: 1000
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "loss"
 }

@@ -6,24 +6,24 @@ layer_dir = base_dir + 'layers/'
 lp = True  # use lp version of the layers
 deploy = True
 # VGG 16
-net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
-                  '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
-                  '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
-                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
-                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU',
-                  # '4096F', 'A', 'ReLU', 'D5',
-                  # '4096F', 'A', 'ReLU', 'D5',
-                  ]
-
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
 #                   '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
 #                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
-#                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
-#                   '4096F', 'A', 'ReLU', 'D5',
-#                   '4096F', 'A', 'ReLU', 'D5',
-#                   '1000F',
-#                   'Accuracy', 'loss']
+#                   '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU',
+#                   # '4096F', 'A', 'ReLU', 'D5',
+#                   # '4096F', 'A', 'ReLU', 'D5',
+#                   ]
+
+net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
+                  '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
+                  '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '256C3S1', 'A', 'ReLU', '2P2',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+                  '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '512C3S1', 'A', 'ReLU', '2P2',
+                  '4096F', 'A', 'ReLU', 'D5',
+                  '4096F', 'A', 'ReLU', 'D5',
+                  '1000F',
+                  'Accuracy', 'loss']
 
 
 # net_descriptor = ['64C3S1', 'A', 'bnorm', 'ReLU', '64C3S1', 'A', 'bnorm', 'ReLU', '2P2',

@@ -656,11 +656,11 @@ layer {
 #========= RCNN ============
 
 layer {
-  name: "roi_pool5"
+  name: "roi_31"
   type: "ROIPooling"
   bottom: "act_lp_30"
   bottom: "rois"
-  top: "pool5"
+  top: "roi_31"
   roi_pooling_param {
     pooled_w: 7
     pooled_h: 7
@@ -668,48 +668,82 @@ layer {
   }
 }
 layer {
-  name: "fc6"
-  type: "InnerProduct"
-  bottom: "pool5"
-  top: "fc6"
+  name: "fc_lp_42"
+  type: "LPInnerProduct"
+  bottom: "roi_31"
+  top: "fc_lp_42"
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
   inner_product_param {
-    num_output: 4096
+    num_output: 2048
   }
 }
 layer {
-  name: "relu6"
-  type: "ReLU"
-  bottom: "fc6"
-  top: "fc6"
+  name: "act_lp_43"
+  type: "LPAct"
+  bottom: "fc_lp_42"
+  top: "act_lp_43"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
 }
 layer {
-  name: "fc7"
-  type: "InnerProduct"
-  bottom: "fc6"
-  top: "fc7"
+  name: "relu_44"
+  type: "ReLU"
+  bottom: "act_lp_43"
+  top: "act_lp_43"
+}
+layer {
+  name: "fc_lp_44"
+  type: "LPInnerProduct"
+  bottom: "act_lp_43"
+  top: "fc_lp_44"
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
   inner_product_param {
-    num_output: 4096
+    num_output: 2048
   }
 }
 layer {
-  name: "relu7"
+  name: "act_lp_45"
+  type: "LPAct"
+  bottom: "fc_lp_44"
+  top: "act_lp_45"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "relu_46"
   type: "ReLU"
-  bottom: "fc7"
-  top: "fc7"
+  bottom: "act_lp_45"
+  top: "act_lp_45"
 }
 layer {
   name: "cls_score"
   type: "InnerProduct"
-  bottom: "fc7"
+  bottom: "act_lp_45"
   top: "cls_score"
   inner_product_param {
-    num_output: 21
-  }
+    num_output: 21 
+    }
 }
 layer {
   name: "bbox_pred"
   type: "InnerProduct"
-  bottom: "fc7"
+  bottom: "act_lp_45"
   top: "bbox_pred"
   inner_product_param {
     num_output: 84
