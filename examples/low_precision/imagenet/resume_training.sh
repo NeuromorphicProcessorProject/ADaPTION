@@ -5,4 +5,4 @@ LOG_DIR=$CAFFE_DIR/examples/low_precision/imagenet/log
 
 $CAFFE_DIR/build/tools/caffe train \
     --solver=$SOLVER_DIR/lp_solverGPU0.prototxt \
-    --snapshot=$CAFFE_DIR/data/ILSVRC2015/Snapshots/LP_VGG16_lr_00003_xavier_1080_test1_iter_1520000.solverstate
+    --snapshot=$CAFFE_DIR/../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad_iter_10000.solverstate.h5

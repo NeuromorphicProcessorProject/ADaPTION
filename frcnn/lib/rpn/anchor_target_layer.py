@@ -108,10 +108,11 @@ class AnchorTargetLayer(caffe.Layer):
         total_anchors = int(K * A)
 
         # only keep anchors inside the image
-        if len(np.where(all_anchors[:, 1] >= -self._allowed_border)[0]) == 0:
-            all_anchors[0:10, 1] = np.abs(all_anchors[0:10, 1])
-            all_anchors[0:10, 0] = np.abs(all_anchors[0:10, 1])
-            # Hacky way to cope with only negative anchor location
+        # if len(np.where(all_anchors[:, 1] >= -self._allowed_border)[0]) == 0:
+        #     all_anchors[0:2, 1] = np.abs(all_anchors[0:2, 1])
+        #     all_anchors[0:2, 0] = np.abs(all_anchors[0:2, 1])
+        #     print 'Only negative anchors'
+        #     # Hacky way to cope with only negative anchor location
         inds_inside = np.where(
             (all_anchors[:, 0] >= -self._allowed_border) &
             (all_anchors[:, 1] >= -self._allowed_border) &
@@ -125,7 +126,6 @@ class AnchorTargetLayer(caffe.Layer):
             print 'allowed borders', self._allowed_border
             print 'Shape of all_anchors', np.shape(all_anchors)
             print 'inds_inside', len(inds_inside)
-            print 'Anchors:', anchors
             print 'GT Boxes:', gt_boxes
 
         # keep only inside anchors
@@ -143,9 +143,6 @@ class AnchorTargetLayer(caffe.Layer):
         overlaps = bbox_overlaps(
             np.ascontiguousarray(anchors, dtype=np.float),
             np.ascontiguousarray(gt_boxes, dtype=np.float))
-        # if np.size(overlaps) == 0:
-        #     overlaps = np.ones([5,5])
-        #     overlaps[2, 3] = 5
         
         argmax_overlaps = overlaps.argmax(axis=1)
         max_overlaps = overlaps[np.arange(len(inds_inside)), argmax_overlaps]

@@ -592,7 +592,8 @@ layer {
 }
 layer {
   name: "fc_lp_42"
-  type: "LPInnerProduct"
+#  type: "LPInnerProduct"
+  type: "InnerProduct"
   bottom: "roi_31"
   top: "fc_lp_42"
   param {
@@ -603,44 +604,51 @@ layer {
     lr_mult: 2
     decay_mult: 0
    }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
+#  lpfp_param {
+#    bd: 5
+#    ad: 10
+#    round_bias: false
+#  }
   inner_product_param {
     num_output: 2048
   }
 }
-layer {
-  name: "act_lp_43"
-  type: "LPAct"
-  bottom: "fc_lp_42"
-  top: "act_lp_43"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
-}
+#layer {
+#  name: "act_lp_43"
+#  type: "LPAct"
+#  bottom: "fc_lp_42"
+#  top: "act_lp_43"
+#  lpfp_param {
+#    bd: 5
+#    ad: 10
+#    round_bias: false  }
+#}
 layer {
   name: "relu_44"
   type: "ReLU"
-  bottom: "act_lp_43"
-  top: "act_lp_43"
+#  bottom: "act_lp_43"
+#  top: "act_lp_43"
+  bottom: "fc_lp_42"
+  top: "fc_lp_42"
 }
 layer {
   name: "drop_44"
   type: "Dropout"
-  bottom: "act_lp_43"
-  top: "act_lp_43"
+#  bottom: "act_lp_43"
+#  top: "act_lp_43"
+  bottom: "fc_lp_42"
+  top: "fc_lp_42"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
 layer {
   name: "fc_lp_44"
-  type: "LPInnerProduct"
-  bottom: "act_lp_43"
+#  type: "LPInnerProduct"
+  type: "InnerProduct"
+#  bottom: "act_lp_43"
+#  top: "fc_lp_44"
+  bottom: "fc_lp_42"
   top: "fc_lp_44"
   param {
     lr_mult: 1
@@ -650,36 +658,40 @@ layer {
     lr_mult: 2
     decay_mult: 0
    }
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false
-  }
+#  lpfp_param {
+#    bd: 5
+#    ad: 10
+#    round_bias: false
+#  }
   inner_product_param {
     num_output: 2048
   }
 }
-layer {
-  name: "act_lp_45"
-  type: "LPAct"
-  bottom: "fc_lp_44"
-  top: "act_lp_45"
-  lpfp_param {
-    bd: 5
-    ad: 10
-    round_bias: false  }
-}
+#layer {
+#  name: "act_lp_45"
+#  type: "LPAct"
+#  bottom: "fc_lp_44"
+#  top: "act_lp_45"
+#  lpfp_param {
+#    bd: 5
+#    ad: 10
+#    round_bias: false  }
+#}
 layer {
   name: "relu_46"
   type: "ReLU"
-  bottom: "act_lp_45"
-  top: "act_lp_45"
+#  bottom: "act_lp_45"
+#  top: "act_lp_45"
+  bottom: "fc_lp_44"
+  top: "fc_lp_44"
 }
 layer {
   name: "drop_46"
   type: "Dropout"
-  bottom: "act_lp_45"
-  top: "act_lp_45"
+#  bottom: "act_lp_45"
+#  top: "act_lp_45"
+  bottom: "fc_lp_44"
+  top: "fc_lp_44"
   dropout_param {
     dropout_ratio: 0.5
   }
@@ -687,7 +699,8 @@ layer {
 layer {
   name: "cls_score"
   type: "InnerProduct"
-  bottom: "act_lp_45"
+#  bottom: "act_lp_45"
+  bottom: "fc_lp_44"
   top: "cls_score"
   param {
     lr_mult: 1
@@ -710,7 +723,8 @@ layer {
 layer {
   name: "bbox_pred"
   type: "InnerProduct"
-  bottom: "act_lp_45"
+#  bottom: "act_lp_45"
+  bottom: "fc_lp_44"
   top: "bbox_pred"
   param {
     lr_mult: 1

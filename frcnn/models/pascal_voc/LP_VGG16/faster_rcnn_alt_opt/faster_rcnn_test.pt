@@ -20,11 +20,9 @@ layer {
   top: "conv_lp_1"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -35,6 +33,7 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -60,11 +59,9 @@ layer {
   top: "conv_lp_3"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -75,6 +72,7 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -111,11 +109,9 @@ layer {
   top: "conv_lp_6"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -126,6 +122,7 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -151,11 +148,9 @@ layer {
   top: "conv_lp_8"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -166,6 +161,7 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -202,11 +198,9 @@ layer {
   top: "conv_lp_11"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -217,6 +211,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -242,11 +237,9 @@ layer {
   top: "conv_lp_13"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -257,6 +250,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -282,11 +276,9 @@ layer {
   top: "conv_lp_15"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -297,6 +289,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -333,11 +326,9 @@ layer {
   top: "conv_lp_18"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -348,6 +339,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -373,11 +365,9 @@ layer {
   top: "conv_lp_20"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -388,6 +378,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -413,11 +404,9 @@ layer {
   top: "conv_lp_22"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -428,6 +417,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -464,11 +454,9 @@ layer {
   top: "conv_lp_25"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -479,6 +467,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -504,11 +493,9 @@ layer {
   top: "conv_lp_27"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -519,6 +506,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -544,11 +532,9 @@ layer {
   top: "conv_lp_29"
   param {
     lr_mult: 1
-    decay_mult: 1
    }
   param {
     lr_mult: 2
-    decay_mult: 0
    }
   lpfp_param {
     bd: 5
@@ -559,6 +545,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -668,10 +655,10 @@ layer {
   }
 }
 layer {
-  name: "fc_lp_42"
+  name: "fc_lp_32"
   type: "LPInnerProduct"
   bottom: "roi_31"
-  top: "fc_lp_42"
+  top: "fc_lp_32"
   param { lr_mult: 0 decay_mult: 0 }
   param { lr_mult: 0 decay_mult: 0 }
   lpfp_param {
@@ -680,29 +667,29 @@ layer {
     round_bias: false
   }
   inner_product_param {
-    num_output: 2048
+    num_output: 4096
   }
 }
 layer {
-  name: "act_lp_43"
+  name: "act_lp_33"
   type: "LPAct"
-  bottom: "fc_lp_42"
-  top: "act_lp_43"
+  bottom: "fc_lp_32"
+  top: "act_lp_33"
   lpfp_param {
     bd: 5
     ad: 10
     round_bias: false  }
 }
 layer {
-  name: "relu_44"
+  name: "relu_34"
   type: "ReLU"
-  bottom: "act_lp_43"
-  top: "act_lp_43"
+  bottom: "act_lp_33"
+  top: "act_lp_33"
 }
 layer {
-  name: "fc_lp_44"
+  name: "fc_lp_34"
   type: "LPInnerProduct"
-  bottom: "act_lp_43"
+  bottom: "act_lp_33"
   top: "fc_lp_44"
   param { lr_mult: 0 decay_mult: 0 }
   param { lr_mult: 0 decay_mult: 0 }
@@ -712,14 +699,14 @@ layer {
     round_bias: false
   }
   inner_product_param {
-    num_output: 2048
+    num_output: 4096
   }
 }
 layer {
-  name: "act_lp_45"
+  name: "act_lp_35"
   type: "LPAct"
-  bottom: "fc_lp_44"
-  top: "act_lp_45"
+  bottom: "fc_lp_34"
+  top: "act_lp_35"
   lpfp_param {
     bd: 5
     ad: 10
@@ -728,13 +715,13 @@ layer {
 layer {
   name: "relu_46"
   type: "ReLU"
-  bottom: "act_lp_45"
-  top: "act_lp_45"
+  bottom: "act_lp_35"
+  top: "act_lp_35"
 }
 layer {
   name: "cls_score"
   type: "InnerProduct"
-  bottom: "act_lp_45"
+  bottom: "act_lp_35"
   top: "cls_score"
   inner_product_param {
     num_output: 21 
@@ -743,7 +730,7 @@ layer {
 layer {
   name: "bbox_pred"
   type: "InnerProduct"
-  bottom: "act_lp_45"
+  bottom: "act_lp_35"
   top: "bbox_pred"
   inner_product_param {
     num_output: 84

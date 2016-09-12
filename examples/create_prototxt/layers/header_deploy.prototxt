@@ -1,0 +1,20 @@
+name: "VGG16"
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 224
+    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 4
+    backend: LMDB
+  }
+}

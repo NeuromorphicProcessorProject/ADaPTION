@@ -85,7 +85,7 @@ def get_solvers(net_name):
     # max_iters = [100, 100, 100, 100]
     # Test prototxt for the RPN
     rpn_test_prototxt = os.path.join(
-        cfg.MODELS_DIR, net_name, n, 'rpn_test.pt')
+        cfg.MODELS_DIR, net_name, n, 'lp_rpn_test.pt')
     return solvers, max_iters, rpn_test_prototxt
 
 # ------------------------------------------------------------------------------

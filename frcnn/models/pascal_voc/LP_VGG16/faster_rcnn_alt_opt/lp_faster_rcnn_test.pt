@@ -7,6 +7,7 @@ input_shape {
   dim: 224
   dim: 224
 }
+
 input: "im_info"
 input_shape {
   dim: 1
@@ -17,12 +18,6 @@ layer {
   type: "LPConvolution"
   bottom: "data"
   top: "conv_lp_1"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -32,7 +27,6 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -56,12 +50,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_2"
   top: "conv_lp_3"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -71,7 +59,6 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -106,12 +93,6 @@ layer {
   type: "LPConvolution"
   bottom: "pool_5"
   top: "conv_lp_6"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -121,7 +102,6 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -145,12 +125,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_7"
   top: "conv_lp_8"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -160,7 +134,6 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -195,12 +168,6 @@ layer {
   type: "LPConvolution"
   bottom: "pool_10"
   top: "conv_lp_11"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -210,7 +177,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -234,12 +200,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_12"
   top: "conv_lp_13"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -249,7 +209,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -273,12 +232,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_14"
   top: "conv_lp_15"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -288,7 +241,6 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -323,12 +275,6 @@ layer {
   type: "LPConvolution"
   bottom: "pool_17"
   top: "conv_lp_18"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -338,7 +284,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -362,12 +307,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_19"
   top: "conv_lp_20"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -377,7 +316,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -401,12 +339,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_21"
   top: "conv_lp_22"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -416,7 +348,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -451,12 +382,6 @@ layer {
   type: "LPConvolution"
   bottom: "pool_24"
   top: "conv_lp_25"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -466,7 +391,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -490,12 +414,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_26"
   top: "conv_lp_27"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -505,7 +423,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -529,12 +446,6 @@ layer {
   type: "LPConvolution"
   bottom: "act_lp_28"
   top: "conv_lp_29"
-  param {
-    lr_mult: 1
-   }
-  param {
-    lr_mult: 2
-   }
   lpfp_param {
     bd: 5
     ad: 10
@@ -544,7 +455,6 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
-    pad: 1
   }
 }
 layer {
@@ -632,10 +542,108 @@ layer {
   bottom: 'rpn_bbox_pred'
   bottom: 'im_info'
   top: 'rois'
-  top: 'scores'
   python_param {
     module: 'rpn.proposal_layer'
     layer: 'ProposalLayer'
     param_str: "'feat_stride': 16"
   }
+}
+
+#========= RCNN ============
+
+layer {
+  name: "roi_31"
+  type: "ROIPooling"
+  bottom: "act_lp_30"
+  bottom: "rois"
+  top: "pool31"
+  roi_pooling_param {
+    pooled_w: 7
+    pooled_h: 7
+    spatial_scale: 0.0625 # 1/16
+  }
+}
+layer {
+  name: "fc_lp_32"
+  type: "LPInnerProduct"
+  bottom: "pool31"
+  top: "fc_lp_32"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "act_lp_33"
+  type: "LPAct"
+  bottom: "fc_lp_32"
+  top: "act_lp_33"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "relu_34"
+  type: "ReLU"
+  bottom: "act_lp_33"
+  top: "act_lp_33"
+}
+layer {
+  name: "fc_lp_34"
+  type: "LPInnerProduct"
+  bottom: "act_lp_33"
+  top: "fc_lp_34"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false
+  }
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "act_lp_35"
+  type: "LPAct"
+  bottom: "fc_lp_34"
+  top: "act_lp_35"
+  lpfp_param {
+    bd: 5
+    ad: 10
+    round_bias: false  }
+}
+layer {
+  name: "relu_36"
+  type: "ReLU"
+  bottom: "act_lp_35"
+  top: "act_lp_35"
+}
+layer {
+  name: "cls_score"
+  type: "InnerProduct"
+  bottom: "act_lp_35"
+  top: "cls_score"
+  inner_product_param {
+    num_output: 21 
+    }
+}
+layer {
+  name: "bbox_pred"
+  type: "InnerProduct"
+  bottom: "act_lp_35"
+  top: "bbox_pred"
+  inner_product_param {
+    num_output: 84
+  }
+}
+layer {
+  name: "cls_prob"
+  type: "Softmax"
+  bottom: "cls_score"
+  top: "cls_prob"
 }

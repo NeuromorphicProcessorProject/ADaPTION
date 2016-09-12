@@ -245,9 +245,14 @@ class pascal_voc(imdb):
                 continue
             print 'Writing {} VOC results file'.format(cls)
             filename = self._get_voc_results_file_template().format(cls)
+            print 'Filename & path of result: ', filename
             with open(filename, 'wt') as f:
                 for im_ind, index in enumerate(self.image_index):
+                    print 'Image index:', im_ind
+                    print 'Index: ', index
                     dets = all_boxes[cls_ind][im_ind]
+                    print 'All_boxes: ', np.shape(all_boxes)
+                    print np.shape(dets)
                     if dets == []:
                         continue
                     # the VOCdevkit expects 1-based indices
@@ -280,6 +285,7 @@ class pascal_voc(imdb):
             if cls == '__background__':
                 continue
             filename = self._get_voc_results_file_template().format(cls)
+            print 'Filename: ', filename
             rec, prec, ap = voc_eval(
                 filename, annopath, imagesetfile, cls, cachedir, ovthresh=0.5,
                 use_07_metric=use_07_metric)

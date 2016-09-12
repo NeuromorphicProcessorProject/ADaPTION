@@ -13,11 +13,11 @@ net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_xavier.proto
 # test_iter: 42857 
 test_iter: 25000
 # Carry out testing every 500 training iterations.
-test_interval: 1000
+test_interval: 10000
 #
 # ======== HYPERPARAMETERS ========
 # All parameters are from the cited paper above
-base_lr: 0.00003
+base_lr: 0.00002
 momentum: 0.9
 momentum2: 0.999
 # since Adam dynamically changes the learning rate, we set the base learning
@@ -40,13 +40,13 @@ estimate: 0
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-# max_iter: 6000000
+max_iter: 6000000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 05
 # max_iter: 1440000
 # 	NVIDIA GTX 1080 (8 GB ram) 
 # 	Batchsize of 28
-max_iter: 2571428
+# max_iter: 2571428
 # max_iter: 1125000
 # max_iter: 281250
 #
@@ -56,7 +56,9 @@ snapshot: 10000
 # Specify your GPU name & bit precision, as well as hyperparameters
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
-snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG16_lr_00003_xavier_1080_test1"
+# snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad"
+snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad"
+snapshot_format: HDF5
 #
 # ======== GPU SETTINGS ========
 # Solver mode: CPU or GPU
