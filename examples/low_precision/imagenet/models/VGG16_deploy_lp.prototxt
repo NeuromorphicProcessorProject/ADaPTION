@@ -14,7 +14,7 @@ layer {
   }
   data_param {
    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 1
+    batch_size: 12 
     backend: LMDB
   }
 }
@@ -619,9 +619,9 @@ layer {
    top_k: 5
   }
 }
-layer {
-  bottom: "fc8"
-  top: "prob"
-  name: "prob"
-  type: "Softmax"
-}
+#layer {
+#  bottom: "fc8"
+#  top: "prob"
+#  name: "prob"
+#  type: "Softmax"
+#}

@@ -9,7 +9,7 @@ layer {
   }
   transform_param {
     mirror: true
-    crop_size: 227
+    crop_size: 224
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {
@@ -28,12 +28,12 @@ layer {
   }
   transform_param {
     mirror: false
-    crop_size: 227
+    crop_size: 224
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 64
+    batch_size: 4
     backend: LMDB
   }
 }
@@ -739,9 +739,22 @@ layer {
   }
 }
 layer {
-  name: "loss"
-  type: "SoftmaxWithLoss"
+  name: "accuracy_top5"
+  type: "Accuracy"
   bottom: "fc_lp_36"
   bottom: "label"
-  top: "loss"
+  top: "accuracy_top5"
+  include {
+    phase: TEST
+  }
+ accuracy_param {
+   top_k: 5
+  }
 }
+#layer {
+#  name: "loss"
+#  type: "SoftmaxWithLoss"
+#  bottom: "fc_lp_36"
+#  bottom: "label"
+#  top: "loss"
+#}
