@@ -2,8 +2,8 @@ import collections as c
 
 base_dir = './'
 layer_dir = base_dir + 'layers/'
-# lp = False  # use lp version of the layers
-lp = True  # use lp version of the layers
+lp = False  # use lp version of the layers
+# lp = True  # use lp version of the layers
 # deploy = False
 deploy = True
 # visualize = False
@@ -132,7 +132,7 @@ for l in net_descriptor:
                                   '  param {\n', '    lr_mult: 1\n', '   }\n',
                                   '  param {\n', '    lr_mult: 2\n', '   }\n',
                                   '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride),
-                                  '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad), '    group: %s\n' % (layer.group),
+                                  '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                                   '  }\n',
                                   '}\n']
         else:
@@ -157,7 +157,7 @@ for l in net_descriptor:
                                       '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                       '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
                                       '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (layer.stride),
-                                      '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad), '    group: %s\n' % (layer.group),
+                                      '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                                       '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
                                       '    bias_filler {\n', '      type: "constant"\n', '      value: 0.0\n', '   }\n',
                                       '  }\n',

@@ -34,7 +34,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -59,7 +58,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -95,7 +93,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -120,7 +117,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -156,7 +152,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -181,7 +176,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -206,7 +200,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -242,7 +235,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -267,7 +259,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -292,7 +283,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -328,7 +318,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -353,7 +342,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
@@ -378,7 +366,6 @@ layer {
     stride: 1
     kernel_size: 3
     pad: 1
-    group: <property object at 0x7fd145444418>
   }
 }
 layer {
