@@ -24,8 +24,8 @@ weights_hp = weight_root + 'HP_VGG16.caffemodel'
 # weights_hp = '/media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad_iter_10000.caffemodel.h5'
 weights_lp = weight_root + 'LP_VGG16.caffemodel.h5'
 
-prototxt_hp = caffe_root + model_root + 'VGG16_deploy.prototxt'
-prototxt_lp = caffe_root + model_root + 'LP_VGG16_5_10_deploy.prototxt'
+prototxt_hp = caffe_root + model_root + 'VGG16_vis.prototxt'
+prototxt_lp = caffe_root + model_root + 'LP_VGG16_5_10_vis.prototxt'
 
 
 caffe.set_mode_gpu()

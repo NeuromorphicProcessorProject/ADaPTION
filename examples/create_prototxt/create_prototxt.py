@@ -6,8 +6,8 @@ layer_dir = base_dir + 'layers/'
 lp = True  # use lp version of the layers
 # deploy = False
 deploy = True
-visualize = False
-# visualize = True
+# visualize = False
+visualize = True
 # VGG 16
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
@@ -57,8 +57,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 3  # Set bit precision of Conv and ReLUs
-layer.ad = 12
+layer.bd = 5  # Set bit precision of Conv and ReLUs
+layer.ad = 10
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
