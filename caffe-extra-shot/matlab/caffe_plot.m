@@ -47,7 +47,8 @@ function dataset_plotyy(ds1, ds2, x_limits, y_limits, experiment)
     ylabel(ax(1),ds1.y_label) 
     ylabel(ax(2),ds2.y_label) 
     ylim(ax(2),y_limits);
-    % ylim(ax(1), [0, 40]);
+    ylim(ax(1), [0, 30]);
+    set(ax(1), 'YTick', [0:5:30]);
     xlim(x_limits);    
     title(experiment);
 end

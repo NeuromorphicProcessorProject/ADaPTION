@@ -8,7 +8,7 @@ experiment = 'LP VGG16 Pad BD:5, AD: 10 init LR: 0.00002';
 % input_log='caffe.zobula.moritz.log.INFO.20160731-192024.7198';
 input_log = 'LP_VGG16_5_10_pad.log';
 % input_log = 'LP_VGG16_5_10_batchnorm.log';
-limits=[0 900020];
+limits=[0 2430000];
 output_dir='/media/moritz/Data/ILSVRC2015/Plots';
 %%
 
