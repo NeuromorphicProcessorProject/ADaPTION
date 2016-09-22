@@ -443,7 +443,7 @@ layer {
   name: "pool_31"
   type: "Pooling"
   bottom: "conv_lp_29"
-  top: "pool_131"
+  top: "pool_31"
   pooling_param {
     pool: MAX
     kernel_size: 2
