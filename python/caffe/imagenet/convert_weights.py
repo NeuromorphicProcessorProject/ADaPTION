@@ -24,8 +24,8 @@ weights_hp = weight_root + 'HP_VGG16.caffemodel'
 # weights_hp = '/media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad_iter_10000.caffemodel.h5'
 weights_lp = weight_root + 'LP_VGG16.caffemodel.h5'
 
-prototxt_hp = caffe_root + model_root + 'VGG16_vis.prototxt'
-prototxt_lp = caffe_root + model_root + 'LP_VGG16_5_10_vis.prototxt'
+prototxt_hp = caffe_root + model_root + 'VGG16_deploy.prototxt'
+prototxt_lp = caffe_root + model_root + 'LP_VGG16_5_10_deploy.prototxt'
 
 
 caffe.set_mode_gpu()
@@ -50,19 +50,21 @@ for i, ldx in enumerate(net_hp.params.keys()):
     b = net_hp.params[ldx][1].data[...]
     # Calculate sparsity for each layer
     W_reshape = np.reshape(W, [1, -1])
-    sparsity = float(np.sum(W_reshape == 0) / len(W_reshape))
-    sparsity_hp.write('%s layer: %f %' % (ldx, sparsity))
-    W_reshape = np.reshape(net_lp.params[ldx_lp][1].data[...], [1, -1])
-    sparsity = float(np.sum(W_reshape == 0) / len(W_reshape))
-    sparsity_lp.write('%s layer: %f %' % (ldx_lp, sparsity))
+    sparsity1 = float(np.sum(W_reshape[0, :] == 0)) / float(len(W_reshape[0, :])) * 100.
+    sparsity_hp.write('%s layer: %f \n' % (ldx, sparsity1))
 
+    W_reshape = np.reshape(net_lp.params[ldx_lp][1].data[...], [1, -1])
+    sparsity2 = float(np.sum(W_reshape[0, :] == 0)) / float(len(W_reshape[0, :])) * 100.
+    sparsity_lp.write('%s layer: %f \n' % (ldx_lp, sparsity2))
     net_lp.params[ldx_lp][0].data[...] = W
     net_lp.params[ldx_lp][1].data[...] = W
     net_lp.params[ldx_lp][2].data[...] = b
     net_lp.params[ldx_lp][3].data[...] = b
-    print ldx_lp, ldx
+    # print ldx, sparsity1
+    # print ldx_lp, sparsity2
 
 
-net_lp.save(weight_root + 'HP_VGG16_v2.caffemodel.h5')
-sparsity_hp.clos()
+net_lp.save(weight_root + 'HP_VGG16_v2.caffemodel')
+sparsity_hp.close()
 sparsity_lp.close()
+print 'Saving done!'

@@ -2,12 +2,12 @@ import collections as c
 
 base_dir = './'
 layer_dir = base_dir + 'layers/'
-lp = False  # use lp version of the layers
-# lp = True  # use lp version of the layers
+# lp = False  # use lp version of the layers
+lp = True  # use lp version of the layers
 # deploy = False
 deploy = True
-# visualize = False
-visualize = True
+visualize = False
+# visualize = True
 # VGG 16
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
@@ -73,7 +73,7 @@ if lp:
             filename = '%s_%i_%i_vis.prototxt' % (net_name, layer.bd, layer.ad)
             filename = 'LP_' + filename
     else:
-        filename = '%s_%i_%i.prototxt' % (net_name, layer.bd, layer.ad)
+        filename = '%s_%i_%i_train.prototxt' % (net_name, layer.bd, layer.ad)
         filename = 'LP_' + filename
 else:
     if deploy:
@@ -81,7 +81,7 @@ else:
         if visualize:
             filename = '%s_vis.prototxt' % (net_name)
     else:
-        filename = '%s.prototxt' % (net_name)
+        filename = '%s_train.prototxt' % (net_name)
 
 print 'Generating ' + filename
 if lp:
@@ -398,12 +398,20 @@ for l in net_descriptor:
     layer_base.close()
 # To include the standard header, which handles directories and the input data
 # we need to write first the header and afterwards the layer_basis into new prototxt
-if deploy:
-    header = open(layer_dir + 'header_deploy.prototxt', 'r')
-    if visualize:
-        header = open(layer_dir + 'header_vis.prototxt', 'r')
+if lp:
+    if deploy:
+        header = open(layer_dir + 'header_deploy.prototxt', 'r')
+        if visualize:
+            header = open(layer_dir + 'header_vis.prototxt', 'r')
+    else:
+        header = open(layer_dir + 'header.prototxt', 'r')
 else:
-    header = open(layer_dir + 'header.prototxt', 'r')
+    if deploy:
+        header = open(layer_dir + 'header_deploy_noscale.prototxt', 'r')
+        if visualize:
+            header = open(layer_dir + 'header_vis_noscale.prototxt', 'r')
+    else:
+        header = open(layer_dir + 'header_noscale.prototxt', 'r')
 
 base = open(layer_dir + 'layer_base.prototxt', 'r')
 net = open(layer_dir + filename, "w")

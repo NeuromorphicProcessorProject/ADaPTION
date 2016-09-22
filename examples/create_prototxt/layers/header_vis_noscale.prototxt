@@ -8,13 +8,12 @@ layer {
     phase: TEST
   }
   transform_param {
-    scale: 0.00392156862
     mirror: false
     crop_size: 224
-    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+    mean_file: "../../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {
-    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    source: "../../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
     batch_size: 4
     backend: LMDB
   }
