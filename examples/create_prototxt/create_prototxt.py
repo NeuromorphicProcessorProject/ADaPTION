@@ -68,8 +68,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 2  # Set bit precision of Conv and ReLUs
-layer.ad = 14 
+layer.bd = 3  # Set bit precision of Conv and ReLUs
+layer.ad = 13 
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
