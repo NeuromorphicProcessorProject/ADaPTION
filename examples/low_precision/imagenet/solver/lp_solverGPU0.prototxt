@@ -4,7 +4,8 @@
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/lp_VGG16_7_8.prototxt"
 # net: "../../../examples/low_precision/imagenet/models/VGG16_xavier.prototxt"
-net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_xavier.prototxt"
+# net: "../../../examples/low_precision/imagenet/models/LP_VGG16_5_10_xavier.prototxt"
+net: "../../../examples/low_precision/imagenet/models/LP_VGG16_3_13_train.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
@@ -57,7 +58,7 @@ snapshot: 10000
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_7_8_980"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG_3_4_1080"
 # snapshot_prefix: "../../../data/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad"
-snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad"
+snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_3_13"
 snapshot_format: HDF5
 #
 # ======== GPU SETTINGS ========
