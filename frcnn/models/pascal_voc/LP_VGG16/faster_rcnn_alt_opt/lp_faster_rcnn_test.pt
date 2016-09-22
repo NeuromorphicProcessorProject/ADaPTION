@@ -27,6 +27,7 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -59,6 +60,7 @@ layer {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -102,6 +104,7 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -134,6 +137,7 @@ layer {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -177,6 +181,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -209,6 +214,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -241,6 +247,7 @@ layer {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -284,6 +291,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -316,6 +324,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -348,6 +357,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -391,6 +401,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -423,6 +434,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {
@@ -455,6 +467,7 @@ layer {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
   }
 }
 layer {

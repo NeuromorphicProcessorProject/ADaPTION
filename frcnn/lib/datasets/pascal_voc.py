@@ -19,6 +19,8 @@ import uuid
 from voc_eval import voc_eval
 from fast_rcnn.config import cfg
 
+DEBUG = True
+
 class pascal_voc(imdb):
     def __init__(self, image_set, year, devkit_path=None):
         imdb.__init__(self, 'voc_' + year + '_' + image_set)
@@ -248,11 +250,12 @@ class pascal_voc(imdb):
             print 'Filename & path of result: ', filename
             with open(filename, 'wt') as f:
                 for im_ind, index in enumerate(self.image_index):
-                    print 'Image index:', im_ind
-                    print 'Index: ', index
                     dets = all_boxes[cls_ind][im_ind]
-                    print 'All_boxes: ', np.shape(all_boxes)
-                    print np.shape(dets)
+	            if DEBUG:
+                    	print 'Image index:', im_ind
+                    	print 'Index: ', index
+			print 'All_boxes: ', np.shape(all_boxes)
+                    	print 'Det: ', np.shape(dets)
                     if dets == []:
                         continue
                     # the VOCdevkit expects 1-based indices

@@ -13,7 +13,8 @@ set -e
 export PYTHONUNBUFFERED="True"
 CAFFE_DIR=../../../..
 FRCNN_DIR=../..
-WEIGHT_DIR=../data/ILSVRC2015/Snapshots/LP_VGG16
+# WEIGHT_DIR=../data/ILSVRC2015/Snapshots/LP_VGG16
+WEIGHT_DIR=./data/Snapshots
 GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
@@ -41,15 +42,15 @@ case $DATASET in
     ;;
 esac
 
-LOG="experiments/logs/faster_rcnn_alt_opt_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
+LOG="experiments/logs/lp_faster_rcnn_alt_opt_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
-time ./tools/train_faster_rcnn_alt_opt.py --gpu ${GPU_ID} \
+time ./tools/lp_train_faster_rcnn_alt_opt.py --gpu ${GPU_ID} \
   --net_name ${NET} \
-  --weights $WEIGHT_DIR/${NET}.caffemodel \
+  --weights $WEIGHT_DIR/${NET}.caffemodel.h5 \
   --imdb ${TRAIN_IMDB} \
-  --cfg experiments/cfgs/faster_rcnn_alt_opt.yml \
+  --cfg experiments/cfgs/lp_faster_rcnn_alt_opt.yml \
   ${EXTRA_ARGS}
 
 set +x
@@ -60,7 +61,7 @@ time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_alt_opt/lp_faster_rcnn_test.pt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
-  --cfg experiments/cfgs/faster_rcnn_alt_opt.yml \
+  --cfg experiments/cfgs/lp_faster_rcnn_alt_opt.yml \
   ${EXTRA_ARGS}
 
 # --weights data/imagenet_models/${NET}.v2.caffemodel \
