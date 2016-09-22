@@ -1,3 +1,24 @@
+name: "VGG16"
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 224
+    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 4
+    backend: LMDB
+  }
+}
+
 layer {
   name: "conv_lp_1"
   type: "LPConvolution"
@@ -11,7 +32,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -40,7 +61,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -80,7 +101,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -109,7 +130,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -149,7 +170,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -178,7 +199,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -207,7 +228,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -247,7 +268,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -276,7 +297,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -305,7 +326,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -345,7 +366,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -374,7 +395,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -403,7 +424,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   convolution_param {
@@ -443,7 +464,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   inner_product_param {
@@ -478,7 +499,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   inner_product_param {
@@ -513,7 +534,7 @@ layer {
    }
   lpfp_param {
     bd: 2
-    ad: 6
+    ad: 14
     round_bias: false
   }
   inner_product_param {

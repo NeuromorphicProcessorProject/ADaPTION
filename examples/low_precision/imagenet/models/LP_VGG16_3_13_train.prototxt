@@ -8,8 +8,9 @@ layer {
     phase: TRAIN
   }
   transform_param {
+    scale: 0.00392156862
     mirror: true
-    crop_size: 227
+    crop_size: 224
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {
@@ -27,8 +28,9 @@ layer {
     phase: TEST
   }
   transform_param {
+    scale: 0.00392156862
     mirror: false
-    crop_size: 227
+    crop_size: 224
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {
@@ -37,6 +39,7 @@ layer {
     backend: LMDB
   }
 }
+
 layer {
   name: "conv_lp_1"
   type: "LPConvolution"
@@ -51,14 +54,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -67,8 +78,8 @@ layer {
   bottom: "conv_lp_1"
   top: "act_lp_2"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -91,14 +102,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 64
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -107,8 +126,8 @@ layer {
   bottom: "conv_lp_3"
   top: "act_lp_4"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -142,14 +161,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -158,8 +185,8 @@ layer {
   bottom: "conv_lp_6"
   top: "act_lp_7"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -182,14 +209,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 128
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -198,8 +233,8 @@ layer {
   bottom: "conv_lp_8"
   top: "act_lp_9"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -233,14 +268,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -249,8 +292,8 @@ layer {
   bottom: "conv_lp_11"
   top: "act_lp_12"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -273,14 +316,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -289,8 +340,8 @@ layer {
   bottom: "conv_lp_13"
   top: "act_lp_14"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -313,14 +364,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 256
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -329,8 +388,8 @@ layer {
   bottom: "conv_lp_15"
   top: "act_lp_16"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -364,14 +423,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -380,8 +447,8 @@ layer {
   bottom: "conv_lp_18"
   top: "act_lp_19"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -404,14 +471,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -420,8 +495,8 @@ layer {
   bottom: "conv_lp_20"
   top: "act_lp_21"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -444,14 +519,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -460,8 +543,8 @@ layer {
   bottom: "conv_lp_22"
   top: "act_lp_23"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -495,14 +578,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -511,8 +602,8 @@ layer {
   bottom: "conv_lp_25"
   top: "act_lp_26"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -535,14 +626,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -551,8 +650,8 @@ layer {
   bottom: "conv_lp_27"
   top: "act_lp_28"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -575,14 +674,22 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   convolution_param {
     num_output: 512
     stride: 1
     kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
   }
 }
 layer {
@@ -591,8 +698,8 @@ layer {
   bottom: "conv_lp_29"
   top: "act_lp_30"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -602,21 +709,20 @@ layer {
   top: "act_lp_30"
 }
 layer {
-  name: "roi_31"
-  type: "ROIPooling"
+  name: "pool_31"
+  type: "Pooling"
   bottom: "act_lp_30"
-  bottom: "rois"
-  top: "roi_31"
-  roi_pooling_param {
-    pooled_w: 7
-   pooled_h: 7
-   spatial scale: 0.625
+  top: "pool_31"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
   }
 }
 layer {
   name: "fc_lp_32"
   type: "LPInnerProduct"
-  bottom: "roi_31"
+  bottom: "pool_31"
   top: "fc_lp_32"
   param {
     lr_mult: 1
@@ -627,12 +733,19 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   inner_product_param {
     num_output: 4096
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
   }
 }
 layer {
@@ -641,8 +754,8 @@ layer {
   bottom: "fc_lp_32"
   top: "act_lp_33"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -674,12 +787,19 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false
   }
   inner_product_param {
     num_output: 4096
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
   }
 }
 layer {
@@ -688,8 +808,8 @@ layer {
   bottom: "fc_lp_34"
   top: "act_lp_35"
   lpfp_param {
-    bd: 5
-    ad: 10
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -706,4 +826,50 @@ layer {
   dropout_param {
     dropout_ratio: 0.5
   }
+}
+layer {
+  name: "fc_lp_36"
+  type: "LPInnerProduct"
+  bottom: "act_lp_35"
+  top: "fc_lp_36"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 3
+    ad: 13
+    round_bias: false
+  }
+  inner_product_param {
+    num_output: 1000
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "loss"
 }

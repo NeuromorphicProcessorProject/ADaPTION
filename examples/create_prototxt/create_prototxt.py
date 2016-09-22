@@ -18,15 +18,26 @@ visualize = False
 #                   # '4096F', 'A', 'ReLU', 'D5',
 #                   ]
 
-net_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
-                  '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
-                  '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
-                  '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
-                  '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
-                  '4096F', 'A', 'ReLU', 'D5',
-                  '4096F', 'A', 'ReLU', 'D5',
-                  '1000F',
-                  'Accuracy', 'loss']
+# net_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
+#                   '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
+#                   '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
+#                   '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+#                   '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
+
+# Only round weights and not activations
+# net_descriptor = ['64C3S1p1', 'ReLU', '64C3S1p1', 'ReLU', '2P2',
+#                   '128C3S1p1', 'ReLU', '128C3S1p1', 'ReLU', '2P2',
+#                   '256C3S1p1', 'ReLU', '256C3S1p1', 'ReLU', '256C3S1p1', 'ReLU', '2P2',
+#                   '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '2P2',
+#                   '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '2P2',
+#                   '4096F', 'ReLU', 'D5',
+#                   '4096F', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
 
 
 # net_descriptor = ['64C3S1p1', 'A', 'bnorm', 'ReLU', '64C3S1p1', 'A', 'bnorm', 'ReLU', '2P2',
@@ -57,8 +68,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 5  # Set bit precision of Conv and ReLUs
-layer.ad = 10
+layer.bd = 2  # Set bit precision of Conv and ReLUs
+layer.ad = 6
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
@@ -85,7 +96,7 @@ else:
 
 print 'Generating ' + filename
 if lp:
-    print 'With ' + str(layer.bd + layer.ad + 1) + ' bits numerical precision'
+    print 'With ' + str(layer.bd + layer.ad) + ' bits numerical precision'
 for l in net_descriptor:
     if layer.counter < 2:
         layer_base = open(layer_dir + 'layer_base.prototxt', 'wr')
