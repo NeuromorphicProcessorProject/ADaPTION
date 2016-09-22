@@ -63,6 +63,6 @@ for i, ldx in enumerate(net_hp.params.keys()):
     print ldx_lp, ldx
 
 
-net_lp.save(weight_root + 'HP_VGG16_v2.caffemodel')
+net_lp.save(weight_root + 'HP_VGG16_v2.caffemodel.h5')
 sparsity_hp.clos()
 sparsity_lp.close()
