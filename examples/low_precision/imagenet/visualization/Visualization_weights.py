@@ -22,7 +22,7 @@ snapshot_root = '/media/moritz/Data/ILSVRC2015/Snapshots/'
 # prototxt_file = caffe_root + model_root + 'LP_VGG16_5_10_xavier_vis.prototxt'
 prototxt_file = caffe_root + model_root + 'VGG16_deploy_vis.prototxt'
 # weights_file = '/home/moritz/Downloads/VGG16_tmp/' + 'LP_VGG16.caffemodel.h5'
-weights_file = '/home/moritz/Downloads/VGG16_tmp/' + 'HP_VGG16.caffemodel.h5'
+weights_file = '/home/moritz/Downloads/VGG16_tmp/' + 'HP_VGG16.caffemodel'
 
 net = caffe.Net(prototxt_file, weights_file, caffe.TEST)
 print('Doing forward pass...')

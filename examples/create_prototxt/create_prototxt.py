@@ -4,7 +4,7 @@ base_dir = './'
 layer_dir = base_dir + 'layers/'
 # lp = False  # use lp version of the layers
 lp = True  # use lp version of the layers
-deploy = False
+deploy = True
 # VGG 16
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
@@ -61,7 +61,7 @@ layer.counter = 1
 layer.name_old = 'data'
 init_method = 'xavier'
 # init_method = 'gaussian'
-net_name = 'VGG16_2_5'
+net_name = 'VGG16'
 if lp:
     if deploy:
         filename = '%s_%i_%i_deploy.prototxt' % (net_name, layer.bd, layer.ad)
