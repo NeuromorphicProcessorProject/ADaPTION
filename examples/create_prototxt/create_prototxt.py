@@ -2,12 +2,12 @@ import collections as c
 
 base_dir = './'
 layer_dir = base_dir + 'layers/'
-lp = False  # use lp version of the layers
-# lp = True  # use lp version of the layers
+# lp = False  # use lp version of the layers
+lp = True  # use lp version of the layers
 # deploy = False
 deploy = True
-# visualize = False
-visualize = True
+visualize = False
+# visualize = True
 # VGG 16
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
@@ -18,15 +18,26 @@ visualize = True
 #                   # '4096F', 'A', 'ReLU', 'D5',
 #                   ]
 
-net_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
-                  '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
-                  '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
-                  '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
-                  '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
-                  '4096F', 'A', 'ReLU', 'D5',
-                  '4096F', 'A', 'ReLU', 'D5',
-                  '1000F',
-                  'Accuracy', 'loss']
+# net_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
+#                   '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
+#                   '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
+#                   '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+#                   '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '4096F', 'A', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
+
+# Only round weights and not activations
+# net_descriptor = ['64C3S1p1', 'ReLU', '64C3S1p1', 'ReLU', '2P2',
+#                   '128C3S1p1', 'ReLU', '128C3S1p1', 'ReLU', '2P2',
+#                   '256C3S1p1', 'ReLU', '256C3S1p1', 'ReLU', '256C3S1p1', 'ReLU', '2P2',
+#                   '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '2P2',
+#                   '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '512C3S1p1', 'ReLU', '2P2',
+#                   '4096F', 'ReLU', 'D5',
+#                   '4096F', 'ReLU', 'D5',
+#                   '1000F',
+#                   'Accuracy', 'loss']
 
 
 # net_descriptor = ['64C3S1p1', 'A', 'bnorm', 'ReLU', '64C3S1p1', 'A', 'bnorm', 'ReLU', '2P2',
@@ -57,8 +68,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 5  # Set bit precision of Conv and ReLUs
-layer.ad = 10
+layer.bd = 2  # Set bit precision of Conv and ReLUs
+layer.ad = 6
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
@@ -73,7 +84,7 @@ if lp:
             filename = '%s_%i_%i_vis.prototxt' % (net_name, layer.bd, layer.ad)
             filename = 'LP_' + filename
     else:
-        filename = '%s_%i_%i.prototxt' % (net_name, layer.bd, layer.ad)
+        filename = '%s_%i_%i_train.prototxt' % (net_name, layer.bd, layer.ad)
         filename = 'LP_' + filename
 else:
     if deploy:
@@ -81,11 +92,11 @@ else:
         if visualize:
             filename = '%s_vis.prototxt' % (net_name)
     else:
-        filename = '%s.prototxt' % (net_name)
+        filename = '%s_train.prototxt' % (net_name)
 
 print 'Generating ' + filename
 if lp:
-    print 'With ' + str(layer.bd + layer.ad + 1) + ' bits numerical precision'
+    print 'With ' + str(layer.bd + layer.ad) + ' bits numerical precision'
 for l in net_descriptor:
     if layer.counter < 2:
         layer_base = open(layer_dir + 'layer_base.prototxt', 'wr')
@@ -398,12 +409,20 @@ for l in net_descriptor:
     layer_base.close()
 # To include the standard header, which handles directories and the input data
 # we need to write first the header and afterwards the layer_basis into new prototxt
-if deploy:
-    header = open(layer_dir + 'header_deploy.prototxt', 'r')
-    if visualize:
-        header = open(layer_dir + 'header_vis.prototxt', 'r')
+if lp:
+    if deploy:
+        header = open(layer_dir + 'header_deploy.prototxt', 'r')
+        if visualize:
+            header = open(layer_dir + 'header_vis.prototxt', 'r')
+    else:
+        header = open(layer_dir + 'header.prototxt', 'r')
 else:
-    header = open(layer_dir + 'header.prototxt', 'r')
+    if deploy:
+        header = open(layer_dir + 'header_deploy_noscale.prototxt', 'r')
+        if visualize:
+            header = open(layer_dir + 'header_vis_noscale.prototxt', 'r')
+    else:
+        header = open(layer_dir + 'header_noscale.prototxt', 'r')
 
 base = open(layer_dir + 'layer_base.prototxt', 'r')
 net = open(layer_dir + filename, "w")

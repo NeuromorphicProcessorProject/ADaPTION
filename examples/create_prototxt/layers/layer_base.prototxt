@@ -1,14 +1,19 @@
 layer {
-  name: "conv_1"
-  type: "Convolution"
+  name: "conv_lp_1"
+  type: "LPConvolution"
   bottom: "data"
-  top: "conv_1"
+  top: "conv_lp_1"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 64
     stride: 1
@@ -19,20 +24,25 @@ layer {
 layer {
   name: "relu_2"
   type: "ReLU"
-  bottom: "conv_1"
-  top: "conv_1"
+  bottom: "conv_lp_1"
+  top: "conv_lp_1"
 }
 layer {
-  name: "conv_2"
-  type: "Convolution"
-  bottom: "conv_1"
-  top: "conv_2"
+  name: "conv_lp_2"
+  type: "LPConvolution"
+  bottom: "conv_lp_1"
+  top: "conv_lp_2"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 64
     stride: 1
@@ -43,13 +53,13 @@ layer {
 layer {
   name: "relu_3"
   type: "ReLU"
-  bottom: "conv_2"
-  top: "conv_2"
+  bottom: "conv_lp_2"
+  top: "conv_lp_2"
 }
 layer {
   name: "pool_3"
   type: "Pooling"
-  bottom: "conv_2"
+  bottom: "conv_lp_2"
   top: "pool_3"
   pooling_param {
     pool: MAX
@@ -58,16 +68,21 @@ layer {
   }
 }
 layer {
-  name: "conv_4"
-  type: "Convolution"
+  name: "conv_lp_4"
+  type: "LPConvolution"
   bottom: "pool_3"
-  top: "conv_4"
+  top: "conv_lp_4"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 128
     stride: 1
@@ -78,20 +93,25 @@ layer {
 layer {
   name: "relu_5"
   type: "ReLU"
-  bottom: "conv_4"
-  top: "conv_4"
+  bottom: "conv_lp_4"
+  top: "conv_lp_4"
 }
 layer {
-  name: "conv_5"
-  type: "Convolution"
-  bottom: "conv_4"
-  top: "conv_5"
+  name: "conv_lp_5"
+  type: "LPConvolution"
+  bottom: "conv_lp_4"
+  top: "conv_lp_5"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 128
     stride: 1
@@ -102,13 +122,13 @@ layer {
 layer {
   name: "relu_6"
   type: "ReLU"
-  bottom: "conv_5"
-  top: "conv_5"
+  bottom: "conv_lp_5"
+  top: "conv_lp_5"
 }
 layer {
   name: "pool_6"
   type: "Pooling"
-  bottom: "conv_5"
+  bottom: "conv_lp_5"
   top: "pool_6"
   pooling_param {
     pool: MAX
@@ -117,16 +137,21 @@ layer {
   }
 }
 layer {
-  name: "conv_7"
-  type: "Convolution"
+  name: "conv_lp_7"
+  type: "LPConvolution"
   bottom: "pool_6"
-  top: "conv_7"
+  top: "conv_lp_7"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 256
     stride: 1
@@ -137,20 +162,25 @@ layer {
 layer {
   name: "relu_8"
   type: "ReLU"
-  bottom: "conv_7"
-  top: "conv_7"
+  bottom: "conv_lp_7"
+  top: "conv_lp_7"
 }
 layer {
-  name: "conv_8"
-  type: "Convolution"
-  bottom: "conv_7"
-  top: "conv_8"
+  name: "conv_lp_8"
+  type: "LPConvolution"
+  bottom: "conv_lp_7"
+  top: "conv_lp_8"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 256
     stride: 1
@@ -161,20 +191,25 @@ layer {
 layer {
   name: "relu_9"
   type: "ReLU"
-  bottom: "conv_8"
-  top: "conv_8"
+  bottom: "conv_lp_8"
+  top: "conv_lp_8"
 }
 layer {
-  name: "conv_9"
-  type: "Convolution"
-  bottom: "conv_8"
-  top: "conv_9"
+  name: "conv_lp_9"
+  type: "LPConvolution"
+  bottom: "conv_lp_8"
+  top: "conv_lp_9"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 256
     stride: 1
@@ -185,13 +220,13 @@ layer {
 layer {
   name: "relu_10"
   type: "ReLU"
-  bottom: "conv_9"
-  top: "conv_9"
+  bottom: "conv_lp_9"
+  top: "conv_lp_9"
 }
 layer {
   name: "pool_10"
   type: "Pooling"
-  bottom: "conv_9"
+  bottom: "conv_lp_9"
   top: "pool_10"
   pooling_param {
     pool: MAX
@@ -200,16 +235,21 @@ layer {
   }
 }
 layer {
-  name: "conv_11"
-  type: "Convolution"
+  name: "conv_lp_11"
+  type: "LPConvolution"
   bottom: "pool_10"
-  top: "conv_11"
+  top: "conv_lp_11"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -220,20 +260,25 @@ layer {
 layer {
   name: "relu_12"
   type: "ReLU"
-  bottom: "conv_11"
-  top: "conv_11"
+  bottom: "conv_lp_11"
+  top: "conv_lp_11"
 }
 layer {
-  name: "conv_12"
-  type: "Convolution"
-  bottom: "conv_11"
-  top: "conv_12"
+  name: "conv_lp_12"
+  type: "LPConvolution"
+  bottom: "conv_lp_11"
+  top: "conv_lp_12"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -244,20 +289,25 @@ layer {
 layer {
   name: "relu_13"
   type: "ReLU"
-  bottom: "conv_12"
-  top: "conv_12"
+  bottom: "conv_lp_12"
+  top: "conv_lp_12"
 }
 layer {
-  name: "conv_13"
-  type: "Convolution"
-  bottom: "conv_12"
-  top: "conv_13"
+  name: "conv_lp_13"
+  type: "LPConvolution"
+  bottom: "conv_lp_12"
+  top: "conv_lp_13"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -268,13 +318,13 @@ layer {
 layer {
   name: "relu_14"
   type: "ReLU"
-  bottom: "conv_13"
-  top: "conv_13"
+  bottom: "conv_lp_13"
+  top: "conv_lp_13"
 }
 layer {
   name: "pool_14"
   type: "Pooling"
-  bottom: "conv_13"
+  bottom: "conv_lp_13"
   top: "pool_14"
   pooling_param {
     pool: MAX
@@ -283,16 +333,21 @@ layer {
   }
 }
 layer {
-  name: "conv_15"
-  type: "Convolution"
+  name: "conv_lp_15"
+  type: "LPConvolution"
   bottom: "pool_14"
-  top: "conv_15"
+  top: "conv_lp_15"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -303,20 +358,25 @@ layer {
 layer {
   name: "relu_16"
   type: "ReLU"
-  bottom: "conv_15"
-  top: "conv_15"
+  bottom: "conv_lp_15"
+  top: "conv_lp_15"
 }
 layer {
-  name: "conv_16"
-  type: "Convolution"
-  bottom: "conv_15"
-  top: "conv_16"
+  name: "conv_lp_16"
+  type: "LPConvolution"
+  bottom: "conv_lp_15"
+  top: "conv_lp_16"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -327,20 +387,25 @@ layer {
 layer {
   name: "relu_17"
   type: "ReLU"
-  bottom: "conv_16"
-  top: "conv_16"
+  bottom: "conv_lp_16"
+  top: "conv_lp_16"
 }
 layer {
-  name: "conv_17"
-  type: "Convolution"
-  bottom: "conv_16"
-  top: "conv_17"
+  name: "conv_lp_17"
+  type: "LPConvolution"
+  bottom: "conv_lp_16"
+  top: "conv_lp_17"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   convolution_param {
     num_output: 512
     stride: 1
@@ -351,13 +416,13 @@ layer {
 layer {
   name: "relu_18"
   type: "ReLU"
-  bottom: "conv_17"
-  top: "conv_17"
+  bottom: "conv_lp_17"
+  top: "conv_lp_17"
 }
 layer {
   name: "pool_18"
   type: "Pooling"
-  bottom: "conv_17"
+  bottom: "conv_lp_17"
   top: "pool_18"
   pooling_param {
     pool: MAX
@@ -366,16 +431,21 @@ layer {
   }
 }
 layer {
-  name: "fc_19"
-  type: "InnerProduct"
+  name: "fc_lp_19"
+  type: "LPInnerProduct"
   bottom: "pool_18"
-  top: "fc_19"
+  top: "fc_lp_19"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   inner_product_param {
     num_output: 4096
   }
@@ -383,29 +453,34 @@ layer {
 layer {
   name: "relu_20"
   type: "ReLU"
-  bottom: "fc_19"
-  top: "fc_19"
+  bottom: "fc_lp_19"
+  top: "fc_lp_19"
 }
 layer {
   name: "drop_20"
   type: "Dropout"
-  bottom: "fc_19"
-  top: "fc_19"
+  bottom: "fc_lp_19"
+  top: "fc_lp_19"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
 layer {
-  name: "fc_20"
-  type: "InnerProduct"
-  bottom: "fc_19"
-  top: "fc_20"
+  name: "fc_lp_20"
+  type: "LPInnerProduct"
+  bottom: "fc_lp_19"
+  top: "fc_lp_20"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   inner_product_param {
     num_output: 4096
   }
@@ -413,29 +488,34 @@ layer {
 layer {
   name: "relu_21"
   type: "ReLU"
-  bottom: "fc_20"
-  top: "fc_20"
+  bottom: "fc_lp_20"
+  top: "fc_lp_20"
 }
 layer {
   name: "drop_21"
   type: "Dropout"
-  bottom: "fc_20"
-  top: "fc_20"
+  bottom: "fc_lp_20"
+  top: "fc_lp_20"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
 layer {
-  name: "fc_21"
-  type: "InnerProduct"
-  bottom: "fc_20"
-  top: "fc_21"
+  name: "fc_lp_21"
+  type: "LPInnerProduct"
+  bottom: "fc_lp_20"
+  top: "fc_lp_21"
   param {
     lr_mult: 1
    }
   param {
     lr_mult: 2
    }
+  lpfp_param {
+    bd: 2
+    ad: 6
+    round_bias: false
+  }
   inner_product_param {
     num_output: 1000
   }
@@ -443,7 +523,7 @@ layer {
 layer {
   name: "accuracy"
   type: "Accuracy"
-  bottom: "fc_21"
+  bottom: "fc_lp_21"
   bottom: "label"
   top: "accuracy"
   include {
@@ -453,7 +533,7 @@ layer {
 layer {
   name: "accuracy_top5"
   type: "Accuracy"
-  bottom: "fc_21"
+  bottom: "fc_lp_21"
   bottom: "label"
   top: "accuracy_top5"
   include {
@@ -466,7 +546,7 @@ layer {
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "fc_21"
+  bottom: "fc_lp_21"
   bottom: "label"
   top: "loss"
 }

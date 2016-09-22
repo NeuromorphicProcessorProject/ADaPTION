@@ -19,6 +19,7 @@ layers {
     phase: TEST
   }
   transform_param {
+    scale: 0.00392156862
     mirror: false
     crop_size: 224
     mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"

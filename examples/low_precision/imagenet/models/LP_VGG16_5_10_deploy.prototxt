@@ -14,7 +14,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 1
+    batch_size: 4
     backend: LMDB
   }
 }
@@ -698,6 +698,19 @@ layer {
   top: "accuracy"
   include {
     phase: TEST
+  }
+}
+layer {
+  name: "accuracy_top5"
+  type: "Accuracy"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "accuracy_top5"
+  include {
+    phase: TEST
+  }
+  accuracy_param {
+    top_k: 5
   }
 }
 layer {

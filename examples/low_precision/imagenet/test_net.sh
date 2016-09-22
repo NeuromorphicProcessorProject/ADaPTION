@@ -5,8 +5,13 @@ MODEL_DIR=$CAFFE_DIR/examples/low_precision/imagenet/models
 LOG_DIR=$CAFFE_DIR/examples/low_precision/imagenet/log
 WEIGHT_DIR=$CAFFE_DIR/../../Downloads/VGG16_tmp
 # NET_NAME=LP_VGG16_5_10_deploy.prototxt
+<<<<<<< HEAD
 # NET_NAME=LP_VGG16_0_15_deploy.prototxt
 NET_NAME=LP_VGG16_1_14_deploy.prototxt
+=======
+NET_NAME=LP_VGG16_0_15_deploy.prototxt
+# NET_NAME=LP_VGG16_1_14_deploy.prototxt
+>>>>>>> 6950bb97e5a3a78d0becb85f1039a550e803c1a0
 # NET_NAME=LP_VGG16_2_13_deploy.prototxt
 # NET_NAME=LP_VGG16_3_12_deploy.prototxt
 # NET_NAME=LP_VGG16_0_7_deploy.prototxt
