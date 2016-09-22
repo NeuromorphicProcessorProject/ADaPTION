@@ -4,7 +4,10 @@ base_dir = './'
 layer_dir = base_dir + 'layers/'
 # lp = False  # use lp version of the layers
 lp = True  # use lp version of the layers
+# deploy = False
 deploy = True
+visualize = False
+# visualize = True
 # VGG 16
 # net_descriptor = ['64C3S1', 'A', 'ReLU', '64C3S1', 'A', 'ReLU', '2P2',
 #                   '128C3S1', 'A', 'ReLU', '128C3S1', 'A', 'ReLU', '2P2',
@@ -54,8 +57,8 @@ if not lp:
 
 layer = c.namedtuple('layer', ['name', 'name_old' 'type', 'bottom', 'top', 'counter', 'bd', 'ad', 'kernel', 'group',
                                'stride', 'pad', 'bias', 'output', 'pool_size', 'pool_type', 'round_bias', 'dropout_rate'])
-layer.bd = 2  # Set bit precision of Conv and ReLUs
-layer.ad = 5
+layer.bd = 3  # Set bit precision of Conv and ReLUs
+layer.ad = 12
 layer.round_bias = 'false'
 layer.counter = 1
 layer.name_old = 'data'
@@ -66,14 +69,19 @@ if lp:
     if deploy:
         filename = '%s_%i_%i_deploy.prototxt' % (net_name, layer.bd, layer.ad)
         filename = 'LP_' + filename
+        if visualize:
+            filename = '%s_%i_%i_vis.prototxt' % (net_name, layer.bd, layer.ad)
+            filename = 'LP_' + filename
     else:
-        filename = '%s_%i_%i_%s.prototxt' % (net_name, layer.bd, layer.ad, init_method)
+        filename = '%s_%i_%i.prototxt' % (net_name, layer.bd, layer.ad)
         filename = 'LP_' + filename
 else:
     if deploy:
         filename = '%s_deploy.prototxt' % (net_name)
+        if visualize:
+            filename = '%s_vis.prototxt' % (net_name)
     else:
-        filename = '%s_%s.prototxt' % (net_name, init_method)
+        filename = '%s.prototxt' % (net_name)
 
 print 'Generating ' + filename
 if lp:
@@ -333,7 +341,19 @@ for l in net_descriptor:
                           '  bottom: "label"\n', '  top: "%s"\n' % (layer.name),
                           '  include {\n', '    phase: TEST\n', '  }\n',
                           '}\n']
+        if deploy:
+            layer_name = 'accuracy_top5'
+            lines_to_write = ['layer {\n', '  name: "%s"\n' % (layer.name), '  type: "%s"\n' % (layer.type), '  bottom: "%s"\n' % (layer.name_old),
+                              '  bottom: "label"\n', '  top: "%s"\n' % (layer.name),
+                              '  include {\n', '    phase: TEST\n', '  }\n',
+                              '}\n'
+                              'layer {\n', '  name: "%s"\n' % (layer_name), '  type: "%s"\n' % (layer.type), '  bottom: "%s"\n' % (layer.name_old),
+                              '  bottom: "label"\n', '  top: "%s"\n' % (layer_name),
+                              '  include {\n', '    phase: TEST\n', '  }\n',
+                              '  accuracy_param {\n', '    top_k: 5\n', '  }\n',
+                              '}\n']
         layer_base.writelines(lines_to_write)
+
 
     if l == 'loss':
         # print 'Loss'
@@ -380,6 +400,8 @@ for l in net_descriptor:
 # we need to write first the header and afterwards the layer_basis into new prototxt
 if deploy:
     header = open(layer_dir + 'header_deploy.prototxt', 'r')
+    if visualize:
+        header = open(layer_dir + 'header_vis.prototxt', 'r')
 else:
     header = open(layer_dir + 'header.prototxt', 'r')
 

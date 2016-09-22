@@ -25,7 +25,7 @@ layers {
   }
   data_param {
    source: "../../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 1
+    batch_size: 4
     backend: LMDB
   }
 }

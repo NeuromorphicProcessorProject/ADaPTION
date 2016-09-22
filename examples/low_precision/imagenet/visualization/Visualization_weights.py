@@ -18,9 +18,15 @@ model_root = 'examples/low_precision/imagenet/models/'
 snapshot_root = '/media/moritz/Data/ILSVRC2015/Snapshots/'
 
 
-# prototxt_file = caffe_root + model_root + 'VGG16_xavier_vis.prototxt'
-# prototxt_file = caffe_root + model_root + 'LP_VGG16_5_10_xavier_vis.prototxt'
 prototxt_file = caffe_root + model_root + 'VGG16_deploy_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_0_7_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_1_6_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_2_5_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_0_15_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_1_14_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_2_13_vis.prototxt'
+# prototxt_file = caffe_root + model_root + 'LP_VGG16_3_12_vis.prototxt'
+
 # weights_file = '/home/moritz/Downloads/VGG16_tmp/' + 'LP_VGG16.caffemodel.h5'
 weights_file = '/home/moritz/Downloads/VGG16_tmp/' + 'HP_VGG16.caffemodel'
 
