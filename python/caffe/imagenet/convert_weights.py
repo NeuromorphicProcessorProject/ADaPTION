@@ -14,11 +14,12 @@ import time
 caffe_root = '/home/moritz/Repositories/caffe_lp/'
 model_root = 'examples/low_precision/imagenet/models/'
 # weight_root = '/home/moritz/Downloads/VGG16_tmp/'
-weight_root = '/home/moritz/VGG16_tmp/'
+weight_root = '/home/moritz/Downloads/VGG16_tmp/'
 snapshot_root = '/media/moritz/Data/ILSVRC2015/Snapshots/'
 
 
-weights_hp = weight_root + 'VGG_ILSVRC_16_layers.caffemodel'
+# weights_hp = weight_root + 'VGG_ILSVRC_16_layers.caffemodel'
+weights_hp = weight_root + 'HP_VGG16.caffemodel'
 # weights_hp = '/media/moritz/Data/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad_iter_1000.caffemodel'
 # weights_hp = '/media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_5_10_lr_00002_pad_iter_10000.caffemodel.h5'
 weights_lp = weight_root + 'LP_VGG16.caffemodel.h5'
