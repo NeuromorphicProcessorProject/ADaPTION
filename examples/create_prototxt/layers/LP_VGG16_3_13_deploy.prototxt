@@ -1,19 +1,25 @@
-name: "VGG_ILSVRC_16_layers"
+name: "VGG16"
 layer {
-  name: 'data'
-  type: 'Python'
-  top: 'data'
-  top: 'rois'
-  top: 'labels'
-  top: 'bbox_targets'
-  top: 'bbox_inside_weights'
-  top: 'bbox_outside_weights'
-  python_param {
-    module: 'roi_data_layer.layer'
-    layer: 'RoIDataLayer'
-    param_str: "'num_classes': 21"
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    scale: 0.00392156862
+    mirror: false
+    crop_size: 224
+    mean_file: "../../../data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 4
+    backend: LMDB
   }
 }
+
 layer {
   name: "conv_lp_1"
   type: "LPConvolution"
@@ -566,21 +572,20 @@ layer {
   top: "act_lp_30"
 }
 layer {
-  name: "roi_31"
-  type: "ROIPooling"
+  name: "pool_31"
+  type: "Pooling"
   bottom: "act_lp_30"
-  bottom: "rois"
-  top: "pool31"
-  roi_pooling_param {
-    pooled_w: 7
-    pooled_h: 7
-    spatial_scale: 0.625
+  top: "pool_31"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
   }
 }
 layer {
   name: "fc_lp_32"
   type: "LPInnerProduct"
-  bottom: "pool31"
+  bottom: "pool_31"
   top: "fc_lp_32"
   param {
     lr_mult: 1
@@ -668,117 +673,52 @@ layer {
   }
 }
 layer {
-  name: "cls_score"
-  type: "InnerProduct"
+  name: "fc_lp_36"
+  type: "LPInnerProduct"
   bottom: "act_lp_35"
-  top: "cls_score"
-  param { lr_mult: 1 }
-  param { lr_mult: 2 }
+  top: "fc_lp_36"
+  param {
+    lr_mult: 1
+   }
+  param {
+    lr_mult: 2
+   }
+  lpfp_param {
+    bd: 3
+    ad: 13
+    round_bias: false
+  }
   inner_product_param {
-    num_output: 21
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
+    num_output: 1000
   }
 }
 layer {
-  name: "bbox_pred"
-  type: "InnerProduct"
-  bottom: "act_lp_35"
-  top: "bbox_pred"
-  param { lr_mult: 1 }
-  param { lr_mult: 2 }
-  inner_product_param {
-    num_output: 84
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
   }
 }
 layer {
-  name: "loss_cls"
+  name: "accuracy_top5"
+  type: "Accuracy"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "accuracy_top5"
+  include {
+    phase: TEST
+  }
+  accuracy_param {
+    top_k: 5
+  }
+}
+layer {
+  name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "cls_score"
-  bottom: "labels"
-  top: "loss_cls"
-  loss_weight: 1
-}
-layer {
-  name: "loss_bbox"
-  type: "SmoothL1Loss"
-  bottom: "bbox_pred"
-  bottom: "bbox_targets"
-  bottom: "bbox_inside_weights"
-  bottom: "bbox_outside_weights"
-  top: "loss_bbox"
-  loss_weight: 1
-}
-#========= RPN ============
-# Dummy layers so that initial parameters are saved into the output net
-layer {
-  name: "rpn_conv/3x3"
-  type: "Convolution"
-  bottom: "act_lp_30"
-  top: "rpn/output"
-  param { lr_mult: 0 decay_mult: 0 }
-  param { lr_mult: 0 decay_mult: 0 }
-  convolution_param {
-    num_output: 512
-    kernel_size: 3 pad: 1 stride: 1
-    weight_filler { type: "xavier" }
-    bias_filler { type: "constant" value: 0 }
-  }
-}
-layer {
-  name: "rpn_relu/3x3"
-  type: "ReLU"
-  bottom: "rpn/output"
-  top: "rpn/output"
-}
-
-layer {
-  name: "rpn_cls_score"
-  type: "Convolution"
-  bottom: "rpn/output"
-  top: "rpn_cls_score"
-  param { lr_mult: 0 decay_mult: 0 }
-  param { lr_mult: 0 decay_mult: 0 }
-  convolution_param {
-    num_output: 18   # 2(bg/fg) * 9(anchors)
-    kernel_size: 1 pad: 0 stride: 1
-    weight_filler { type: "xavier" }
-    bias_filler { type: "constant" value: 0 }
-  }
-}
-layer {
-  name: "rpn_bbox_pred"
-  type: "Convolution"
-  bottom: "rpn/output"
-  top: "rpn_bbox_pred"
-  param { lr_mult: 0 decay_mult: 0 }
-  param { lr_mult: 0 decay_mult: 0 }
-  convolution_param {
-    num_output: 36   # 4 * 9(anchors)
-    kernel_size: 1 pad: 0 stride: 1
-    weight_filler { type: "xavier" }
-    bias_filler { type: "constant" value: 0 }
-  }
-}
-layer {
-  name: "silence_rpn_cls_score"
-  type: "Silence"
-  bottom: "rpn_cls_score"
-}
-layer {
-  name: "silence_rpn_bbox_pred"
-  type: "Silence"
-  bottom: "rpn_bbox_pred"
+  bottom: "fc_lp_36"
+  bottom: "label"
+  top: "loss"
 }

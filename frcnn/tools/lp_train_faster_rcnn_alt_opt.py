@@ -81,7 +81,7 @@ def get_solvers(net_name):
                [net_name, n, 'stage2_fast_rcnn_solver30k40k.pt']]
     solvers = [os.path.join(cfg.MODELS_DIR, *s) for s in solvers]
     # Iterations for each training stage
-    max_iters = [80000, 40000, 80000, 40000]
+    max_iters = [160000, 80000, 160000, 80000]
     # max_iters = [100, 100, 100, 100]
     # max_iters = [40, 40, 40, 40]
     # Test prototxt for the RPN

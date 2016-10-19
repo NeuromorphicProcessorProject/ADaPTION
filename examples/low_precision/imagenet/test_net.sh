@@ -5,19 +5,16 @@ MODEL_DIR=$CAFFE_DIR/examples/low_precision/imagenet/models
 LOG_DIR=$CAFFE_DIR/examples/low_precision/imagenet/log
 WEIGHT_DIR=$CAFFE_DIR/../../Downloads/VGG16_tmp
 # NET_NAME=LP_VGG16_5_10_deploy.prototxt
-<<<<<<< HEAD
 # NET_NAME=LP_VGG16_0_15_deploy.prototxt
-NET_NAME=LP_VGG16_1_14_deploy.prototxt
-=======
-NET_NAME=LP_VGG16_0_15_deploy.prototxt
 # NET_NAME=LP_VGG16_1_14_deploy.prototxt
->>>>>>> 6950bb97e5a3a78d0becb85f1039a550e803c1a0
+# NET_NAME=LP_VGG16_0_15_deploy.prototxt
+# NET_NAME=LP_VGG16_1_14_deploy.prototxt
 # NET_NAME=LP_VGG16_2_13_deploy.prototxt
 # NET_NAME=LP_VGG16_3_12_deploy.prototxt
 # NET_NAME=LP_VGG16_0_7_deploy.prototxt
 # NET_NAME=LP_VGG16_1_6_deploy.prototxt
 # NET_NAME=LP_VGG16_2_5_deploy.prototxt
-
+NET_NAME=LP_VGG16_3_13_13_3_deploy.prototxt
 echo $WEIGHT_DIR
 # $CAFFE_DIR/build/tools/caffe test \
 # 	--model $MODEL_DIR/VGG16_deploy.prototxt \
@@ -27,9 +24,9 @@ echo $WEIGHT_DIR
 # 	--log $LOG_DIR/
 
 $CAFFE_DIR/build/tools/caffe test \
-	--model $MODEL_DIR/LP_VGG16_0_15_deploy.prototxt \
+	--model $MODEL_DIR/$NET_NAME \
 	--weights $WEIGHT_DIR/HP_VGG16_v2.caffemodel \
-	--iterations 25000 \
+	--iterations 6250 \
 	--gpu 0
 
 # $CAFFE_DIR/build/tools/caffe test \
