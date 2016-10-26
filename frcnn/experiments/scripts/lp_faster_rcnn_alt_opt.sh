@@ -30,7 +30,7 @@ case $DATASET in
     TRAIN_IMDB="voc_2007_trainval"
     TEST_IMDB="voc_2007_test"
     PT_DIR="pascal_voc"
-    ITERS=40000
+    ITERS=80000
     ;;
   coco)
     echo "Not implemented: use experiments/scripts/faster_rcnn_end2end.sh for coco"
