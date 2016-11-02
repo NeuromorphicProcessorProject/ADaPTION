@@ -14,7 +14,8 @@ WEIGHT_DIR=$CAFFE_DIR/../../Downloads/VGG16_tmp
 # NET_NAME=LP_VGG16_0_7_deploy.prototxt
 # NET_NAME=LP_VGG16_1_6_deploy.prototxt
 # NET_NAME=LP_VGG16_2_5_deploy.prototxt
-NET_NAME=LP_VGG16_3_13_13_3_deploy.prototxt
+# NET_NAME=LP_VGG16_3_13_13_3_deploy.prototxt
+NET_NAME=LP_VGG16_16_bit_deploy.prototxt
 echo $WEIGHT_DIR
 # $CAFFE_DIR/build/tools/caffe test \
 # 	--model $MODEL_DIR/VGG16_deploy.prototxt \
@@ -26,7 +27,7 @@ echo $WEIGHT_DIR
 $CAFFE_DIR/build/tools/caffe test \
 	--model $MODEL_DIR/$NET_NAME \
 	--weights $WEIGHT_DIR/HP_VGG16_v2.caffemodel \
-	--iterations 6250 \
+	--iterations 8333 \
 	--gpu 0
 
 # $CAFFE_DIR/build/tools/caffe test \
