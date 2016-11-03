@@ -1,0 +1,60 @@
+# ======== NETWORK ========
+# The train/test net protocol buffer definition
+net: "../../../examples/low_precision/imagenet/models/LP_VGG16_16_bit_train.prototxt"
+#
+# ======== TEST ========
+# test_iter specifies how many forward passes the test should carry out.
+# In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
+# covering the full 100,000 testing images.
+# test_iter: 42857 
+test_iter: 25000
+# Carry out testing every 500 training iterations.
+test_interval: 10000
+#
+# ======== HYPERPARAMETERS ========
+# All parameters are from the cited paper above
+base_lr: 0.00002
+momentum: 0.9
+momentum2: 0.999
+# since Adam dynamically changes the learning rate, we set the base learning
+# rate to a fixed value
+lr_policy: "fixed"
+type: "Adam"
+#
+# ======== DISPLAY ========
+# Display every 100 iterations
+display: 20
+# In order to know before finishing training how long the training will take the estimate parameter can be used
+# 0: No output
+# 1: Mean of Estimated Training Time over iterations
+# 2: Mean + Single estimate + Time per iteration + Iteration/Max_Iteration
+# Default is 0
+estimate: 0
+#
+# ======== ITERATION ========
+# The maximum number of iterations:
+# 		NumberOfEpochs * NumberOfImages / Batchsize
+# 	NVIDIA GTX 980 Ti (6 GB ram)
+# 	Batchsize of 12
+max_iter: 100000
+# 	NVIDIA Titan X (12 GB ram)
+# 	Batchsize of 05
+# max_iter: 1440000
+# 	NVIDIA GTX 1080 (8 GB ram) 
+# 	Batchsize of 28
+# max_iter: 2571428
+# max_iter: 1125000
+# max_iter: 281250
+#
+# ======== SNAPSHOT ========
+# snapshot intermediate results
+snapshot: 100000
+# Specify your GPU name & bit precision, as well as hyperparameters
+snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_16_bit"
+snapshot_format: HDF5
+#
+# ======== GPU SETTINGS ========
+# Solver mode: CPU or GPU
+solver_mode: GPU
+# In multi GPU setup CHECK the GPU ID
+device_id: 0
