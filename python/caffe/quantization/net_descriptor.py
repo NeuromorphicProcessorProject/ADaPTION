@@ -1,7 +1,12 @@
 '''
 This script reads out a given prototxt file to extract the network layout
 Based on this network layout we create a new prototxt for either training or testing
-Script cleaned BUT NOT COMMENTED
+
+List of functions, for further details see below
+    - get_model
+    - extract
+    - create
+
 
 Author: Moritz Milde
 Date: 02.11.2016
@@ -17,31 +22,81 @@ from google.protobuf import text_format
 
 class net_prototxt():
     def __init__(self):
-        self.model_dir = '/home/moritz/Repositories/caffe_lp/examples/low_precision/imagenet/models/'
+        self.caffe_root = '/home/moritz/Repositories/caffe_lp/'
+        self.model_dir = 'examples/low_precision/imagenet/models/'
         self.weight_dir = '/media/moritz/Data/ILSVRC/pre_trained/'
-        self.layer_dir = '/home/moritz/Repositories/caffe_lp/examples/create_prototxt/layers/'
-        self.save_dir = '/home/moritz/Repositories/caffe_lp/examples/low_precision/imagenet/models/'
+        self.layer_dir = 'examples/create_prototxt/layers/'
+        self.save_dir = 'examples/low_precision/imagenet/models/'
 
     def get_model(self, prototxt, caffemodel):
+        '''
+        This function initialize a given network based on prototxt file and caffemodel file
+        Input:
+            - prototxt:     holds the path to prototxt file (type: string)
+            - caffemodel    holds the path to caffemodel file (type: string)
+
+        Output:
+            - model:        Dictonary which holds all information present in the prototxt, such as
+                            kernel_size, stride, num_outputs etc. For further detail see extract() with debug active
+                            (type: dict)
+        '''
         model = caffe.Net(prototxt, caffemodel, caffe.TEST)
-        model_protobuf = caffe.proto.caffe_pb2.NetParameter()
+        model_protobuf = caffe_pb2.NetParameter()
         text_format.Merge(open(prototxt).read(), model_protobuf)
         return {'model': (model, model_protobuf), 'val_fn': model.forward_all}
 
     def extract(self, net_name, mode='deploy',
-                model_dir=None, weight_dir=None, model=None, stride_conv=1, pad=0, debug=False):
+                model=None, stride_conv=1, pad=0,
+                caffe_root=None, model_dir=None, weight_dir=None, debug=False):
+        '''
+        This function extracts the network structure from a given prototxt file and creates
+        a net_descriptor which is used by create() to create a new protoxt file
+        Input:
+            - net_name:     A string which refer to the network, e.g. VGG16 or GoogleNet (type: string)
+            - mode:         The mode the network should be operated in. Either 'deploy' for testing only
+                            or 'train' to also be able to finetune the net. Default: 'deploy' (type: string)
+            - model:        The caffe object which hold the current model. If not specified this function will
+                            initilize the network.
+            - stride_conv:  Default stride parameter is 1, in case a prototxt did not specify the stride, since
+                            caffe's default stride is 1. (type: int)
+            - pad:          Default pad parameter is 0, in cas a prototxt did not specify the stride, since caffe's
+                            defaul pad is 0. (type: int)
+            - caffe_root:   Path to your caffe_lp folder (type: string)
+            - model_dir:    Relative path from caffe_root to model directory (where .prototxt files are located). This is usually
+                            examples/low_precision/imagenet/models/
+                            Please change accordingly! (type: string)
+            - weight_dir:   Path where you want save the .caffemodel files, e.g. on your HDD (type: string)
+            - debug:        Flag to turn printing of helpful information on and off (type: bool)
+        Output:
+            - net_descriptor: List of strings where each entry is one layer of the network with its specific parameter (type: List)
+                              Example:
+                              iet_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
+                                              '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
+                                              '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
+                                              '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+                                              '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+                                              '4096F', 'A', 'ReLU', 'D5',
+                                              '4096F', 'A', 'ReLU', 'D5',
+                                              '1000F',
+                                              'Accuracy', 'loss']
+
+        '''
         if model_dir is not None:
             self.model_dir = model_dir
         if weight_dir is not None:
             self.weight_dir = weight_dir
+        if caffe_root is not None:
+            self.caffe_root = caffe_root
 
-        prototxt = self.model_dir + net_name + '_deploy.prototxt'
+        prototxt = self.caffe_root + self.model_dir + net_name + '_deploy.prototxt'
         # check if h5 or not??
         net_weights = self.weight_dir + net_name + '.caffemodel'
+        # Check if model is specified, e.g. already initiated by qmf_check()
+        # If not specified model will be newly initilaized
         if model is None:
             model = net_prototxt.get_model(self, prototxt, net_weights)
         else:
-            model_protobuf = caffe.proto.caffe_pb2.NetParameter()
+            model_protobuf = caffe_pb2.NetParameter()
             text_format.Merge(open(prototxt).read(), model_protobuf)
             model = {'model': (model, model_protobuf)}
 
@@ -137,15 +192,60 @@ class net_prototxt():
                     self.net_descriptor.append('loss')
         return self.net_descriptor
 
-    def create(self, net_descriptor, bit_distribution_weights, bit_distribution_act, net_name='VGG16',
+    def create(self, net_name='VGG16', net_descriptor, bit_distribution_weights, bit_distribution_act,
                init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false',
-               layer_dir=None, model_dir=None):
+               caffe_root=None, model_dir=None, layer_dir=None, save_dir=None, debug=False):
+        '''
+        This function will create a prototxt file based on the network layout extracted from a pre defined caffemodel
+        using extract(). The layer-wise Qm.f notation provided by qmf_check() is used to have layer-specific Qm.f rounding
+        Input:
+            - net_name: A string which refer to the network, e.g. VGG16 or GoogleNet (type: string)
+            - net_descriptor: List of strings where each entry is one layer of the network with its specific parameter (type: List)
+                              Example:
+                              iet_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
+                                              '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
+                                              '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
+                                              '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+                                              '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',
+                                              '4096F', 'A', 'ReLU', 'D5',
+                                              '4096F', 'A', 'ReLU', 'D5',
+                                              '1000F',
+                                              'Accuracy', 'loss']
+            - bit_distribution_weights: Numpy array specifying for each layer the Qm.f notation for the weights (type: numpy.ndarray)
+            - bit_distribution_act:     Numpy array specifying for each layer the Qm.f notation for the activation (type: numpy.ndarray)
+            - init_method:              Weight initlialization method if deploy is false. Currently 'gaussian' and 'xavier' supported
+                                        Recommended init_method is 'xavier'
+            - lp:                       Flag specifying if network should be created using low precision layers.
+                                        Default 'True' (type: bool)
+            - deploy:                   Flag specifying if network should be only use for testing. Default 'False'
+                                        If 'False' network can be trained/finetuned. (type: bool)
+            - visualize:                Flag if network is used to draw network schematics. Can be ignored! Default 'False'
+                                        (type: bool)
+            - round_bias:               Flag if biases should also be rounded to specific Qm.f notation. Currently not supported!
+                                        Default 'False' (type: bool)
+            - caffe_root:               Path to your caffe_lp folder (type: string)
+            - model_dir:                Relative path from caffe_root to model directory (where .prototxt files are located).
+                                        This is usually 'examples/low_precision/imagenet/models/'
+                                        Please change accordingly! (type: string)
+            - layer_dir:                Path to layer_base and header_base files.
+                                        Default $caffe_root/examples/create_prototxt/layers (type: string)
+            - save_dir:                 Path where new created prototxt should be saved.
+                `                       Default $caffe_root/examples/low_precision/imagenet/models/ (type: string)
+            - debug:                    Flag to turn printing of helpful information on and off (type: bool)
+        Output:
+            - prototxt:                 Prototxt file (network description) is written to save_dir
+
+        '''
         # This function should either call or execute the create_prototxt
         # script
+        if caffe_root is not None:
+            self.caffe_root = caffe_root
         if layer_dir is not None:
             self.layer_dir = layer_dir
         if model_dir is not None:
             self.model_dir = model_dir
+        if save_dir is not None:
+            self.save_dir = save_dir
         self.net_descriptor = net_descriptor
 
         if not lp:
@@ -181,8 +281,8 @@ class net_prototxt():
                     filename = '%s_vis.prototxt' % (net_name)
             else:
                 filename = '%s_train.prototxt' % (net_name)
-
-        print 'Generating ' + filename
+        if debug:
+            print 'Generating ' + filename
         weight_counter = 0
         act_counter = 0
         for cLayer in self.net_descriptor:
@@ -202,9 +302,9 @@ class net_prototxt():
                 layer.ad = bit_distribution_weights[1, 0]
 
             if layer.counter < 2:
-                layer_base = open(self.layer_dir + 'layer_base.prototxt', 'wr')
+                layer_base = open(self.caffe_root + self.layer_dir + 'layer_base.prototxt', 'wr')
             else:
-                layer_base = open(self.layer_dir + 'layer_base.prototxt', 'a')
+                layer_base = open(self.caffe_root + self.layer_dir + 'layer_base.prototxt', 'a')
             if 'C' in cLayer:
                 # print 'Convolution'
                 layer.name = 'conv'
