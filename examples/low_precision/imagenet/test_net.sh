@@ -26,7 +26,8 @@ echo $WEIGHT_DIR
 
 $CAFFE_DIR/build/tools/caffe test \
 	--model $MODEL_DIR/$NET_NAME \
-	--weights $WEIGHT_DIR/HP_VGG16_v2.caffemodel \
+	--weights $WEIGHT_DIR/LP_VGG16_16_bit.caffemodel.h5 \
+	# --weights $WEIGHT_DIR/HP_VGG16_v2.caffemodel \
 	--iterations 8333 \
 	--gpu 0
 
