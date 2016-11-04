@@ -99,7 +99,7 @@ class convert_weights():
         if save_name is None:
             self.save_name = 'HP_{}_v2.caffemodel'.format(net_name)
 
-        vgg_original = '{}}_original.caffemodel'.format(net_name)
+        vgg_original = '{}_original.caffemodel'.format(net_name)
         vgg_new = 'HP_{}.caffemodel'.format(net_name)
         current_dir = weight_dir + net_name + '/'
         flag = convert_weights.download_model(self, net_name, current_dir)
