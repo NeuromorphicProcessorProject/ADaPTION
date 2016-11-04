@@ -1,5 +1,4 @@
-name: "VGG16"
-layer {
+name: "VGG16"layer {
   name: "data"
   type: "Data"
   top: "data"
@@ -35,7 +34,7 @@ layer {
   }
   data_param {
     source: "../../../data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
-    batch_size: 4
+    batch_size: 12
     backend: LMDB
   }
 }
@@ -78,8 +77,8 @@ layer {
   bottom: "conv_lp_1"
   top: "act_lp_2"
   lpfp_param {
-    bd: 7
-    ad: 9
+    bd: 6
+    ad: 10
     round_bias: false  }
 }
 layer {
@@ -102,8 +101,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -126,8 +125,8 @@ layer {
   bottom: "conv_lp_3"
   top: "act_lp_4"
   lpfp_param {
-    bd: 9
-    ad: 7
+    bd: 8
+    ad: 8
     round_bias: false  }
 }
 layer {
@@ -161,8 +160,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -185,8 +184,8 @@ layer {
   bottom: "conv_lp_6"
   top: "act_lp_7"
   lpfp_param {
-    bd: 10
-    ad: 6
+    bd: 9
+    ad: 7
     round_bias: false  }
 }
 layer {
@@ -209,8 +208,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -233,8 +232,8 @@ layer {
   bottom: "conv_lp_8"
   top: "act_lp_9"
   lpfp_param {
-    bd: 10
-    ad: 6
+    bd: 9
+    ad: 7
     round_bias: false  }
 }
 layer {
@@ -268,8 +267,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -292,8 +291,8 @@ layer {
   bottom: "conv_lp_11"
   top: "act_lp_12"
   lpfp_param {
-    bd: 11
-    ad: 5
+    bd: 10
+    ad: 6
     round_bias: false  }
 }
 layer {
@@ -316,8 +315,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -340,8 +339,8 @@ layer {
   bottom: "conv_lp_13"
   top: "act_lp_14"
   lpfp_param {
-    bd: 11
-    ad: 5
+    bd: 10
+    ad: 6
     round_bias: false  }
 }
 layer {
@@ -364,8 +363,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -388,8 +387,8 @@ layer {
   bottom: "conv_lp_15"
   top: "act_lp_16"
   lpfp_param {
-    bd: 11
-    ad: 5
+    bd: 10
+    ad: 6
     round_bias: false  }
 }
 layer {
@@ -423,8 +422,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -447,8 +446,8 @@ layer {
   bottom: "conv_lp_18"
   top: "act_lp_19"
   lpfp_param {
-    bd: 10
-    ad: 6
+    bd: 9
+    ad: 7
     round_bias: false  }
 }
 layer {
@@ -471,8 +470,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -495,8 +494,8 @@ layer {
   bottom: "conv_lp_20"
   top: "act_lp_21"
   lpfp_param {
-    bd: 9
-    ad: 7
+    bd: 8
+    ad: 8
     round_bias: false  }
 }
 layer {
@@ -519,8 +518,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -543,8 +542,8 @@ layer {
   bottom: "conv_lp_22"
   top: "act_lp_23"
   lpfp_param {
-    bd: 8
-    ad: 8
+    bd: 7
+    ad: 9
     round_bias: false  }
 }
 layer {
@@ -578,8 +577,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -602,8 +601,8 @@ layer {
   bottom: "conv_lp_25"
   top: "act_lp_26"
   lpfp_param {
-    bd: 8
-    ad: 8
+    bd: 7
+    ad: 9
     round_bias: false  }
 }
 layer {
@@ -626,8 +625,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   convolution_param {
@@ -650,8 +649,8 @@ layer {
   bottom: "conv_lp_27"
   top: "act_lp_28"
   lpfp_param {
-    bd: 7
-    ad: 9
+    bd: 6
+    ad: 10
     round_bias: false  }
 }
 layer {
@@ -698,8 +697,8 @@ layer {
   bottom: "conv_lp_29"
   top: "act_lp_30"
   lpfp_param {
-    bd: 5
-    ad: 11
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -733,8 +732,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   inner_product_param {
@@ -754,8 +753,8 @@ layer {
   bottom: "fc_lp_32"
   top: "act_lp_33"
   lpfp_param {
-    bd: 4
-    ad: 12
+    bd: 3
+    ad: 13
     round_bias: false  }
 }
 layer {
@@ -808,8 +807,8 @@ layer {
   bottom: "fc_lp_34"
   top: "act_lp_35"
   lpfp_param {
-    bd: 3
-    ad: 13
+    bd: 2
+    ad: 14
     round_bias: false  }
 }
 layer {
@@ -841,8 +840,8 @@ layer {
     decay_mult: 0
    }
   lpfp_param {
-    bd: 2
-    ad: 14
+    bd: 1
+    ad: 15
     round_bias: false
   }
   inner_product_param {

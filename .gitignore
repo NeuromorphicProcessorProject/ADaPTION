@@ -107,5 +107,4 @@ expamples/low_precision/imagenet/log/
 *.FATAL
 *.INFO
 *.ERROR
-examples/create_protoxt/
-layer_base.prototxt
+examples/create_protoxt/layer_base.prototxt

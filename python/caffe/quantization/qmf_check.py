@@ -103,7 +103,7 @@ class distribute_bits():
         # try:
         #    self.net_weights = self.weight_dir + net_name + '.caffemodel.h5'
         # except RuntimeError:
-        self.net_weights = self.weight_dir + net_name + '_original.caffemodel'
+        self.net_weights = self.weight_dir + net_name + '/' + net_name + '_original.caffemodel'
         if debug:
             print 'Checking if network was already simulated... '
 #         if 'self.net' not in locals() or 'self.net' not in globals():
@@ -217,7 +217,7 @@ class distribute_bits():
 
         self.net_prototxt = self.caffe_root + self.model_dir + net_name + '_deploy.prototxt'
         # check if h5 or not??
-        self.net_weights = self.weight_dir + net_name + '_original.caffemodel'
+        self.net_weights = self.weight_dir + net_name + '/' + net_name + '_original.caffemodel'
         if debug:
             print 'Checking if network was already simulated... '
 #         if 'self.net' not in locals() or 'self.net' not in globals():

@@ -90,7 +90,7 @@ class net_prototxt():
 
         prototxt = self.caffe_root + self.model_dir + net_name + '_deploy.prototxt'
         # check if h5 or not??
-        net_weights = self.weight_dir + net_name + '.caffemodel'
+        net_weights = self.weight_dir + net_name + '/' + net_name + '.caffemodel'
         # Check if model is specified, e.g. already initiated by qmf_check()
         # If not specified model will be newly initilaized
         if model is None:
@@ -652,34 +652,34 @@ class net_prototxt():
         # new prototxt
         if lp:
             if deploy:
-                header = open(self.layer_dir + 'header_deploy.prototxt', 'r')
+                header = open(self.caffe_root + self.layer_dir + 'header_deploy.prototxt', 'r')
                 if not scale:
-                    header = open(self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
+                    header = open(self.caffe_root + self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
                 if visualize:
-                    header = open(self.layer_dir + 'header_vis.prototxt', 'r')
+                    header = open(self.caffe_root + self.layer_dir + 'header_vis.prototxt', 'r')
                     if not scale:
-                        header = open(self.layer_dir + 'header_vis_noscale.prototxt', 'r')
+                        header = open(self.caffe_root + self.layer_dir + 'header_vis_noscale.prototxt', 'r')
             else:
-                header = open(self.layer_dir + 'header.prototxt', 'r')
+                header = open(self.caffe_root + self.layer_dir + 'header.prototxt', 'r')
                 if not scale:
-                    header = open(self.layer_dir + 'header_noscale.prototxt', 'r')
+                    header = open(self.caffe_root + self.layer_dir + 'header_noscale.prototxt', 'r')
         else:
             if deploy:
                 header = open(
-                    self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
+                    self.caffe_root + self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
                 if scale:
-                    header = open(self.layer_dir + 'header_deploy.prototxt', 'r')
+                    header = open(self.caffe_root + self.layer_dir + 'header_deploy.prototxt', 'r')
                 if visualize:
                     header = open(
-                        self.layer_dir + 'header_vis_noscale.prototxt', 'r')
+                        self.caffe_root + self.layer_dir + 'header_vis_noscale.prototxt', 'r')
                     if scale:
-                        header = open(self.layer_dir + 'header_vis.prototxt', 'r')
+                        header = open(self.caffe_root + self.layer_dir + 'header_vis.prototxt', 'r')
             else:
-                header = open(self.layer_dir + 'header_noscale.prototxt', 'r')
+                header = open(self.caffe_root + self.layer_dir + 'header_noscale.prototxt', 'r')
                 if scale:
-                    header = open(self.layer_dir + 'header.prototxt', 'r')
+                    header = open(self.caffe_root + self.layer_dir + 'header.prototxt', 'r')
 
-        base = open(self.layer_dir + 'layer_base.prototxt', 'r')
+        base = open(self.caffe_root + self.layer_dir + 'layer_base.prototxt', 'r')
         net = open(self.save_dir + filename, "w")
         net.write('name: "{}"'.format(net_name))
         net.write(header.read() + '\n')
