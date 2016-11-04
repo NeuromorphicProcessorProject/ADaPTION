@@ -36,7 +36,7 @@ estimate: 0
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-max_iter: 100000
+max_iter: 500000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 05
 # max_iter: 1440000

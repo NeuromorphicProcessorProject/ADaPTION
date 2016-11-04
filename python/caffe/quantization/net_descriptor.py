@@ -192,7 +192,7 @@ class net_prototxt():
                     self.net_descriptor.append('loss')
         return self.net_descriptor
 
-    def create(self, net_name='VGG16', net_descriptor, bit_distribution_weights, bit_distribution_act,
+    def create(self, net_name='VGG16', net_descriptor, bit_distribution_weights, bit_distribution_act, scale=True,
                init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false',
                caffe_root=None, model_dir=None, layer_dir=None, save_dir=None, debug=False):
         '''
@@ -213,6 +213,10 @@ class net_prototxt():
                                               'Accuracy', 'loss']
             - bit_distribution_weights: Numpy array specifying for each layer the Qm.f notation for the weights (type: numpy.ndarray)
             - bit_distribution_act:     Numpy array specifying for each layer the Qm.f notation for the activation (type: numpy.ndarray)
+                                        Both distribution can also be a [2, 1] numpy array. This will cause a global Qm.f notation\
+            - scale:                    Flag to include scaling parameter in the prototxt. This factor normalize the the input image to
+                                        range between 0 and 1. This is especially for low precision important, since otherwise the
+                                        input already saturates at the max value of a given fixed point. Default 'True' (type: bool)
             - init_method:              Weight initlialization method if deploy is false. Currently 'gaussian' and 'xavier' supported
                                         Recommended init_method is 'xavier'
             - lp:                       Flag specifying if network should be created using low precision layers.
@@ -649,22 +653,35 @@ class net_prototxt():
         if lp:
             if deploy:
                 header = open(self.layer_dir + 'header_deploy.prototxt', 'r')
+                if not scale:
+                    header = open(self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
                 if visualize:
                     header = open(self.layer_dir + 'header_vis.prototxt', 'r')
+                    if not scale:
+                        header = open(self.layer_dir + 'header_vis_noscale.prototxt', 'r')
             else:
                 header = open(self.layer_dir + 'header.prototxt', 'r')
+                if not scale:
+                    header = open(self.layer_dir + 'header_noscale.prototxt', 'r')
         else:
             if deploy:
                 header = open(
                     self.layer_dir + 'header_deploy_noscale.prototxt', 'r')
+                if scale:
+                    header = open(self.layer_dir + 'header_deploy.prototxt', 'r')
                 if visualize:
                     header = open(
                         self.layer_dir + 'header_vis_noscale.prototxt', 'r')
+                    if scale:
+                        header = open(self.layer_dir + 'header_vis.prototxt', 'r')
             else:
                 header = open(self.layer_dir + 'header_noscale.prototxt', 'r')
+                if scale:
+                    header = open(self.layer_dir + 'header.prototxt', 'r')
 
         base = open(self.layer_dir + 'layer_base.prototxt', 'r')
         net = open(self.save_dir + filename, "w")
+        net.write('name: "{}"'.format(net_name))
         net.write(header.read() + '\n')
         net.write(base.read())
 

@@ -97,11 +97,15 @@ MANIFEST-*
 # Log files from experiments
 *.log
 *.LOG
-expamples/low_precision/imagenet/log/*
+expamples/low_precision/imagenet/log/
+*INFO*
+*WARNING*
+*FATAL*
+*ERROR*
 *INFO*
 *.WARNING
 *.FATAL
 *.INFO
 *.ERROR
-examples/create_protoxt/*
+examples/create_protoxt/
 layer_base.prototxt
