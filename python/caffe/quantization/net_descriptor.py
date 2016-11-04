@@ -192,7 +192,7 @@ class net_prototxt():
                     self.net_descriptor.append('loss')
         return self.net_descriptor
 
-    def create(self, net_name='VGG16', net_descriptor, bit_distribution_weights, bit_distribution_act, scale=True,
+    def create(self, net_name, net_descriptor, bit_distribution_weights, bit_distribution_act, scale=True,
                init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false',
                caffe_root=None, model_dir=None, layer_dir=None, save_dir=None, debug=False):
         '''
