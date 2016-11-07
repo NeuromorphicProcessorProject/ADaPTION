@@ -26,7 +26,7 @@ class net_prototxt():
         self.model_dir = 'examples/low_precision/imagenet/models/'
         self.weight_dir = '/media/moritz/Data/ILSVRC/pre_trained/'
         self.layer_dir = 'examples/create_prototxt/layers/'
-        self.save_dir = 'examples/low_precision/imagenet/models/'
+        self.save_dir = self.caffe_root + 'examples/low_precision/imagenet/models/'
 
     def get_model(self, prototxt, caffemodel):
         '''
@@ -192,7 +192,7 @@ class net_prototxt():
                     self.net_descriptor.append('loss')
         return self.net_descriptor
 
-    def create(self, net_name, net_descriptor, bit_distribution_weights, bit_distribution_act, scale=True,
+    def create(self, net_name, net_descriptor, bit_distribution_weights=None, bit_distribution_act=None, scale=True,
                init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false',
                caffe_root=None, model_dir=None, layer_dir=None, save_dir=None, debug=False):
         '''
@@ -266,6 +266,7 @@ class net_prototxt():
         layer.name_old = 'data'
 
         if lp:
+            assert bit_distribution_act is not None, 'Please specify the desired Qm.f notation.'
             if deploy:
                 filename = '%s_%i_bit_deploy.prototxt' % (
                     net_name, bit_distribution_weights[0, 0] + bit_distribution_weights[1, 0])
@@ -290,20 +291,21 @@ class net_prototxt():
         weight_counter = 0
         act_counter = 0
         for cLayer in self.net_descriptor:
-            if np.size(bit_distribution_weights, 1) > 1:
-                if cLayer == 'A':
-                    # Set bit precision of Conv and ReLUs
-                    layer.bd = bit_distribution_act[0, act_counter]
-                    layer.ad = bit_distribution_act[1, act_counter]
-                    act_counter += 1
-                elif 'C' in cLayer or 'F' in cLayer:
-                    # Set bit precision of Conv and ReLUs
-                    layer.bd = bit_distribution_weights[0, weight_counter]
-                    layer.ad = bit_distribution_weights[1, weight_counter]
-                    weight_counter += 1
-            else:
-                layer.bd = bit_distribution_weights[0, 0]
-                layer.ad = bit_distribution_weights[1, 0]
+            if lp:
+                if np.size(bit_distribution_weights, 1) > 1:
+                    if cLayer == 'A':
+                        # Set bit precision of Conv and ReLUs
+                        layer.bd = bit_distribution_act[0, act_counter]
+                        layer.ad = bit_distribution_act[1, act_counter]
+                        act_counter += 1
+                    elif 'C' in cLayer or 'F' in cLayer:
+                        # Set bit precision of Conv and ReLUs
+                        layer.bd = bit_distribution_weights[0, weight_counter]
+                        layer.ad = bit_distribution_weights[1, weight_counter]
+                        weight_counter += 1
+                else:
+                    layer.bd = bit_distribution_weights[0, 0]
+                    layer.ad = bit_distribution_weights[1, 0]
 
             if layer.counter < 2:
                 layer_base = open(self.caffe_root + self.layer_dir + 'layer_base.prototxt', 'wr')
