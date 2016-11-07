@@ -681,7 +681,7 @@ class net_prototxt():
 
         base = open(self.caffe_root + self.layer_dir + 'layer_base.prototxt', 'r')
         net = open(self.save_dir + filename, "w")
-        net.write('name: "{}"'.format(net_name))
+        net.write('name: "{}"\n'.format(net_name))
         net.write(header.read() + '\n')
         net.write(base.read())
 

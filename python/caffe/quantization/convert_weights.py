@@ -127,9 +127,11 @@ class convert_weights():
         caffe.set_mode_gpu()
         caffe.set_device(0)
         net_lp = caffe.Net(prototxt_lp, weights_lp, caffe.TEST)
-        print('Doing forward pass for low precision network')
+        if debug:
+            print('Doing forward pass for low precision network')
         net_lp.forward()
-        print('Done.')
+        if debug:
+            print('Done.')
 
         sparsity_hp = open(self.weight_dir + 'sparsity_hp.txt', 'w')
         sparsity_lp = open(self.weight_dir + 'sparsity_lp.txt', 'w')

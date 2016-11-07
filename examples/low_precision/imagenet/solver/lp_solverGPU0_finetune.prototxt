@@ -36,7 +36,7 @@ estimate: 0
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-max_iter: 500000
+max_iter: 120000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 05
 # max_iter: 1440000
@@ -48,7 +48,7 @@ max_iter: 500000
 #
 # ======== SNAPSHOT ========
 # snapshot intermediate results
-snapshot: 100000
+snapshot: 20000
 # Specify your GPU name & bit precision, as well as hyperparameters
 snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_16_bit"
 snapshot_format: HDF5
