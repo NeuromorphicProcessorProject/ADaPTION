@@ -13,13 +13,13 @@ void LPInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   Dtype* top_data = top[0]->mutable_gpu_data();
   // Round
   const int weight_count = this->blobs_[0]->count();
-  caffe_gpu_round_fp(weight_count, BD_, AD_, this->blobs_[0]->gpu_data(),
+  caffe_gpu_round_fp(weight_count, BD_, AD_, rounding_scheme_, this->blobs_[0]->gpu_data(),
     this->blobs_[0+1]->mutable_gpu_data());
 
   int bias_loc = 2;
   if (round_bias_ && bias_term_){
     const int bias_count = this->blobs_[2]->count();
-    caffe_gpu_round_fp(bias_count, BD_, AD_, this->blobs_[2]->gpu_data(),
+    caffe_gpu_round_fp(bias_count, BD_, AD_, rounding_scheme_, this->blobs_[2]->gpu_data(),
                        this->blobs_[2+1]->mutable_gpu_data());
     bias_loc = 2 + 1;
   }

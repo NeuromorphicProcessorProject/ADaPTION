@@ -143,8 +143,24 @@ template <typename Dtype>
 void caffe_cpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
 
 template <typename Dtype>
-void caffe_cpu_round_fp(const int N, const int bd, const int ad, const Dtype *w, Dtype *wr);
+void caffe_cpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme, const Dtype *w, Dtype *wr);
 
+// template<typename Dtype>
+// class Quantization{
+//   public:
+//     explicit Quantization();
+//     double randomNumber();
+//   };
+
+
+// this stays in the .hpp
+inline float randomNumber();
+// this would go in the .cpp
+// float randomNumber(){
+//   return rand() / (RAND_MAX + 1)
+// }
+
+// int rounding_scheme_;
 #ifndef CPU_ONLY  // GPU
 
 // Decaf gpu gemm provides an interface that is almost the same as the cpu
@@ -250,7 +266,7 @@ template <typename Dtype>
 void caffe_gpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
 
 template <typename Dtype>
-void caffe_gpu_round_fp(const int N, const int bd, const int ad,
+void caffe_gpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme,
                         const Dtype *w, Dtype *wr);
 
 #define DEFINE_AND_INSTANTIATE_GPU_UNARY_FUNC(name, operation) \

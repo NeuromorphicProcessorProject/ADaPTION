@@ -7,11 +7,12 @@
 
 #include "caffe/common.hpp"
 #include "caffe/util/math_functions.hpp"
+#include "caffe/util/math_functions.cuh"
 
 namespace caffe {
 
 template <typename Dtype>
-__global__ void round_fp_kernel(const int N, const int bd, const int ad,
+__global__ void round_fp_kernel(const int N, const int bd, const int ad, const int rounding_scheme,
                         const Dtype *w, Dtype *wr){
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
@@ -19,25 +20,32 @@ __global__ void round_fp_kernel(const int N, const int bd, const int ad,
   const int bdshift = bd - 1;
   const int adshift = ad - 1;
   const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
-  CUDA_KERNEL_LOOP(index, N) {
-    wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(2<<adshift)))/(2<<adshift), MAXVAL));
+  switch (rounding_scheme){
+      case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
+          CUDA_KERNEL_LOOP(index, N) {
+          wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(2<<adshift)))/(2<<adshift), MAXVAL));
+          }
+      case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
+          CUDA_KERNEL_LOOP(index, N) {
+          wr[index] = max(-MAXVAL, min( ((Dtype)floorf(w[index]*(2<<adshift)+RandUniform_device(index)))/(2<<adshift), MAXVAL));
+          }
+          
   }
 }
-
 template <>
-void caffe_gpu_round_fp(const int N, const int bd, const int ad,
+void caffe_gpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme,
                         const float *w, float *wr){
   // NOLINT_NEXT_LINE(whitespace/operators)
   round_fp_kernel<float><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
-      N, bd, ad, w, wr);
+      N, bd, ad, rounding_scheme, w, wr);
 }
 
 template <>
-void caffe_gpu_round_fp(const int N, const int bd, const int ad,
+void caffe_gpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme,
                         const double *w, double *wr){
   // NOLINT_NEXT_LINE(whitespace/operators)
   round_fp_kernel<double><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
-      N, bd, ad, w, wr);
+      N, bd, ad, rounding_scheme, w, wr);
 }
 
 template <>

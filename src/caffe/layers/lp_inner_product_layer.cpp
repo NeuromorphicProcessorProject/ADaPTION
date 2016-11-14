@@ -15,6 +15,7 @@ void LPInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   BD_ =  this->layer_param_.lpfp_param().bd();
   AD_ = this->layer_param_.lpfp_param().ad();
   round_bias_ = this->layer_param_.lpfp_param().round_bias();
+  rounding_scheme_ = this->layer_param_.lpfp_param().rounding_scheme();
   N_ = num_output;
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.inner_product_param().axis());
@@ -94,14 +95,14 @@ void LPInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   Dtype* top_data = top[0]->mutable_cpu_data();
   // Round weights:
   const int weight_count = this->blobs_[0]->count();
-  caffe_cpu_round_fp(weight_count, BD_, AD_, this->blobs_[0]->cpu_data(),
+  caffe_cpu_round_fp(weight_count, BD_, AD_, rounding_scheme_, this->blobs_[0]->cpu_data(),
     this->blobs_[0+1]->mutable_cpu_data());
   const Dtype* weight = this->blobs_[0+1]->cpu_data();
   int bias_loc = 2;
   if (round_bias_ && bias_term_){
     bias_loc = 2 + 1;
     const int bias_count = this->blobs_[2]->count();
-    caffe_cpu_round_fp(bias_count, BD_, AD_, this->blobs_[2]->cpu_data(),
+    caffe_cpu_round_fp(bias_count, BD_, AD_, rounding_scheme_, this->blobs_[2]->cpu_data(),
       this->blobs_[bias_loc]->mutable_cpu_data());
   }
   caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,

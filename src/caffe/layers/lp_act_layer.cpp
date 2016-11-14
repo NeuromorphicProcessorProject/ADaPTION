@@ -12,7 +12,7 @@ void LPActLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const int count = bottom[0]->count();
-  caffe_cpu_round_fp(count, this->layer_param_.lpfp_param().bd(), this->layer_param_.lpfp_param().ad(), bottom_data, top_data);
+  caffe_cpu_round_fp(count, this->layer_param_.lpfp_param().bd(), this->layer_param_.lpfp_param().ad(), this->layer_param_.lpfp_param().rounding_scheme(), bottom_data, top_data);
 }
 
 template <typename Dtype>

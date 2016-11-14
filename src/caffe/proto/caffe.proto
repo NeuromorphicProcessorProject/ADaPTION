@@ -851,6 +851,11 @@ message LowPrecisionFPParameter {
   optional uint32 bd = 1; // The number of bits before the decimal point
   optional uint32 ad = 2; // The number of bits after the decimal point
   optional bool round_bias = 3 [default = true];
+  enum RoundingScheme {
+    DETERMINISTIC = 0;
+    STOCHASTIC = 1;
+  }
+  optional RoundingScheme rounding_scheme = 4 [default = DETERMINISTIC];
 }
 
 // Message that stores parameters used by LRNLayer

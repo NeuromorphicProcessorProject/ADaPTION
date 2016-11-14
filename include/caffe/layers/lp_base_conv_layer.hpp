@@ -96,6 +96,7 @@ class LPBaseConvolutionLayer : public Layer<Dtype> {
   int BD_; // Number of bits Before Decimal
   int AD_; // Number of bits After Decimal
   bool round_bias_;
+  int rounding_scheme_; // Flag to either use deterministic or stochastic rounding
 
  private:
   // wrap im2col/col2im so we don't have to remember the (long) argument lists

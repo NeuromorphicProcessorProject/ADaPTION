@@ -11,7 +11,7 @@ void LPActLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   const int count = bottom[0]->count();
-  caffe_gpu_round_fp(count, this->layer_param_.lpfp_param().bd(), this->layer_param_.lpfp_param().ad(), bottom_data, top_data);
+  caffe_gpu_round_fp(count, this->layer_param_.lpfp_param().bd(), this->layer_param_.lpfp_param().ad(), this->layer_param_.lpfp_param().rounding_scheme(), bottom_data, top_data);
 }
 
 

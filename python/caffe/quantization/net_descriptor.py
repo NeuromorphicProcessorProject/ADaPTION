@@ -193,7 +193,7 @@ class net_prototxt():
         return self.net_descriptor
 
     def create(self, net_name, net_descriptor, bit_distribution_weights=None, bit_distribution_act=None, scale=True,
-               init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false',
+               init_method='xavier', lp=True, deploy=False, visualize=False, round_bias='false', rounding_scheme=None,
                caffe_root=None, model_dir=None, layer_dir=None, save_dir=None, debug=False):
         '''
         This function will create a prototxt file based on the network layout extracted from a pre defined caffemodel
@@ -227,6 +227,8 @@ class net_prototxt():
                                         (type: bool)
             - round_bias:               Flag if biases should also be rounded to specific Qm.f notation. Currently not supported!
                                         Default 'False' (type: bool)
+            - rounding_scheme:          Flag to either round parameters deterministically or stochastically. Default 'DETERMINISTIC'
+                                        possible 'STOCHASTIC'. (type: string)
             - caffe_root:               Path to your caffe_lp folder (type: string)
             - model_dir:                Relative path from caffe_root to model directory (where .prototxt files are located).
                                         This is usually 'examples/low_precision/imagenet/models/'
@@ -250,6 +252,10 @@ class net_prototxt():
             self.model_dir = model_dir
         if save_dir is not None:
             self.save_dir = save_dir
+        if rounding_scheme is not None:
+            self.rounding_scheme = rounding_scheme
+        else:
+            self.rounding_scheme = 'DETERMINISTIC'
         self.net_descriptor = net_descriptor
 
         if not lp:
@@ -331,8 +337,10 @@ class net_prototxt():
                             layer.name, layer.counter),
                             '  param {\n', '    lr_mult: 1\n', '   }\n',
                             '  param {\n', '    lr_mult: 2\n', '   }\n',
-                            '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                              layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                            '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                '    ad: %i\n' % (layer.ad),
+                                                '    round_bias: %s\n' % (layer.round_bias),
+                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                             '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                               layer.stride), '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                             '  }\n',
@@ -359,8 +367,10 @@ class net_prototxt():
                                 layer.name, layer.counter),
                                 '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                 '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                                  layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                    '    ad: %i\n' % (layer.ad),
+                                                    '    round_bias: %s\n' % (layer.round_bias),
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                                 '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                                   layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                 '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
@@ -390,8 +400,10 @@ class net_prototxt():
                                 layer.name, layer.counter),
                                 '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                 '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                                  layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                    '    ad: %i\n' % (layer.ad),
+                                                    '    round_bias: %s\n' % (layer.round_bias),
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                                 '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                                   layer.stride), '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                                 '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
@@ -423,8 +435,10 @@ class net_prototxt():
                     lines_to_write = ['layer {\n', '  name: "%s_%i"\n' % (layer.name, layer.counter), '  type: "%s"\n' % (layer.type),
                                       '  bottom: "%s"\n' % (layer.name_old), '  top: "%s_%i"\n' % (
                         layer.name, layer.counter),
-                        '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                        layer.ad), '    round_bias: %s' % (layer.round_bias), '  }\n',
+                        '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                            '    ad: %i\n' % (layer.ad),
+                                            '    round_bias: %s\n' % (layer.round_bias),
+                                            '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                         '}\n']
 
                 layer_base.writelines(lines_to_write)
@@ -490,8 +504,10 @@ class net_prototxt():
                             layer.name, layer.counter),
                             '  param {\n', '    lr_mult: 1\n', '   }\n',
                             '  param {\n', '    lr_mult: 2\n', '   }\n',
-                            '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                              layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                            '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                '    ad: %i\n' % (layer.ad),
+                                                '    round_bias: %s\n' % (layer.round_bias),
+                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                             '  inner_product_param {\n', '    num_output: %s\n' % (
                                               layer.output),
                             '  }\n',
@@ -516,8 +532,10 @@ class net_prototxt():
                                 layer.name, layer.counter),
                                 '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                 '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                                  layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                    '    ad: %i\n' % (layer.ad),
+                                                    '    round_bias: %s\n' % (layer.round_bias),
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                                 '  inner_product_param {\n', '    num_output: %s\n' % (
                                                   layer.output),
                                 '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '  }\n',
@@ -545,8 +563,10 @@ class net_prototxt():
                                 layer.name, layer.counter),
                                 '  param {\n', '    lr_mult: 1\n', '    decay_mult: 1\n', '   }\n',
                                 '  param {\n', '    lr_mult: 2\n', '    decay_mult: 0\n', '   }\n',
-                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd), '    ad: %i\n' % (
-                                                  layer.ad), '    round_bias: %s\n' % (layer.round_bias), '  }\n',
+                                '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
+                                                    '    ad: %i\n' % (layer.ad),
+                                                    '    round_bias: %s\n' % (layer.round_bias),
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
                                 '  inner_product_param {\n', '    num_output: %s\n' % (
                                                   layer.output),
                                 '    weight_filler {\n', '      type: "xavier"\n', '  }\n',

@@ -15,6 +15,7 @@ void LPBaseConvolutionLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& botto
   BD_ =  this->layer_param_.lpfp_param().bd();
   AD_ = this->layer_param_.lpfp_param().ad();
   round_bias_ = this->layer_param_.lpfp_param().round_bias();
+  rounding_scheme_ = this->layer_param_.lpfp_param().rounding_scheme();
   // Configure the kernel size, padding, stride, and inputs.
   ConvolutionParameter conv_param = this->layer_param_.convolution_param();
   force_nd_im2col_ = conv_param.force_nd_im2col();

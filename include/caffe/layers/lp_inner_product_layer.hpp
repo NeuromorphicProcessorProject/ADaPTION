@@ -42,6 +42,7 @@ class LPInnerProductLayer : public Layer<Dtype> {
   bool round_bias_;
   int BD_; // Number of bits Before Decimal
   int AD_; // Number of bits After Decimal
+  int rounding_scheme_; // Flag to either use deterministic or stochastic rounding
   int M_;
   int K_;
   int N_;

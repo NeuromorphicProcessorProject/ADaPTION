@@ -1,5 +1,7 @@
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
+#include <stdlib.h>
+#include <time.h>
 
 #include <limits>
 
@@ -9,35 +11,82 @@
 
 namespace caffe {
 
+// template <typename Dtype>
+// Quantization<Dtype>::Quantization() {
+//    // Initialize random number generator
+//   srand(time(NULL));
+// }
+
 template <>
-void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
+void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const int rounding_scheme,
                         const float *w, float *wr){
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
+  // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
   const int adshift = ad - 1;
   const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
-  for (int i = 0; i < N; ++i) {
-    wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
-      (2<<adshift)))/(2<<adshift), MAXVAL));
+  switch (rounding_scheme) {
+    case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
+      for (int i = 0; i < N; ++i) {
+        wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
+          (2<<adshift)))/(2<<adshift), MAXVAL));
+      }
+    case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
+      for (int i = 0; i < N; ++i) {
+        // wr[i] = std::max(-MAXVAL, std::min( ((float)floorf(w[i]*
+        //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
+        wr[i] = std::max(-MAXVAL, std::min( ((float)floor(w[i]*
+          (2<<adshift) + randomNumber()))/(2<<adshift), MAXVAL));
+      }
   }
 }
 
 template <>
-void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad,
+void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const int rounding_scheme,
                         const double *w, double *wr){
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
+  // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
   const int adshift = ad - 1;
   const double MAXVAL = ((double) (2 << bdshift)) - 1.0/(2<<adshift);
-  for (int i = 0; i < N; ++i) {
-    wr[i] = std::max(-MAXVAL, std::min( ((double)round(w[i]*
-      (2<<adshift)))/(2<<adshift), MAXVAL));
+  switch (rounding_scheme){
+    case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
+      for (int i = 0; i < N; ++i) {
+        wr[i] = std::max(-MAXVAL, std::min( ((double)round(w[i]*
+          (2<<adshift)))/(2<<adshift), MAXVAL));
+      }
+      break;
+    case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
+      for (int i = 0; i < N; ++i) {
+        // wr[i] = std::max(-MAXVAL, std::min( ((double)floorf(w[i]*
+        //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
+        wr[i] = std::max(-MAXVAL, std::min( ((double)floor(w[i]*
+          (2<<adshift) + randomNumber()))/(2<<adshift), MAXVAL));
+      }
+      break;
+    default:
+      LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
+      break;
   }
 }
+float randomNumber(){
+  srand(time(NULL)); // set random seed
+  return rand() / RAND_MAX;
+}
+
+
+// template <typename Dtype>
+// double Quantization<Dtype>::randomNumber(){
+//   return rand() / (RAND_MAX+1.0);
+// }
+// template Quantization<double>::Quantization();
+// template Quantization<float>::Quantization();
+// template double Quantization<double>::randomNumber();
+// template double Quantization<float>::randomNumber();
 
 template<>
 void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,

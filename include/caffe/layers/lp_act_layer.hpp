@@ -36,6 +36,7 @@ class LPActLayer : public NeuronLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   int BD_; // Number of bits Before Decimal
   int AD_; // Number of bits After Decimal
+  int rounding_scheme_; // Flag to either use deterministic or stochastic rounding
 };
 
 }  // namespace caffe
