@@ -61,21 +61,36 @@ TYPED_TEST(CPULPMathFunctionsTest, TestBasicRounding) {
   // round determinstic
   caffe_cpu_round_fp<TypeParam>(n, 3, 2, 0, x, this->blob_bottom_->mutable_cpu_diff());
   const TypeParam* rounded = this->blob_bottom_->cpu_diff();
+  TypeParam max = 0;
+  TypeParam min = 0;
+  TypeParam abs_val, floor_abs_val, ceil_abs_val = 0;
+  const TypeParam MAXVAL = ((TypeParam) (1 << 2)) - 1.0/(1<<2);
   for (int i = 0; i < n; ++i) {
-    EXPECT_EQ(rounded[i], round(x[i]*(2<<1)) / (2<<1));
+    EXPECT_LE(rounded[i], 3.75);
+    EXPECT_GE(rounded[i], -3.75);
+    max = std::max(max, rounded[i]);
+    min = std::min(min, rounded[i]);
+    abs_val = std::abs(x[i]);
+    floor_abs_val = floor(abs_val*(1<<2))/(1<<2);
+    ceil_abs_val = ceil(abs_val*(1<<2))/(1<<2);
+    EXPECT_GE(abs_val, floor_abs_val);
+    EXPECT_LE(abs_val, ceil_abs_val);
   }
+  EXPECT_EQ(max, 3.75);
+  EXPECT_EQ(min, -3.75);
 }
+
 TYPED_TEST(CPULPMathFunctionsTest, TestStochasticRounding) {
   int n = this->blob_bottom_->count();
   const TypeParam* x = this->blob_bottom_->cpu_data();
-  // round stochastic 
+  // round stochastic
   caffe_cpu_round_fp<TypeParam>(n, 3, 2, 1, x, this->blob_bottom_->mutable_cpu_diff());
   const TypeParam* rounded_1 = this->blob_bottom_->cpu_diff();
   caffe_cpu_round_fp<TypeParam>(n, 3, 2, 1, x, this->blob_bottom_->mutable_cpu_diff());
   const TypeParam* rounded_2 = this->blob_bottom_->cpu_diff();
   for (int i = 0; i < n; ++i) {
-    EXPECT_NEAR(rounded_1[i], round(x[i]*(2<<1)) / (2<<1), 1e0);
-    EXPECT_NEAR(rounded_2[i], round(x[i]*(2<<1)) / (2<<1), 1e0);
+    EXPECT_NEAR(rounded_1[i], round(x[i]*(1<<2)) / (1<<2), 1e0);
+    EXPECT_NEAR(rounded_2[i], round(x[i]*(1<<2)) / (1<<2), 1e0);
   }
 }
 

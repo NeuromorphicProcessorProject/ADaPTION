@@ -25,20 +25,20 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const in
   // for an example.
   // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
-  const int adshift = ad - 1;
-  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
+  const int adshift = ad;
+  const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
   switch (rounding_scheme) {
     case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
       for (int i = 0; i < N; ++i) {
         wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
-          (2<<adshift)))/(2<<adshift), MAXVAL));
+          (1<<adshift)))/(1<<adshift), MAXVAL));
       }
     case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
       for (int i = 0; i < N; ++i) {
         // wr[i] = std::max(-MAXVAL, std::min( ((float)floorf(w[i]*
         //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
         wr[i] = std::max(-MAXVAL, std::min( ((float)floor(w[i]*
-          (2<<adshift) + randomNumber()))/(2<<adshift), MAXVAL));
+          (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
   }
 }
@@ -51,13 +51,13 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
   // for an example.
   // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
-  const int adshift = ad - 1;
-  const double MAXVAL = ((double) (2 << bdshift)) - 1.0/(2<<adshift);
+  const int adshift = ad;
+  const double MAXVAL = ((double) (1 << bdshift)) - 1.0/(1<<adshift);
   switch (rounding_scheme){
     case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
       for (int i = 0; i < N; ++i) {
         wr[i] = std::max(-MAXVAL, std::min( ((double)round(w[i]*
-          (2<<adshift)))/(2<<adshift), MAXVAL));
+          (1<<adshift)))/(1<<adshift), MAXVAL));
       }
       break;
     case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
@@ -65,7 +65,7 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
         // wr[i] = std::max(-MAXVAL, std::min( ((double)floorf(w[i]*
         //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
         wr[i] = std::max(-MAXVAL, std::min( ((double)floor(w[i]*
-          (2<<adshift) + randomNumber()))/(2<<adshift), MAXVAL));
+          (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
       break;
     default:
