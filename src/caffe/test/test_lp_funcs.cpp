@@ -88,10 +88,22 @@ TYPED_TEST(CPULPMathFunctionsTest, TestStochasticRounding) {
   const TypeParam* rounded_1 = this->blob_bottom_->cpu_diff();
   caffe_cpu_round_fp<TypeParam>(n, 3, 2, 1, x, this->blob_bottom_->mutable_cpu_diff());
   const TypeParam* rounded_2 = this->blob_bottom_->cpu_diff();
+  TypeParam max_1 = 0;
+  TypeParam max_2 = 0;
+  TypeParam min_1 = 0;
+  TypeParam min_2 = 0;
   for (int i = 0; i < n; ++i) {
     EXPECT_NEAR(rounded_1[i], round(x[i]*(1<<2)) / (1<<2), 1e0);
     EXPECT_NEAR(rounded_2[i], round(x[i]*(1<<2)) / (1<<2), 1e0);
+    max_1 = std::max(max_1, rounded_1[i]);
+    max_2 = std::max(max_2, rounded_2[i]);
+    min_1 = std::min(min_1, rounded_1[i]);
+    min_2 = std::min(min_2, rounded_2[i]);
   }
+  EXPECT_EQ(max_1, 3.75);
+  EXPECT_EQ(max_2, 3.75);
+  EXPECT_EQ(min_1, -3.75);
+  EXPECT_EQ(min_2, -3.75);
 }
 
 // ALSO SHOULD TEST CLIPPING

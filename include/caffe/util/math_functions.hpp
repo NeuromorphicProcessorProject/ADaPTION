@@ -145,20 +145,8 @@ void caffe_cpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
 template <typename Dtype>
 void caffe_cpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme, const Dtype *w, Dtype *wr);
 
-// template<typename Dtype>
-// class Quantization{
-//   public:
-//     explicit Quantization();
-//     double randomNumber();
-//   };
-
-
-// this stays in the .hpp
 inline float randomNumber();
-// this would go in the .cpp
-// float randomNumber(){
-//   return rand() / (RAND_MAX + 1)
-// }
+
 
 // int rounding_scheme_;
 #ifndef CPU_ONLY  // GPU

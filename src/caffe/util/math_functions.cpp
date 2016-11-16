@@ -11,11 +11,6 @@
 
 namespace caffe {
 
-// template <typename Dtype>
-// Quantization<Dtype>::Quantization() {
-//    // Initialize random number generator
-//   srand(time(NULL));
-// }
 
 template <>
 void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const int rounding_scheme,
@@ -23,7 +18,6 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const in
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
-  // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
   const int adshift = ad;
   const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
@@ -33,14 +27,17 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const in
         wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
           (1<<adshift)))/(1<<adshift), MAXVAL));
       }
+      break;
     case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
       for (int i = 0; i < N; ++i) {
-        // wr[i] = std::max(-MAXVAL, std::min( ((float)floorf(w[i]*
-        //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
         wr[i] = std::max(-MAXVAL, std::min( ((float)floor(w[i]*
           (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
-  }
+      break;
+    default:
+      LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
+      break;
+ }
 }
 
 template <>
@@ -49,7 +46,6 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
   // TODO: Also try using v?Mult and v?Div instructions and benchmark
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
-  // Quantization<float> myQuantization;
   const int bdshift = bd - 1;
   const int adshift = ad;
   const double MAXVAL = ((double) (1 << bdshift)) - 1.0/(1<<adshift);
@@ -62,12 +58,11 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
       break;
     case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
       for (int i = 0; i < N; ++i) {
-        // wr[i] = std::max(-MAXVAL, std::min( ((double)floorf(w[i]*
-        //   (2<<adshift) + myQuantization.randomNumber()))/(2<<adshift), MAXVAL));
         wr[i] = std::max(-MAXVAL, std::min( ((double)floor(w[i]*
           (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
       break;
+
     default:
       LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
       break;
@@ -77,16 +72,6 @@ float randomNumber(){
   srand(time(NULL)); // set random seed
   return rand() / RAND_MAX;
 }
-
-
-// template <typename Dtype>
-// double Quantization<Dtype>::randomNumber(){
-//   return rand() / (RAND_MAX+1.0);
-// }
-// template Quantization<double>::Quantization();
-// template Quantization<float>::Quantization();
-// template double Quantization<double>::randomNumber();
-// template double Quantization<float>::randomNumber();
 
 template<>
 void caffe_cpu_gemm<float>(const CBLAS_TRANSPOSE TransA,
