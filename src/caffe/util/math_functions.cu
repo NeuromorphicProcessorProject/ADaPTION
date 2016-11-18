@@ -18,16 +18,16 @@ __global__ void round_fp_kernel(const int N, const int bd, const int ad, const i
   // Also, can make use of DEFINE_CAFFE_CPU_UNARY_FUNC, check math_functions.hpp
   // for an example.
   const int bdshift = bd - 1;
-  const int adshift = ad - 1;
-  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
+  const int adshift = ad;
+  const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
   switch (rounding_scheme){
       case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
           CUDA_KERNEL_LOOP(index, N) {
-          wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(2<<adshift)))/(2<<adshift), MAXVAL));
+          wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(1<<adshift)))/(1<<adshift), MAXVAL));
           }
       case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
           CUDA_KERNEL_LOOP(index, N) {
-          wr[index] = max(-MAXVAL, min( ((Dtype)floorf(w[index]*(2<<adshift)+RandUniform_device(index)))/(2<<adshift), MAXVAL));
+          wr[index] = max(-MAXVAL, min( ((Dtype)floorf(w[index]*(1<<adshift)+RandUniform_device(index)))/(1<<adshift), MAXVAL));
           }
           
   }

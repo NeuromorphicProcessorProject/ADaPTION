@@ -202,7 +202,7 @@ class net_prototxt():
             - net_name: A string which refer to the network, e.g. VGG16 or GoogleNet (type: string)
             - net_descriptor: List of strings where each entry is one layer of the network with its specific parameter (type: List)
                               Example:
-                              iet_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
+                              net_descriptor = ['64C3S1p1', 'A', 'ReLU', '64C3S1p1', 'A', 'ReLU', '2P2',
                                               '128C3S1p1', 'A', 'ReLU', '128C3S1p1', 'A', 'ReLU', '2P2',
                                               '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '256C3S1p1', 'A', 'ReLU', '2P2',
                                               '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '512C3S1p1', 'A', 'ReLU', '2P2',

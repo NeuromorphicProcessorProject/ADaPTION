@@ -56,7 +56,8 @@ layer {
     bd: 3
     ad: 13
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 64
     stride: 1
@@ -77,9 +78,11 @@ layer {
   bottom: "conv_lp_1"
   top: "act_lp_2"
   lpfp_param {
-    bd: 11
-    ad: 5
-    round_bias: false  }
+    bd: 7
+    ad: 9
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_3"
@@ -104,7 +107,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 64
     stride: 1
@@ -125,9 +129,11 @@ layer {
   bottom: "conv_lp_3"
   top: "act_lp_4"
   lpfp_param {
-    bd: 14
-    ad: 2
-    round_bias: false  }
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_5"
@@ -163,7 +169,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 128
     stride: 1
@@ -184,9 +191,11 @@ layer {
   bottom: "conv_lp_6"
   top: "act_lp_7"
   lpfp_param {
-    bd: 14
-    ad: 2
-    round_bias: false  }
+    bd: 10
+    ad: 6
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_8"
@@ -211,7 +220,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 128
     stride: 1
@@ -232,9 +242,11 @@ layer {
   bottom: "conv_lp_8"
   top: "act_lp_9"
   lpfp_param {
-    bd: 15
-    ad: 1
-    round_bias: false  }
+    bd: 10
+    ad: 6
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_10"
@@ -270,7 +282,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 256
     stride: 1
@@ -291,9 +304,11 @@ layer {
   bottom: "conv_lp_11"
   top: "act_lp_12"
   lpfp_param {
-    bd: 15
-    ad: 1
-    round_bias: false  }
+    bd: 11
+    ad: 5
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_13"
@@ -318,7 +333,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 256
     stride: 1
@@ -339,9 +355,11 @@ layer {
   bottom: "conv_lp_13"
   top: "act_lp_14"
   lpfp_param {
-    bd: 15
-    ad: 1
-    round_bias: false  }
+    bd: 11
+    ad: 5
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_15"
@@ -366,7 +384,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 256
     stride: 1
@@ -387,9 +406,11 @@ layer {
   bottom: "conv_lp_15"
   top: "act_lp_16"
   lpfp_param {
-    bd: 15
-    ad: 1
-    round_bias: false  }
+    bd: 11
+    ad: 5
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_17"
@@ -425,7 +446,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -446,9 +468,11 @@ layer {
   bottom: "conv_lp_18"
   top: "act_lp_19"
   lpfp_param {
-    bd: 15
-    ad: 1
-    round_bias: false  }
+    bd: 10
+    ad: 6
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_20"
@@ -473,7 +497,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -494,9 +519,11 @@ layer {
   bottom: "conv_lp_20"
   top: "act_lp_21"
   lpfp_param {
-    bd: 14
-    ad: 2
-    round_bias: false  }
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_22"
@@ -521,7 +548,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -542,9 +570,11 @@ layer {
   bottom: "conv_lp_22"
   top: "act_lp_23"
   lpfp_param {
-    bd: 13
-    ad: 3
-    round_bias: false  }
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_24"
@@ -580,7 +610,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -601,9 +632,11 @@ layer {
   bottom: "conv_lp_25"
   top: "act_lp_26"
   lpfp_param {
-    bd: 13
-    ad: 3
-    round_bias: false  }
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_27"
@@ -628,7 +661,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -649,9 +683,11 @@ layer {
   bottom: "conv_lp_27"
   top: "act_lp_28"
   lpfp_param {
-    bd: 11
-    ad: 5
-    round_bias: false  }
+    bd: 7
+    ad: 9
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_29"
@@ -676,7 +712,8 @@ layer {
     bd: 5
     ad: 11
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   convolution_param {
     num_output: 512
     stride: 1
@@ -697,9 +734,11 @@ layer {
   bottom: "conv_lp_29"
   top: "act_lp_30"
   lpfp_param {
-    bd: 11
-    ad: 5
-    round_bias: false  }
+    bd: 5
+    ad: 11
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_31"
@@ -735,7 +774,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   inner_product_param {
     num_output: 4096
     weight_filler {
@@ -753,9 +793,11 @@ layer {
   bottom: "fc_lp_32"
   top: "act_lp_33"
   lpfp_param {
-    bd: 7
-    ad: 9
-    round_bias: false  }
+    bd: 4
+    ad: 12
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_34"
@@ -789,7 +831,8 @@ layer {
     bd: 2
     ad: 14
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   inner_product_param {
     num_output: 4096
     weight_filler {
@@ -807,9 +850,11 @@ layer {
   bottom: "fc_lp_34"
   top: "act_lp_35"
   lpfp_param {
-    bd: 6
-    ad: 10
-    round_bias: false  }
+    bd: 3
+    ad: 13
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+}
 }
 layer {
   name: "relu_36"
@@ -843,7 +888,8 @@ layer {
     bd: 1
     ad: 15
     round_bias: false
-  }
+    rounding_scheme: STOCHASTIC
+}
   inner_product_param {
     num_output: 1000
     weight_filler {
