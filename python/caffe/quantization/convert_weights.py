@@ -66,7 +66,7 @@ class convert_weights():
             print 'Please download disired files from https://github.com/BVLC/caffe/wiki/Model-Zoo'
             return False
 
-    def convert_weights(self, net_name, save_name=None, caffe_root=None, model_dir=None, weight_dir=None, debug=False):
+    def convert_weights(self, net_name, save_name=None, caffe_root=None, model_dir=None, weight_dir=None, url=None, debug=False):
         '''
         This function will extract weights and biases from a pre_trained network and overwrites a dummy
         low precision network. After this conversion the network can be used later for finetuning
@@ -99,17 +99,26 @@ class convert_weights():
         if save_name is None:
             self.save_name = 'HP_{}_v2.caffemodel'.format(net_name)
 
-        vgg_original = '{}_original.caffemodel'.format(net_name)
-        vgg_new = 'HP_{}.caffemodel'.format(net_name)
+        net_original = '{}_original.caffemodel'.format(net_name)
+        net_new = 'HP_{}.caffemodel'.format(net_name)
         current_dir = weight_dir + net_name + '/'
-        flag = convert_weights.download_model(self, net_name, current_dir)
+        if url is not None:
+            flag = convert_weights.download_model(self, net_name, current_dir, url)
+        else:
+            flag = convert_weights.download_model(self, net_name, current_dir)
         assert flag, 'Please download caffemodel manually. This type of network currently not supported for automatized download.'
 
         if debug:
-            print 'Copying {} to {}'.format(vgg_original, vgg_new)
+            print 'Copying {} to {}'.format(net_original, net_new)
             print current_dir
-        os.system('cp %s %s' % (current_dir + vgg_original, current_dir + vgg_new))
-        weights_hp = current_dir + vgg_new
+        os.system('cp %s %s' % (current_dir + net_original, current_dir + net_new))
+        weights_hp = current_dir + net_new
+        # Build prototxt based on deploy --> dummyLP_NetName_deploy.prototxt
+        # if not os.path.isfile(current_dir + 'dummyLP_{}.caffemodel.h5'):
+
+        #     pass
+        # simulate for 1 iteration and save weights as dummyLP_NetName.caffemodel.h5
+
         weights_lp = current_dir + 'dummyLP_{}.caffemodel.h5'.format(net_name)
 
         prototxt_hp = self.caffe_root + self.model_dir + '{}_deploy.prototxt'.format(net_name)
@@ -120,6 +129,7 @@ class convert_weights():
         net_hp = caffe.Net(prototxt_hp, weights_hp, caffe.TEST)
         if debug:
             print('Doing forward pass for original high precision network')
+            print 'Network file: {}'.format(prototxt_hp)
         net_hp.forward()
         if debug:
             print('Done.')
@@ -129,6 +139,7 @@ class convert_weights():
         net_lp = caffe.Net(prototxt_lp, weights_lp, caffe.TEST)
         if debug:
             print('Doing forward pass for low precision network')
+            print 'Network file: {}'.format(prototxt_lp)
         net_lp.forward()
         if debug:
             print('Done.')
@@ -136,7 +147,17 @@ class convert_weights():
         sparsity_hp = open(self.weight_dir + 'sparsity_hp.txt', 'w')
         sparsity_lp = open(self.weight_dir + 'sparsity_lp.txt', 'w')
         for i, ldx in enumerate(net_hp.params.keys()):
+            if debug:
+                print 'Original net'
+                print 'Layer {}'.format(ldx)
+                print np.shape(net_hp.params[ldx][0].data[...])
+                print '\n'
             ldx_lp = net_lp.params.keys()[i]
+            if debug:
+                print 'Low precision net'
+                print 'Layer {}'.format(ldx_lp)
+                print np.shape(net_lp.params[ldx_lp][0].data[...])
+                print '---------------'
             W = net_hp.params[ldx][0].data[...]
             b = net_hp.params[ldx][1].data[...]
             # Calculate sparsity for each layer

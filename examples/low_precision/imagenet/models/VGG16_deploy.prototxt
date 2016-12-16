@@ -21,7 +21,7 @@ layer {
   transform_param {
  #   scale: 0.00392156862
     mirror: false
-    crop_size: 224
+    crop_size: 227
     mean_file: "/media/moritz/Data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
   }
   data_param {

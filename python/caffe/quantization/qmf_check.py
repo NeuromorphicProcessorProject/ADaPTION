@@ -123,7 +123,7 @@ class distribute_bits():
             select_key2 = 'fc'
             # We have to substract 2 since we have to ignore split layers
             bit_distribution = np.zeros((2, len(filter(lambda x: select_key1 in x, self.net.blobs.keys())) +
-                                         len(filter(lambda x: select_key2 in x, self.net.blobs.keys())) - 2))
+                                         len(filter(lambda x: select_key2 in x, self.net.blobs.keys()))))
             if debug:
                 print 'Bit distribution activation: {}'.format(np.shape(bit_distribution))
         else:
@@ -243,8 +243,11 @@ class distribute_bits():
         if debug:
             print 'Starting extracting weight distribution layer-wise'
             print '-------------------'
+            print self.net.blobs.keys()
         bit_distribution = np.zeros((2, len(filter(lambda x: select_key1 in x, self.net.blobs.keys())) +
-                                     len(filter(lambda x: select_key2 in x, self.net.blobs.keys())) - 2))
+                                     len(filter(lambda x: select_key2 in x, self.net.blobs.keys()))))
+        if debug:
+            print np.shape(bit_distribution)
         # we have to substract 2 since normally the last fc layer splits into two accuracy layers
         for key in self.net.blobs.keys():
             if select_key1 in key or select_key2 in key:  # VERIFY FOR HIGH PRECISION VGG16!!
@@ -284,6 +287,7 @@ class distribute_bits():
                 bit_distribution[0, i] = m
                 bit_distribution[1, i] = f
                 i += 1
+
                 if debug:
                     print 'Done: ' + str(key)
                     print '-------------------'

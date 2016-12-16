@@ -1,13 +1,14 @@
 # ======== NETWORK ========
 # The train/test net protocol buffer definition
-net: "../../../examples/low_precision/imagenet/models/LP_VGG16_16_bit_train.prototxt"
+net: "../../../examples/low_precision/imagenet/models/LP_AlexNet_16_bit_train.prototxt"
 #
 # ======== TEST ========
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
 # covering the full 100,000 testing images.
 # test_iter: 42857 
-test_iter: 25000
+# test_iter: 25000
+test_iter: 3125 
 # Carry out testing every 500 training iterations.
 test_interval: 10000
 #
@@ -36,7 +37,7 @@ estimate: 0
 # 		NumberOfEpochs * NumberOfImages / Batchsize
 # 	NVIDIA GTX 980 Ti (6 GB ram)
 # 	Batchsize of 12
-max_iter: 120000
+max_iter: 1500000
 # 	NVIDIA Titan X (12 GB ram)
 # 	Batchsize of 05
 # max_iter: 1440000
@@ -50,7 +51,7 @@ max_iter: 120000
 # snapshot intermediate results
 snapshot: 20000
 # Specify your GPU name & bit precision, as well as hyperparameters
-snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_VGG16_16_bit"
+snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/LP_AlexNet_16_bit_stochastic"
 snapshot_format: HDF5
 #
 # ======== GPU SETTINGS ========

@@ -105,6 +105,7 @@ class net_prototxt():
         self.net_descriptor = []
         for (layer_num, layer) in enumerate(caffe_layers):
             if debug:
+                print 'Layer type: {}'.format(layer)
                 if layer.type == 'Convolution':
                     p = layer.convolution_param
                     print 'Type: {}'.format(layer.type)
@@ -164,6 +165,10 @@ class net_prototxt():
 
             elif layer.type == 'ReLU':
                 layer_type = 'ReLU'
+                layer_descriptor = layer_type
+
+            elif layer.type == 'LRN':
+                layer_type = 'norm'
                 layer_descriptor = layer_type
 
             elif layer.type == 'Accuracy':
@@ -340,7 +345,7 @@ class net_prototxt():
                             '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                 '    ad: %i\n' % (layer.ad),
                                                 '    round_bias: %s\n' % (layer.round_bias),
-                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                             '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                               layer.stride), '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                             '  }\n',
@@ -370,7 +375,7 @@ class net_prototxt():
                                 '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                     '    ad: %i\n' % (layer.ad),
                                                     '    round_bias: %s\n' % (layer.round_bias),
-                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                                 '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                                   layer.stride), '    kernel_size: %s\n' % (layer.kernel),
                                 '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.01\n', '   }\n',
@@ -403,7 +408,7 @@ class net_prototxt():
                                 '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                     '    ad: %i\n' % (layer.ad),
                                                     '    round_bias: %s\n' % (layer.round_bias),
-                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                                 '  convolution_param {\n', '    num_output: %s\n' % (layer.output), '    stride: %s\n' % (
                                                   layer.stride), '    kernel_size: %s\n' % (layer.kernel), '    pad: %s\n' % (layer.pad),
                                 '    weight_filler {\n', '      type: "xavier"\n', '   }\n',
@@ -438,7 +443,7 @@ class net_prototxt():
                         '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                             '    ad: %i\n' % (layer.ad),
                                             '    round_bias: %s\n' % (layer.round_bias),
-                                            '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                            '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                         '}\n']
 
                 layer_base.writelines(lines_to_write)
@@ -507,7 +512,7 @@ class net_prototxt():
                             '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                 '    ad: %i\n' % (layer.ad),
                                                 '    round_bias: %s\n' % (layer.round_bias),
-                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                             '  inner_product_param {\n', '    num_output: %s\n' % (
                                               layer.output),
                             '  }\n',
@@ -535,7 +540,7 @@ class net_prototxt():
                                 '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                     '    ad: %i\n' % (layer.ad),
                                                     '    round_bias: %s\n' % (layer.round_bias),
-                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                                 '  inner_product_param {\n', '    num_output: %s\n' % (
                                                   layer.output),
                                 '    weight_filler {\n', '      type: "gaussian"\n', '      std: 0.005\n', '  }\n',
@@ -566,7 +571,7 @@ class net_prototxt():
                                 '  lpfp_param {\n', '    bd: %i\n' % (layer.bd),
                                                     '    ad: %i\n' % (layer.ad),
                                                     '    round_bias: %s\n' % (layer.round_bias),
-                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '}\n',
+                                                    '    rounding_scheme: %s\n' % (self.rounding_scheme), '  }\n',
                                 '  inner_product_param {\n', '    num_output: %s\n' % (
                                                   layer.output),
                                 '    weight_filler {\n', '      type: "xavier"\n', '  }\n',
