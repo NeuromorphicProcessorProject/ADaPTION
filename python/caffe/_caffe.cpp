@@ -58,7 +58,7 @@ void set_random_seed(unsigned int seed) { Caffe::set_random_seed(seed); }
 // later if the input files are disturbed before they are actually used, but
 // this saves frustration in most cases).
 
-void set_random_seed(unsigned int seed) { Caffe::set_random_seed(seed); }
+// void set_random_seed(unsigned int seed) { Caffe::set_random_seed(seed); }
 
 static void CheckFile(const string& filename) {
     std::ifstream f(filename.c_str());

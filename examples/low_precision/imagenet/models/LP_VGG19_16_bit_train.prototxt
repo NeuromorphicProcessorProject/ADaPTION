@@ -1,0 +1,1073 @@
+name: "VGG19"
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00392156862
+    mirror: true
+    crop_size: 224
+    mean_file: "/media/moritz/Data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "/media/moritz/Data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_train_lmdb"
+    batch_size: 10
+    backend: LMDB
+  }
+}
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    scale: 0.00392156862
+    mirror: false
+    crop_size: 224
+    mean_file: "/media/moritz/Data/ILSVRC2015/Data/CLS-LOC/imagenet_mean.binaryproto"
+  }
+  data_param {
+    source: "/media/moritz/Data/ILSVRC2015/Data/CLS-LOC/ilsvrc12_val_lmdb"
+    batch_size: 2
+    backend: LMDB
+  }
+}
+layer {
+  name: "conv_lp_1"
+  type: "LPConvolution"
+  bottom: "data"
+  top: "conv_lp_1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 2
+    ad: 14
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 64
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_2"
+  type: "LPAct"
+  bottom: "conv_lp_1"
+  top: "act_lp_2"
+  lpfp_param {
+    bd: 3
+    ad: 13
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_3"
+  type: "ReLU"
+  bottom: "act_lp_2"
+  top: "act_lp_2"
+}
+layer {
+  name: "conv_lp_3"
+  type: "LPConvolution"
+  bottom: "act_lp_2"
+  top: "conv_lp_3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 64
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_4"
+  type: "LPAct"
+  bottom: "conv_lp_3"
+  top: "act_lp_4"
+  lpfp_param {
+    bd: 6
+    ad: 10
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_5"
+  type: "ReLU"
+  bottom: "act_lp_4"
+  top: "act_lp_4"
+}
+layer {
+  name: "pool_5"
+  type: "Pooling"
+  bottom: "act_lp_4"
+  top: "pool_5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv_lp_6"
+  type: "LPConvolution"
+  bottom: "pool_5"
+  top: "conv_lp_6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 128
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_7"
+  type: "LPAct"
+  bottom: "conv_lp_6"
+  top: "act_lp_7"
+  lpfp_param {
+    bd: 6
+    ad: 10
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_8"
+  type: "ReLU"
+  bottom: "act_lp_7"
+  top: "act_lp_7"
+}
+layer {
+  name: "conv_lp_8"
+  type: "LPConvolution"
+  bottom: "act_lp_7"
+  top: "conv_lp_8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 128
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_9"
+  type: "LPAct"
+  bottom: "conv_lp_8"
+  top: "act_lp_9"
+  lpfp_param {
+    bd: 7
+    ad: 9
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_10"
+  type: "ReLU"
+  bottom: "act_lp_9"
+  top: "act_lp_9"
+}
+layer {
+  name: "pool_10"
+  type: "Pooling"
+  bottom: "act_lp_9"
+  top: "pool_10"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv_lp_11"
+  type: "LPConvolution"
+  bottom: "pool_10"
+  top: "conv_lp_11"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 256
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_12"
+  type: "LPAct"
+  bottom: "conv_lp_11"
+  top: "act_lp_12"
+  lpfp_param {
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_13"
+  type: "ReLU"
+  bottom: "act_lp_12"
+  top: "act_lp_12"
+}
+layer {
+  name: "conv_lp_13"
+  type: "LPConvolution"
+  bottom: "act_lp_12"
+  top: "conv_lp_13"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 256
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_14"
+  type: "LPAct"
+  bottom: "conv_lp_13"
+  top: "act_lp_14"
+  lpfp_param {
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_15"
+  type: "ReLU"
+  bottom: "act_lp_14"
+  top: "act_lp_14"
+}
+layer {
+  name: "conv_lp_15"
+  type: "LPConvolution"
+  bottom: "act_lp_14"
+  top: "conv_lp_15"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 256
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_16"
+  type: "LPAct"
+  bottom: "conv_lp_15"
+  top: "act_lp_16"
+  lpfp_param {
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_17"
+  type: "ReLU"
+  bottom: "act_lp_16"
+  top: "act_lp_16"
+}
+layer {
+  name: "conv_lp_17"
+  type: "LPConvolution"
+  bottom: "act_lp_16"
+  top: "conv_lp_17"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 256
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_18"
+  type: "LPAct"
+  bottom: "conv_lp_17"
+  top: "act_lp_18"
+  lpfp_param {
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_19"
+  type: "ReLU"
+  bottom: "act_lp_18"
+  top: "act_lp_18"
+}
+layer {
+  name: "pool_19"
+  type: "Pooling"
+  bottom: "act_lp_18"
+  top: "pool_19"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv_lp_20"
+  type: "LPConvolution"
+  bottom: "pool_19"
+  top: "conv_lp_20"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_21"
+  type: "LPAct"
+  bottom: "conv_lp_20"
+  top: "act_lp_21"
+  lpfp_param {
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_22"
+  type: "ReLU"
+  bottom: "act_lp_21"
+  top: "act_lp_21"
+}
+layer {
+  name: "conv_lp_22"
+  type: "LPConvolution"
+  bottom: "act_lp_21"
+  top: "conv_lp_22"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_23"
+  type: "LPAct"
+  bottom: "conv_lp_22"
+  top: "act_lp_23"
+  lpfp_param {
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_24"
+  type: "ReLU"
+  bottom: "act_lp_23"
+  top: "act_lp_23"
+}
+layer {
+  name: "conv_lp_24"
+  type: "LPConvolution"
+  bottom: "act_lp_23"
+  top: "conv_lp_24"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_25"
+  type: "LPAct"
+  bottom: "conv_lp_24"
+  top: "act_lp_25"
+  lpfp_param {
+    bd: 9
+    ad: 7
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_26"
+  type: "ReLU"
+  bottom: "act_lp_25"
+  top: "act_lp_25"
+}
+layer {
+  name: "conv_lp_26"
+  type: "LPConvolution"
+  bottom: "act_lp_25"
+  top: "conv_lp_26"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_27"
+  type: "LPAct"
+  bottom: "conv_lp_26"
+  top: "act_lp_27"
+  lpfp_param {
+    bd: 8
+    ad: 8
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_28"
+  type: "ReLU"
+  bottom: "act_lp_27"
+  top: "act_lp_27"
+}
+layer {
+  name: "pool_28"
+  type: "Pooling"
+  bottom: "act_lp_27"
+  top: "pool_28"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv_lp_29"
+  type: "LPConvolution"
+  bottom: "pool_28"
+  top: "conv_lp_29"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_30"
+  type: "LPAct"
+  bottom: "conv_lp_29"
+  top: "act_lp_30"
+  lpfp_param {
+    bd: 7
+    ad: 9
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_31"
+  type: "ReLU"
+  bottom: "act_lp_30"
+  top: "act_lp_30"
+}
+layer {
+  name: "conv_lp_31"
+  type: "LPConvolution"
+  bottom: "act_lp_30"
+  top: "conv_lp_31"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_32"
+  type: "LPAct"
+  bottom: "conv_lp_31"
+  top: "act_lp_32"
+  lpfp_param {
+    bd: 6
+    ad: 10
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_33"
+  type: "ReLU"
+  bottom: "act_lp_32"
+  top: "act_lp_32"
+}
+layer {
+  name: "conv_lp_33"
+  type: "LPConvolution"
+  bottom: "act_lp_32"
+  top: "conv_lp_33"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 2
+    ad: 14
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_34"
+  type: "LPAct"
+  bottom: "conv_lp_33"
+  top: "act_lp_34"
+  lpfp_param {
+    bd: 5
+    ad: 11
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_35"
+  type: "ReLU"
+  bottom: "act_lp_34"
+  top: "act_lp_34"
+}
+layer {
+  name: "conv_lp_35"
+  type: "LPConvolution"
+  bottom: "act_lp_34"
+  top: "conv_lp_35"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 5
+    ad: 11
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  convolution_param {
+    num_output: 512
+    stride: 1
+    kernel_size: 3
+    pad: 1
+    weight_filler {
+      type: "xavier"
+   }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+   }
+  }
+}
+layer {
+  name: "act_lp_36"
+  type: "LPAct"
+  bottom: "conv_lp_35"
+  top: "act_lp_36"
+  lpfp_param {
+    bd: 5
+    ad: 11
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_37"
+  type: "ReLU"
+  bottom: "act_lp_36"
+  top: "act_lp_36"
+}
+layer {
+  name: "pool_37"
+  type: "Pooling"
+  bottom: "act_lp_36"
+  top: "pool_37"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "fc_lp_38"
+  type: "LPInnerProduct"
+  bottom: "pool_37"
+  top: "fc_lp_38"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
+  }
+}
+layer {
+  name: "act_lp_39"
+  type: "LPAct"
+  bottom: "fc_lp_38"
+  top: "act_lp_39"
+  lpfp_param {
+    bd: 4
+    ad: 12
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_40"
+  type: "ReLU"
+  bottom: "act_lp_39"
+  top: "act_lp_39"
+}
+layer {
+  name: "drop_40"
+  type: "Dropout"
+  bottom: "act_lp_39"
+  top: "act_lp_39"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc_lp_40"
+  type: "LPInnerProduct"
+  bottom: "act_lp_39"
+  top: "fc_lp_40"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 2
+    ad: 14
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
+  }
+}
+layer {
+  name: "act_lp_41"
+  type: "LPAct"
+  bottom: "fc_lp_40"
+  top: "act_lp_41"
+  lpfp_param {
+    bd: 4
+    ad: 12
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+}
+layer {
+  name: "relu_42"
+  type: "ReLU"
+  bottom: "act_lp_41"
+  top: "act_lp_41"
+}
+layer {
+  name: "drop_42"
+  type: "Dropout"
+  bottom: "act_lp_41"
+  top: "act_lp_41"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc_lp_42"
+  type: "LPInnerProduct"
+  bottom: "act_lp_41"
+  top: "fc_lp_42"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+   }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+   }
+  lpfp_param {
+    bd: 1
+    ad: 15
+    round_bias: false
+    rounding_scheme: STOCHASTIC
+  }
+  inner_product_param {
+    num_output: 1000
+    weight_filler {
+      type: "xavier"
+  }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+   }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc_lp_42"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc_lp_42"
+  bottom: "label"
+  top: "loss"
+}
