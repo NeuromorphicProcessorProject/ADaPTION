@@ -51,20 +51,22 @@ class convert_weights():
             else:
                 print 'File already downloaded'
             return True
-        if net_name == 'VGG16':
-            print 'Downloading to ' + current_dir
-            filename = '%s.caffemodel' % (net_name + '_original')
-            if not os.path.isfile(current_dir + filename):
-                if url is None:
+        print 'Downloading to ' + current_dir
+        filename = '%s.caffemodel' % (net_name + '_original')
+        print current_dir + filename
+        if not os.path.isfile(current_dir + filename):
+            if url is None:
+                if net_name == 'VGG16':
                     url = 'http://www.robots.ox.ac.uk/%7Evgg/software/very_deep/caffe/VGG_ILSVRC_16_layers.caffemodel'
+                else:
+                    print 'Please download disired files from https://github.com/BVLC/caffe/wiki/Model-Zoo'
+                    return False
                 os.system('wget -O %s %s' % (current_dir + filename, url))
                 print 'Done'
-            else:
-                print 'File already downloaded'
-            return True
+                return True
         else:
-            print 'Please download disired files from https://github.com/BVLC/caffe/wiki/Model-Zoo'
-            return False
+            print 'File already downloaded'
+        return True
 
     def convert_weights(self, net_name, save_name=None, caffe_root=None, model_dir=None, weight_dir=None, url=None, debug=False):
         '''
