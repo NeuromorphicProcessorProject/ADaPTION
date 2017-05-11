@@ -1,3 +1,10 @@
+#ifdef CPU_ONLY  // CPU-only Caffe.
+// From Danny: not sure how it get's normally computed, but this fixes
+//    weird protobuf errors.
+#include "caffe/proto/caffe.pb.h"
+
+#endif //CPU-only
+
 #include <boost/math/special_functions/next.hpp>
 #include <boost/random.hpp>
 #include <stdlib.h>
@@ -20,8 +27,9 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const in
   // for an example.
   const int bdshift = bd - 1;
   const int adshift = ad;
+  const int rounding_mode = rounding_scheme;
   const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
-  switch (rounding_scheme) {
+  switch (rounding_mode){
     case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
       for (int i = 0; i < N; ++i) {
         wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
@@ -34,9 +42,9 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const in
           (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
       break;
-    default:
-      LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
-      break;
+    // default:
+    //   LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
+    //   break;
  }
 }
 
@@ -48,8 +56,9 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
   // for an example.
   const int bdshift = bd - 1;
   const int adshift = ad;
+  const int rounding_mode = rounding_scheme;
   const double MAXVAL = ((double) (1 << bdshift)) - 1.0/(1<<adshift);
-  switch (rounding_scheme){
+  switch (rounding_mode){
     case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
       for (int i = 0; i < N; ++i) {
         wr[i] = std::max(-MAXVAL, std::min( ((double)round(w[i]*
@@ -62,10 +71,9 @@ void caffe_cpu_round_fp<double>(const int N, const int bd, const int ad, const i
           (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
       }
       break;
-
-    default:
-      LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
-      break;
+    // default:
+    //   LOG(FATAL) << "Unknown rounding mode: " << rounding_scheme;
+    //   break;
   }
 }
 float randomNumber(){

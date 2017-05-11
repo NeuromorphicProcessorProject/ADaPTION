@@ -111,3 +111,5 @@ expamples/low_precision/imagenet/log/
 *.INFO
 *.ERROR
 examples/create_protoxt/layer_base.prototxt
+*.ipynb
+

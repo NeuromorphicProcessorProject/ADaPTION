@@ -1,5 +1,7 @@
 #ifndef CAFFE_UTIL_MATH_FUNCTIONS_H_
 #define CAFFE_UTIL_MATH_FUNCTIONS_H_
+// #define LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC
+// #define LowPrecisionFPParameter_RoundingScheme_STOCHASTIC
 
 #include <stdint.h>
 #include <cmath>  // for std::fabs and std::signbit
@@ -141,7 +143,8 @@ DEFINE_CAFFE_CPU_UNARY_FUNC(fabs, y[i] = std::fabs(x[i]));
 
 template <typename Dtype>
 void caffe_cpu_scale(const int n, const Dtype alpha, const Dtype *x, Dtype* y);
-
+// int LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC = 0;
+// int LowPrecisionFPParameter_RoundingScheme_STOCHASTIC = 1;
 template <typename Dtype>
 void caffe_cpu_round_fp(const int N, const int bd, const int ad, const int rounding_scheme, const Dtype *w, Dtype *wr);
 

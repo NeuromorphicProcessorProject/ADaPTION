@@ -22,7 +22,7 @@
 #include "caffe/test/test_gradient_check_util.hpp"
 
 using boost::scoped_ptr;
-
+#ifndef CPU_ONLY
 namespace caffe {
 
 typedef ::testing::Types<GPUDevice<float>, GPUDevice<double> > TestDtypesGPU;
@@ -101,3 +101,4 @@ TYPED_TEST(ROIPoolingLayerTest, TestGradient) {
 }
 
 }  // namespace caffe
+#endif

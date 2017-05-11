@@ -13,6 +13,7 @@
 
 #include "caffe/test/test_caffe_main.hpp"
 #include "caffe/test/test_gradient_check_util.hpp"
+#ifndef CPU_ONLY
 
 namespace caffe {
 
@@ -88,3 +89,4 @@ TYPED_TEST(SmoothL1LossLayerTest, TestGradient) {
 }
 
 }  // namespace caffe
+#endif //CPU-only

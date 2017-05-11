@@ -412,6 +412,9 @@ message LayerParameter {
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
   optional WindowDataParameter window_data_param = 129;
+  optional LPConvolutionParameter lp_convolution_param = 150;
+  optional LPActivationParam lp_act_param = 151;
+  optional LPInnerProductParameter lp_inner_product_param = 152;
 }
 
 // Message that stores parameters used to apply transformation
@@ -616,7 +619,82 @@ message ConvolutionParameter {
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
 }
+message LPConvolutionParameter {
+//this message is a copy of ConvolutionParameter, with addition of lp parameters (added at the end)
 
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional bool bias_term = 2 [default = true]; // whether to have bias terms
+
+  // Pad, kernel size, and stride are all given as a single value for equal
+  // dimensions in all spatial dimensions, or once per spatial dimension.
+  repeated uint32 pad = 3; // The padding size; defaults to 0
+  repeated uint32 kernel_size = 4; // The kernel size
+  repeated uint32 stride = 6; // The stride; defaults to 1
+  // Factor used to dilate the kernel, (implicitly) zero-filling the resulting
+  // holes. (Kernel dilation is sometimes referred to by its use in the
+  // algorithme à trous from Holschneider et al. 1987.)
+  repeated uint32 dilation = 18; // The dilation; defaults to 1
+
+  // For 2D convolution only, the *_h and *_w versions may also be used to
+  // specify both spatial dimensions.
+  optional uint32 pad_h = 9 [default = 0]; // The padding height (2D only)
+  optional uint32 pad_w = 10 [default = 0]; // The padding width (2D only)
+  optional uint32 kernel_h = 11; // The kernel height (2D only)
+  optional uint32 kernel_w = 12; // The kernel width (2D only)
+  optional uint32 stride_h = 13; // The stride height (2D only)
+  optional uint32 stride_w = 14; // The stride width (2D only)
+
+  optional uint32 group = 5 [default = 1]; // The group size for group conv
+
+  optional FillerParameter weight_filler = 7; // The filler for the weight
+  optional FillerParameter bias_filler = 8; // The filler for the bias
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 15 [default = DEFAULT];
+
+  // The axis to interpret as "channels" when performing convolution.
+  // Preceding dimensions are treated as independent inputs;
+  // succeeding dimensions are treated as "spatial".
+  // With (N, C, H, W) inputs, and axis == 1 (the default), we perform
+  // N independent 2D convolutions, sliding C-channel (or (C/g)-channels, for
+  // groups g>1) filters across the spatial axes (H, W) of the input.
+  // With (N, C, D, H, W) inputs, and axis == 1, we perform
+  // N independent 3D convolutions, sliding (C/g)-channels
+  // filters across the spatial axes (D, H, W) of the input.
+  optional int32 axis = 16 [default = 1];
+
+  // Whether to force use of the general ND convolution, even if a specific
+  // implementation for blobs of the appropriate number of spatial dimensions
+  // is available. (Currently, there is only a 2D-specific convolution
+  // implementation; for input blobs with num_axes != 2, this option is
+  // ignored and the ND implementation will be used.)
+  optional bool force_nd_im2col = 17 [default = false];
+
+
+  // added parameters for low precision
+  optional uint32 bd = 19 [default = 8]; // The number of bits before the decimal point
+  optional uint32 ad = 20 [default = 8]; // The number of bits after the decimal point
+  optional bool round_bias = 21 [default = false];
+  enum RoundingScheme {
+    DETERMINISTIC = 0;
+    STOCHASTIC = 1;
+  }
+  optional RoundingScheme rounding_scheme = 22 [default = DETERMINISTIC];
+}
+message LPActivationParam {
+  // added parameters for low precision
+  optional uint32 bd = 1 [default = 8];
+  optional uint32 ad = 2 [default = 8];
+  enum RoundingScheme {
+    DETERMINISTIC = 0;
+    STOCHASTIC = 1;
+  }
+  optional RoundingScheme rounding_scheme = 3 [default = DETERMINISTIC];
+
+}
 message CropParameter {
   // To crop, elements of the first bottom are selected to fit the dimensions
   // of the second, reference bottom. The crop is configured by
@@ -831,6 +909,32 @@ message InnerProductParameter {
   optional bool transpose = 6 [default = false];
 }
 
+message LPInnerProductParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional bool bias_term = 2 [default = true]; // whether to have bias terms
+  optional FillerParameter weight_filler = 3; // The filler for the weight
+  optional FillerParameter bias_filler = 4; // The filler for the bias
+
+  // The first axis to be lumped into a single inner product computation;
+  // all preceding axes are retained in the output.
+  // May be negative to index from the end (e.g., -1 for the last axis).
+  optional int32 axis = 5 [default = 1];
+  // Specify whether to transpose the weight matrix or not.
+  // If transpose == true, any operations will be performed on the transpose
+  // of the weight matrix. The weight matrix itself is not going to be transposed
+  // but rather the transfer flag of operations will be toggled accordingly.
+  optional bool transpose = 6 [default = false];
+  // added parameters for low precision
+  optional uint32 bd = 7 [default = 8]; // The number of bits before the decimal point
+  optional uint32 ad = 8 [default = 8]; // The number of bits after the decimal point
+  optional bool round_bias = 9 [default = false];
+  enum RoundingScheme {
+    DETERMINISTIC = 0;
+    STOCHASTIC = 1;
+  }
+  optional RoundingScheme rounding_scheme = 10 [default = DETERMINISTIC];
+}
+
 message InputParameter {
   // This layer produces N >= 1 top blob(s) to be assigned manually.
   // Define N shapes to set a shape for each top.
@@ -852,7 +956,7 @@ message LogParameter {
 message LowPrecisionFPParameter {
   optional uint32 bd = 1; // The number of bits before the decimal point
   optional uint32 ad = 2; // The number of bits after the decimal point
-  optional bool round_bias = 3 [default = true];
+  optional bool round_bias = 3 [default = false];
   enum RoundingScheme {
     DETERMINISTIC = 0;
     STOCHASTIC = 1;
