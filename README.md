@@ -1,13 +1,12 @@
 # ADaPTION: A reduced precision trainings interface for Nullhop
-Deep neural networks (DNN) and Convolutional Networks (CNNs) offer a great opportunity for lots of classification and recognition tasks in machine learning, such as handwritten digit recognition (based on MNIST dataset) or image classification (based on Imagenet dataset). The weight between two consecutive neurons within the deep network is stored with high-resolution, i.e. 32 bit floating point are used to represent the weights. Furthermore, while training such a network the weight needs to be updated based on a gradient descent technique, such as error backpropagation. The weight update is then stored and propagated through the network. However, storage capacity and memory access are two limiting factors when it comes to an implementation of deep networks on small devices, since the storage capacity is limited and each memory access consumes power.\\
+Deep neural networks (DNN) and Convolutional Networks (CNNs) offer a great opportunity for lots of classification and recognition tasks in machine learning, such as handwritten digit recognition (based on MNIST dataset) or image classification (based on Imagenet dataset). The weight between two consecutive neurons within the deep network is stored with high-resolution, i.e. 32 bit floating point are used to represent the weights. Furthermore, while training such a network the weight needs to be updated based on a gradient descent technique, such as error backpropagation. The weight update is then stored and propagated through the network. However, storage capacity and memory access are two limiting factors when it comes to an implementation of deep networks on small devices, since the storage capacity is limited and each memory access consumes power.\\\\
 We extended the well-known deep learning library Caffe to support training deep CNNs with reduced numerical precision of weights, as well as activations using fixed-point notation.
-We are able to quantize VGG16 \cite{Zisserman14} down to 16 bit weights and activations with only 0.8 \% drop in top-1 accuracy compared to its high precision counterpart. The quantization especially of the activations lead to increase of up to 50 \% of sparsity in certain layers, which can be exploited to skip multiplications with zero, thus performing fast and computationally cheap inference.
+We are able to quantize VGG16 [Zisserman 2014] down to 16 bit weights and activations with only 0.8 \% drop in top-1 accuracy compared to its high precision counterpart. The quantization especially of the activations lead to increase of up to 50 \% of sparsity in certain layers, which can be exploited to skip multiplications with zero, thus performing fast and computationally cheap inference.
 ## Low Precision Caffe. Used to convert existing high-precision CNNs to reduced precision of weights & activations
 ADaPTION takes high precision pre-trained networks and adapts the parameter to a user specified fixed-point representation. One can also generate new low precision CNN architectures from scratch.
 This toolbox is discribed in detail here:
-* ArXiv
-Nullhop, a CNN hardware accelerator is discribed here:
-* ArXiv
+* [ADaPTION](ArXiv)
+* [Nullhop, a CNN hardware accelerator](ArXiv)
 
 Notes for installation:
   * Adjust your paths!  You probably already have a copy of Caffe.  Make sure to use this one: check your .bash_profile or .bashrc file to make sure you are using the correct version.
@@ -134,7 +133,7 @@ Make sure to index the correct variables now!  The bias is likely to be be set t
 ## Quantization
 
 A an example notebook how to convert a high-precision model into a low-precision one at any desired fixed-point bit precision can be found in
-examples/low_precision/quantization/
+[quantization](examples/low_precision/quantization/)
 
 # Caffe
 
