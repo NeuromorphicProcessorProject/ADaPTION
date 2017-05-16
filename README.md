@@ -1,5 +1,13 @@
-# Caffe-LP
-## Low Precision Caffe. Used internally for several projects at INI.
+# ADaPTION: A reduced precision trainings interface for Nullhop
+Deep neural networks (DNN) and Convolutional Networks (CNNs) offer a great opportunity for lots of classification and recognition tasks in machine learning, such as handwritten digit recognition (based on MNIST dataset) or image classification (based on Imagenet dataset). The weight between two consecutive neurons within the deep network is stored with high-resolution, i.e. 32 bit floating point are used to represent the weights. Furthermore, while training such a network the weight needs to be updated based on a gradient descent technique, such as error backpropagation. The weight update is then stored and propagated through the network. However, storage capacity and memory access are two limiting factors when it comes to an implementation of deep networks on small devices, since the storage capacity is limited and each memory access consumes power.\\
+We extended the well-known deep learning library Caffe to support training deep CNNs with reduced numerical precision of weights, as well as activations using fixed-point notation.
+We are able to quantize VGG16 \cite{Zisserman14} down to 16 bit weights and activations with only 0.8 \% drop in top-1 accuracy compared to its high precision counterpart. The quantization especially of the activations lead to increase of up to 50 \% of sparsity in certain layers, which can be exploited to skip multiplications with zero, thus performing fast and computationally cheap inference.
+## Low Precision Caffe. Used to convert existing high-precision CNNs to reduced precision of weights & activations
+ADaPTION takes high precision pre-trained networks and adapts the parameter to a user specified fixed-point representation. One can also generate new low precision CNN architectures from scratch.
+This toolbox is discribed in detail here:
+* ArXiv
+Nullhop, a CNN hardware accelerator is discribed here:
+* ArXiv
 
 Notes for installation:
   * Adjust your paths!  You probably already have a copy of Caffe.  Make sure to use this one: check your .bash_profile or .bashrc file to make sure you are using the correct version.
@@ -21,7 +29,7 @@ Notes for installation:
     * **LPConvolution** - low precision convolution layer.  Rounds weights and optionally biases.  Available for CPU, GPU, and CuDNN.
     * **LPAct** - low precision on activations.  Available for CPU and GPU.
   * Check out [examples/low_precision](examples/low_precision) for an example network with all of these layers.  There's also a [reduced-precision iPython notebook](examples/low_precision/Examine_LP_Net.ipynb) that you can preview on Github directly.
-  * There is a new parameter type added: lpfp_param (low-precision fixed-point).  It has three elements: **bd** for how many bits before the decimal, **ad** for how many bits after the decimal, and **round_bias** if the bias should also be rounded.  Here's a prototxt example:
+  * There is a new parameter type added: lpfp_param (low-precision fixed-point).  It has three elements: **bd** for how many bits before the decimal, **ad** for how many bits after the decimal, and **round_bias** if the bias should also be rounded.  One can also specify if the rounding should be stochastic or deterministic using the **rounding_scheme** flag. Here's a prototxt example:
 
 ```protobuf
 layer {
@@ -33,6 +41,7 @@ layer {
     bd: 2
     ad: 2
     round_bias: false
+    rounding_scheme: STOCHASTIC
   }
   inner_product_param {
     num_output: 10
@@ -55,14 +64,25 @@ Basically, we wrote two new functions, which just do the standard fixed-point qu
 Here's the implementation of the rounding function, for CPU:
 ```cpp
 template <>
-void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
+void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad, const int rounding_scheme,
                         const float *w, float *wr){
   const int bdshift = bd - 1;
-  const int adshift = ad - 1;
-  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
-  for (int i = 0; i < N; ++i) {
-    wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
-      (2<<adshift)))/(2<<adshift), MAXVAL));
+  const int adshift = ad;
+  const int rounding_mode = rounding_scheme;
+  const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
+  switch (rounding_mode){
+    case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
+      for (int i = 0; i < N; ++i) {
+        wr[i] = std::max(-MAXVAL, std::min( ((float)round(w[i]*
+          (1<<adshift)))/(1<<adshift), MAXVAL));
+      }
+      break;
+    case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
+      for (int i = 0; i < N; ++i) {
+        wr[i] = std::max(-MAXVAL, std::min( ((float)floor(w[i]*
+          (1<<adshift) + randomNumber()))/(1<<adshift), MAXVAL));
+      }
+      break;
   }
 }
 ```
@@ -70,13 +90,20 @@ void caffe_cpu_round_fp<float>(const int N, const int bd, const int ad,
 For GPU:
 ```cpp
 template <typename Dtype>
-__global__ void round_fp_kernel(const int N, const int bd, const int ad,
+__global__ void round_fp_kernel(const int N, const int bd, const int ad, const int rounding_scheme,
                         const Dtype *w, Dtype *wr){
   const int bdshift = bd - 1;
-  const int adshift = ad - 1;
-  const float MAXVAL = ((float) (2 << bdshift)) - 1.0/(2<<adshift);
-  CUDA_KERNEL_LOOP(index, N) {
-    wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(2<<adshift)))/(2<<adshift), MAXVAL));
+  const int adshift = ad;
+  const float MAXVAL = ((float) (1 << bdshift)) - 1.0/(1<<adshift);
+  switch (rounding_scheme){
+      case LowPrecisionFPParameter_RoundingScheme_DETERMINISTIC:
+          CUDA_KERNEL_LOOP(index, N) {
+          wr[index] = max(-MAXVAL, min( ((Dtype)round(w[index]*(1<<adshift)))/(1<<adshift), MAXVAL));
+          }
+      case LowPrecisionFPParameter_RoundingScheme_STOCHASTIC:
+          CUDA_KERNEL_LOOP(index, N) {
+          wr[index] = max(-MAXVAL, min( ((Dtype)floorf(w[index]*(1<<adshift)+RandUniform_device(index)))/(1<<adshift), MAXVAL));
+          }
   }
 }
 
@@ -103,6 +130,11 @@ We fetch the weights (in blobs[0]), round them and store them (in blobs[1]), and
 Mostly, it's a cut+paste job to add new layers.  Copy them, replace their names, and double their storage capacity - we now need two copies of all data, one for regular precision and one for low precision.  Then just call the appropriate rounding function (cpu or gpu) on the data you want rounded (weights, biases, activations, etc.).
 
 Make sure to index the correct variables now!  The bias is likely to be be set to blobs_[1], which should now be a copy.  By convention, all the even-number blobs correspond to the unrounded version, while all the odd-numbered blobs correspond to the rounded version.
+
+## Quantization
+
+A an example notebook how to convert a high-precision model into a low-precision one at any desired fixed-point bit precision can be found in
+examples/low_precision/quantization/
 
 # Caffe
 
