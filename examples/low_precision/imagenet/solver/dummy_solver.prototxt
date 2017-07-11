@@ -1,0 +1,35 @@
+#==============================================#
+#  CHNGE NETNAME AND PATH RESPECTIVELY
+#==============================================#
+
+ 
+# ======== NETWORK ========
+# The train/test net protocol buffer definition
+net: "path/to/dummyLP_NetName.prototxt"
+#
+# ======== TEST ========
+# test_iter specifies how many forward passes the test should carry out.
+# In the case of ImageNet, we have test batch size 28 and 42857 test iterations,
+# covering the full 100,000 testing images.
+test_iter: 1
+# Carry out testing every 500 training iterations.
+test_interval: 10
+#
+# ======== HYPERPARAMETERS ========
+# All parameters are from the cited paper above
+base_lr: 0.00002
+momentum: 0.9
+momentum2: 0.999
+# since Adam dynamically changes the learning rate, we set the base learning
+# rate to a fixed value
+lr_policy: "fixed"
+type: "Adam"
+max_iter: 20
+snapshot: 20
+snapshot_prefix: "../../../../../../../media/moritz/Ellesmera/ILSVRC2015/Snapshots/dummyLP_NetName"
+snapshot_format: HDF5
+#
+# ======== GPU SETTINGS ========
+# Solver mode: CPU or GPU
+solver_mode: GPU
+device_id: 0
